@@ -1,0 +1,166 @@
+name: Build Mobile Apps (APK & IPA) and Sync to VPS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  # =========================================================================
+  # JOB 1: Build Android APK (ubuntu-latest)
+  # =========================================================================
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Setup Java JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Web Assets & Sync Capacitor Android
+        run: |
+          npm run build
+          npx cap sync android
+
+      - name: Build Android Debug APK with Gradle
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: Prepare APK Output
+        run: |
+          cp android/app/build/outputs/apk/debug/app-debug.apk app-latest.apk
+
+      - name: Upload Android APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-latest-android-apk
+          path: app-latest.apk
+          retention-days: 14
+
+      - name: Sync APK to VPS via SCP
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USERNAME: ${{ secrets.VPS_USERNAME }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
+          VPS_TARGET_DIR: ${{ secrets.VPS_TARGET_DIR || '/var/www/downloads' }}
+        run: |
+          if [ -z "$VPS_HOST" ] || [ -z "$VPS_SSH_KEY" ] || [ -z "$VPS_USERNAME" ]; then
+            echo "::warning ::VPS Secrets (VPS_HOST, VPS_USERNAME, VPS_SSH_KEY) are not configured. Skipping VPS SCP transfer."
+            exit 0
+          fi
+          echo "🚀 Configuring SSH key for VPS deployment..."
+          mkdir -p ~/.ssh
+          echo "$VPS_SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p "$VPS_PORT" -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+          
+          echo "📂 Ensuring remote directory exists: $VPS_TARGET_DIR"
+          ssh -o StrictHostKeyChecking=no -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "mkdir -p $VPS_TARGET_DIR"
+          
+          echo "📤 Uploading app-latest.apk to $VPS_HOST:$VPS_TARGET_DIR/app-latest.apk ..."
+          scp -o StrictHostKeyChecking=no -P "$VPS_PORT" -i ~/.ssh/id_rsa app-latest.apk "$VPS_USERNAME@$VPS_HOST:$VPS_TARGET_DIR/app-latest.apk"
+          echo "✅ Successfully synced app-latest.apk to VPS!"
+
+  # =========================================================================
+  # JOB 2: Build iOS IPA (macos-14)
+  # =========================================================================
+  build-ios:
+    name: Build iOS IPA
+    runs-on: macos-14
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Select Xcode
+        run: |
+          sudo xcode-select -s /Applications/Xcode_15.4.app || sudo xcode-select -s /Applications/Xcode.app || true
+          xcodebuild -version
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Web Assets & Sync Capacitor iOS
+        run: |
+          npm run build
+          npx cap sync ios
+
+      - name: Build Xcode Archive (Unsigned)
+        working-directory: ios/App
+        run: |
+          xcodebuild archive \
+            -workspace App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination "generic/platform=iOS" \
+            -archivePath "$PWD/build/App.xcarchive" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            AD_HOC_CODE_SIGNING_ALLOWED=YES
+
+      - name: Package Payload into app-latest.ipa
+        working-directory: ios/App
+        run: |
+          mkdir -p build/Payload
+          cp -R build/App.xcarchive/Products/Applications/App.app build/Payload/
+          cd build
+          zip -qr ../../../app-latest.ipa Payload
+          cd ../../..
+          ls -lh app-latest.ipa
+
+      - name: Upload iOS IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-latest-ios-ipa
+          path: app-latest.ipa
+          retention-days: 14
+
+      - name: Sync IPA to VPS via SCP
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USERNAME: ${{ secrets.VPS_USERNAME }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
+          VPS_TARGET_DIR: ${{ secrets.VPS_TARGET_DIR || '/var/www/downloads' }}
+        run: |
+          if [ -z "$VPS_HOST" ] || [ -z "$VPS_SSH_KEY" ] || [ -z "$VPS_USERNAME" ]; then
+            echo "::warning ::VPS Secrets (VPS_HOST, VPS_USERNAME, VPS_SSH_KEY) are not configured. Skipping VPS SCP transfer."
+            exit 0
+          fi
+          echo "🚀 Configuring SSH key for VPS deployment..."
+          mkdir -p ~/.ssh
+          echo "$VPS_SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p "$VPS_PORT" -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+          
+          echo "📂 Ensuring remote directory exists: $VPS_TARGET_DIR"
+          ssh -o StrictHostKeyChecking=no -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "mkdir -p $VPS_TARGET_DIR"
+          
+          echo "📤 Uploading app-latest.ipa to $VPS_HOST:$VPS_TARGET_DIR/app-latest.ipa ..."
+          scp -o StrictHostKeyChecking=no -P "$VPS_PORT" -i ~/.ssh/id_rsa app-latest.ipa "$VPS_USERNAME@$VPS_HOST:$VPS_TARGET_DIR/app-latest.ipa"
+          echo "✅ Successfully synced app-latest.ipa to VPS!"

@@ -1,0 +1,31 @@
+{
+  "name": "recruiter-industrial",
+  "version": "1.0.0",
+  "description": "Recruiter Industrial - AI Recruitment & Assessment Mobile App (Android APK & iOS IPA)",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build-mobile.js",
+    "build:frontend": "cd frontend && npm run build",
+    "cap:sync": "cap sync",
+    "cap:android": "cap open android",
+    "cap:ios": "cap open ios"
+  },
+  "keywords": [
+    "capacitor",
+    "android",
+    "ios",
+    "mobile",
+    "recruiter-industrial"
+  ],
+  "author": "Recruiter Industrial",
+  "license": "MIT",
+  "dependencies": {
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/cli": "^8.5.3",
+    "@capacitor/core": "^8.5.3",
+    "@capacitor/ios": "^8.5.3"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
+}
