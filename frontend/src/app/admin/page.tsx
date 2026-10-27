@@ -855,7 +855,7 @@ export default function AdminDashboard() {
               <div className="flex flex-wrap items-center gap-2 shrink-0">
                 {/* Link Unduh / Subscribe File .ICS */}
                 <a
-                  href="/api/calendar/interviews.ics"
+                  href={`${process.env.NEXT_PUBLIC_BASE_PATH ?? '/recruiter'}/api/calendar/interviews.ics`}
                   download="interviews.ics"
                   className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#1D1D1F] hover:bg-[#000000] text-white text-xs font-semibold shadow-sm transition-all"
                 >
@@ -868,7 +868,8 @@ export default function AdminDashboard() {
                   variant="outline"
                   size="sm"
                   onClick={() => {
-                    const icsUrl = `${window.location.origin}/api/calendar/interviews.ics`;
+                    const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '/recruiter';
+                    const icsUrl = `${window.location.origin}${basePath}/api/calendar/interviews.ics`;
                     navigator.clipboard.writeText(icsUrl);
                     alert(`URL Kalender Berhasil Disalin:\n${icsUrl}\n\nTempelkan di Apple Calendar (File > New Calendar Subscription) atau Google Calendar (Other calendars > From URL)`);
                   }}

@@ -9,7 +9,7 @@ function escapeICS(str: string): string {
   return str.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   const events: Array<{
     uid: string;
     summary: string;

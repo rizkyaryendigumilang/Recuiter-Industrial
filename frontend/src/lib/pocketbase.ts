@@ -1,6 +1,16 @@
 import PocketBase from 'pocketbase';
 
-export const pb = new PocketBase(process.env.NEXT_PUBLIC_PB_URL || 'http://127.0.0.1:8090');
+function getPocketBaseUrl(): string {
+  if (process.env.NEXT_PUBLIC_PB_URL) {
+    return process.env.NEXT_PUBLIC_PB_URL;
+  }
+  if (typeof window !== 'undefined') {
+    return '/recruiter-pb';
+  }
+  return process.env.PB_INTERNAL_URL || 'http://127.0.0.1:8093';
+}
+
+export const pb = new PocketBase(getPocketBaseUrl());
 
 export const isAdmin = () => {
   if (pb.authStore.isValid && pb.authStore.record?.role === 'admin') return true;
