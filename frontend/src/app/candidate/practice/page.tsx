@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/language-context';
+import { triggerHaptic } from '@/lib/haptics';
+import { useAntiCheat } from '@/lib/anti-cheat';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -19,7 +21,10 @@ import {
   Award,
   Zap,
   HelpCircle,
-  Smartphone
+  Smartphone,
+  ShieldAlert,
+  ShieldCheck,
+  Compass
 } from 'lucide-react';
 
 interface ColumnResult {
@@ -50,6 +55,17 @@ export default function KraepelinPracticePage() {
   const [inputValue, setInputValue] = useState('');
   const [results, setResults] = useState<ColumnResult[]>([]);
   const [showSwitchBanner, setShowSwitchBanner] = useState(false);
+
+  // Anti-Cheat Engine Integration
+  const {
+    warnings: antiCheatWarnings,
+    showWarningModal,
+    dismissWarningModal,
+    lastViolationReason,
+  } = useAntiCheat({
+    enabled: gameState === 'playing',
+    maxWarnings: 3,
+  });
 
   // Active Column Stats
   const currentAttemptsRef = useRef(0);
@@ -82,6 +98,7 @@ export default function KraepelinPracticePage() {
     setCurrentIndexInCol(0);
     setInputValue('');
     setGameState('playing');
+    triggerHaptic.light();
   };
 
   // Switch to next column
@@ -99,8 +116,47 @@ export default function KraepelinPracticePage() {
     if (currentColumn + 1 >= totalColumns) {
       // Completed all columns
       setGameState('finished');
+      triggerHaptic.success();
+
+      const allResults = [...results, colRes];
+      const totAttempted = allResults.reduce((acc, r) => acc + r.attempted, 0);
+      const totCorrect = allResults.reduce((acc, r) => acc + r.correct, 0);
+      const accPct = totAttempted > 0 ? Math.round((totCorrect / totAttempted) * 100) : 0;
+      const spd = Math.round(totAttempted / ((totalColumns * secondsPerColumn) / 60));
+      const mean = totAttempted / allResults.length;
+      const v = allResults.reduce((acc, r) => acc + Math.pow(r.attempted - mean, 2), 0) / allResults.length;
+      const sd = Math.sqrt(v);
+      const stab = Math.max(10, Math.min(100, Math.round(100 - sd * 8)));
+
+      const curve = allResults.map((r) => r.attempted);
+      const mid = Math.floor(curve.length / 2);
+      const firstHalf = curve.slice(0, mid).reduce((a, b) => a + b, 0);
+      const secondHalf = curve.slice(mid).reduce((a, b) => a + b, 0);
+      const hankerTrend = secondHalf > firstHalf + 1 ? 'Meningkat' : secondHalf < firstHalf - 2 ? 'Menurun (Kelelahan)' : 'Stabil';
+
+      const kraepelinPayload = {
+        testCode: `KRP-${Date.now().toString(36).toUpperCase()}`,
+        testDate: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
+        panker: spd,
+        pankerGrade: spd >= 50 ? 'Sangat Tinggi' : spd >= 38 ? 'Tinggi' : spd >= 25 ? 'Cukup' : 'Kurang',
+        tianker: accPct,
+        tiankerGrade: accPct >= 95 ? 'Sangat Teliti' : accPct >= 85 ? 'Teliti' : accPct >= 70 ? 'Cukup' : 'Kurang Teliti',
+        hankerTrend,
+        stanker: stab,
+        curve,
+        totalAttempted: totAttempted,
+        totalCorrect: totCorrect,
+        totalWrong: totAttempted - totCorrect,
+        mode,
+      };
+
+      try {
+        localStorage.setItem('candidate_latest_kraepelin', JSON.stringify(kraepelinPayload));
+      } catch {}
       return;
     }
+
+    triggerHaptic.alarm();
 
     // Flash switch banner
     setShowSwitchBanner(true);
@@ -119,7 +175,7 @@ export default function KraepelinPracticePage() {
     setColumnNumbers(generateColumnData());
     setCurrentIndexInCol(0);
     setInputValue('');
-  }, [currentColumn, totalColumns, secondsPerColumn]);
+  }, [currentColumn, totalColumns, secondsPerColumn, results, mode]);
 
   // Main countdown loop
   useEffect(() => {
@@ -143,6 +199,8 @@ export default function KraepelinPracticePage() {
   // Submit Answer
   const submitAnswer = (num: number) => {
     if (gameState !== 'playing') return;
+
+    triggerHaptic.light();
 
     // Kraepelin calculates from bottom to top:
     // We add columnNumbers[currentIndexInCol] and columnNumbers[currentIndexInCol + 1]
@@ -195,7 +253,41 @@ export default function KraepelinPracticePage() {
   const stabilityScore = Math.max(10, Math.min(100, Math.round(100 - stdDev * 8)));
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#FAFAFA] py-8 px-4 sm:px-6 lg:px-8 relative">
+      {/* Anti-Cheat Floating Warning Modal */}
+      {showWarningModal && (
+        <div className="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl border border-red-200">
+            <div className="w-12 h-12 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-3">
+              <ShieldAlert className="w-6 h-6" />
+            </div>
+            <h4 className="font-bold text-base text-neutral-900 mb-1">
+              {isEn ? 'Exam Integrity Warning' : 'Peringatan Integritas Ujian'}
+            </h4>
+            <p className="text-xs text-neutral-600 mb-4">
+              {lastViolationReason || (isEn ? 'Browser tab switch or focus loss detected.' : 'Perpindahan tab atau kehilangan fokus browser terdeteksi.')}
+            </p>
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-5 text-left">
+              <div className="flex items-center justify-between text-xs font-semibold text-amber-900 mb-1">
+                <span>{isEn ? 'Warning Count:' : 'Peringatan ke:'}</span>
+                <span className="font-mono text-red-600">{antiCheatWarnings} / 3</span>
+              </div>
+              <p className="text-[11px] text-amber-700">
+                {isEn
+                  ? 'Please remain on this browser window during the assessment.'
+                  : 'Tetap berada di halaman ini selama tes berlangsung untuk menjaga validitas skor.'}
+              </p>
+            </div>
+            <Button
+              onClick={dismissWarningModal}
+              className="w-full rounded-full bg-neutral-900 hover:bg-neutral-800 text-white text-xs h-10 font-semibold"
+            >
+              {isEn ? 'I Understand, Return to Test' : 'Saya Mengerti, Lanjutkan Tes'}
+            </Button>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-3xl mx-auto space-y-6">
 
         {/* Header Breadcrumb */}
@@ -538,9 +630,16 @@ export default function KraepelinPracticePage() {
                     <span>Ulangi Simulasi (Try Again)</span>
                   </Button>
 
-                  <Link href="/jobs" className="flex-1">
+                  <Link href="/candidate/results" className="flex-1">
                     <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold h-11 rounded-xl gap-2 shadow-sm">
-                      <span>Lamar Lowongan Kerja Industri</span>
+                      <Award className="w-4 h-4" />
+                      <span>Lihat Evaluasi Psikogram Lengkap</span>
+                    </Button>
+                  </Link>
+
+                  <Link href="/jobs" className="flex-1">
+                    <Button variant="secondary" className="w-full text-xs font-semibold h-11 rounded-xl gap-2">
+                      <span>Lamar Lowongan</span>
                       <ArrowRight className="w-4 h-4" />
                     </Button>
                   </Link>

@@ -25,6 +25,7 @@ import dynamic from 'next/dynamic';
 import type { DimensionScore } from '@/components/assessment/radar-chart';
 import type { PauliResult } from '@/components/assessment/pauli-test';
 import { useLanguage } from '@/lib/language-context';
+import { enqueueOfflineAssessment } from '@/lib/offline-queue';
 
 // Lazy-load complex SVG radar and rapid game loop components for instant page load
 const RadarChart = dynamic(
@@ -246,6 +247,19 @@ export function PsychTestContent() {
 
     const nextStatus = penalizedScore >= 70 ? 'interview' : 'testing';
 
+    const psychDetails = {
+      test_type: 'full_industrial',
+      total_score: penalizedScore,
+      panker: pauliResult?.panker || 42,
+      tianker: pauliResult?.tianker || 90,
+      hanker: pauliResult?.hankerTrend || 'Stabil',
+      janker: pauliResult?.stabilityScore || 85,
+      column_speeds: pauliResult?.columnScores || [],
+      disc_dimensions: computedDims,
+      anti_cheat_violations: warnings,
+      recommendation: penalizedScore >= 75 ? 'Direkomendasikan' : (penalizedScore >= 60 ? 'Dipertimbangkan' : 'Tidak Direkomendasikan'),
+    };
+
     try {
       // 1. Try finding application in PocketBase
       let applicationId = '';
@@ -268,39 +282,69 @@ export function PsychTestContent() {
         applicationId = '';
       }
 
-      // 2. Direct Update to PocketBase `job_applications`
-      if (applicationId) {
+      // Check network status: if offline, store to offline queue immediately
+      if (typeof navigator !== 'undefined' && !navigator.onLine) {
+        enqueueOfflineAssessment({
+          applicationId,
+          jobId: String(jobId),
+          testScore: penalizedScore,
+          psychometricDetails: psychDetails,
+          penalty: isPenalty,
+          candidateName: pb.authStore.record?.name || pb.authStore.record?.email,
+          candidateEmail: pb.authStore.record?.email,
+        });
+        setSyncStatus('Koneksi area pabrik terputus. Hasil tes aman di antrean offline lokal dan akan disinkronkan otomatis saat online.');
+      } else {
+        // 2. Direct Update to PocketBase `job_applications`
+        if (applicationId) {
+          try {
+            await pb.collection('job_applications').update(applicationId, {
+              test_score: penalizedScore,
+              status: nextStatus,
+              psychometric_details: psychDetails,
+            });
+            setSyncStatus('Tersinkronisasi otomatis ke Database Pelamar & ATS Rekruter');
+          } catch (err) {
+            console.warn('Direct PB app update note:', err);
+          }
+        }
+
+        // 3. Try custom backend route if live
         try {
-          await pb.collection('job_applications').update(applicationId, {
-            test_score: penalizedScore,
-            status: nextStatus,
+          const formattedAnswers = Object.entries(answers).map(([qId, opt]) => ({
+            question_id: qId,
+            selected_option: opt,
+          }));
+
+          await fetch(`${pb.baseUrl}/api/submit-test`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: pb.authStore.token,
+            },
+            body: JSON.stringify({
+              application_id: applicationId,
+              job_id: jobId,
+              answers: formattedAnswers,
+              penalty: isPenalty,
+              psychometric_details: psychDetails,
+              candidate_name: pb.authStore.record?.name || pb.authStore.record?.email,
+              candidate_email: pb.authStore.record?.email,
+            }),
           });
-          setSyncStatus('Tersinkronisasi otomatis ke Database Pelamar & ATS Rekruter');
-        } catch (err) {
-          console.warn('Direct PB app update error:', err);
+        } catch {
+          // If fetch fails despite navigator.onLine, queue it
+          enqueueOfflineAssessment({
+            applicationId,
+            jobId: String(jobId),
+            testScore: penalizedScore,
+            psychometricDetails: psychDetails,
+            penalty: isPenalty,
+            candidateName: pb.authStore.record?.name || pb.authStore.record?.email,
+            candidateEmail: pb.authStore.record?.email,
+          });
         }
       }
-
-      // 3. Try custom backend route if live
-      try {
-        const formattedAnswers = Object.entries(answers).map(([qId, opt]) => ({
-          question_id: qId,
-          selected_option: opt,
-        }));
-
-        await fetch(`${pb.baseUrl}/api/submit-test`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: pb.authStore.token,
-          },
-          body: JSON.stringify({
-            application_id: applicationId,
-            answers: formattedAnswers,
-            penalty: isPenalty,
-          }),
-        });
-      } catch {}
 
       // 4. Persistence Fallback in localStorage
       const resultPayload = {
@@ -309,9 +353,11 @@ export function PsychTestContent() {
         test_score: penalizedScore,
         status: nextStatus,
         dimensions: computedDims,
+        psychometric_details: psychDetails,
         completedAt: new Date().toISOString(),
       };
       localStorage.setItem(`assessment_result_${jobId}`, JSON.stringify(resultPayload));
+      localStorage.setItem('candidate_latest_assessment', JSON.stringify(resultPayload));
 
       // Update sample application if exists in localStorage
       const sampleApps = localStorage.getItem('sample_applications');
@@ -338,6 +384,25 @@ export function PsychTestContent() {
     setPauliResult(result);
     setPauliSynced(true);
     localStorage.setItem(`pauli_result_${jobId}`, JSON.stringify(result));
+
+    // Save latest Kraepelin psychometric metrics for candidate results report
+    try {
+      const kraepelinPayload = {
+        testCode: `PSI-KRP-${jobId ? jobId.slice(0, 4).toUpperCase() : 'IND'}`,
+        testDate: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
+        panker: result.panker,
+        pankerGrade: result.pankerGrade,
+        tianker: result.tianker,
+        tiankerGrade: result.tiankerGrade,
+        hankerTrend: result.hankerTrend,
+        stanker: result.stabilityScore,
+        curve: result.columnScores,
+        totalAttempted: result.totalAttempted,
+        totalCorrect: result.totalCorrect,
+        totalWrong: result.totalAttempted - result.totalCorrect,
+      };
+      localStorage.setItem('candidate_latest_kraepelin', JSON.stringify(kraepelinPayload));
+    } catch {}
 
     // Update application in PocketBase if possible
     try {

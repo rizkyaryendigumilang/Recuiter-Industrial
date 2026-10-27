@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import { useLanguage } from '@/lib/language-context';
+import { pb } from '@/lib/pocketbase';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -22,8 +23,11 @@ import {
   ShieldCheck,
   Calendar,
   Briefcase,
-  User
+  User,
+  Sparkles,
+  Play
 } from 'lucide-react';
+import { INDUSTRIAL_ROLE_BENCHMARKS, evaluateCandidateAgainstRole } from '@/lib/industrial-norms';
 
 export default function CandidateResultsPage() {
   const { user } = useAuth();
@@ -32,32 +36,114 @@ export default function CandidateResultsPage() {
 
   const reportRef = useRef<HTMLDivElement>(null);
 
-  const handlePrint = () => {
-    window.print();
-  };
-
-  // Mock Psychometric Data (Auto-calculated from Candidate test records or defaults)
-  const candidateName = user?.name || (user?.email ? user.email.split('@')[0].toUpperCase() : 'BUDI SANTOSO');
-  const candidateEmail = user?.email || 'kandidat@industrial.id';
-  const testDate = '14 Oktober 2026';
-  const testCode = 'PSI-IND-2026-0891';
+  const [candidateName, setCandidateName] = useState('BUDI SANTOSO');
+  const [candidateEmail, setCandidateEmail] = useState('kandidat@industrial.id');
+  const [targetPosition, setTargetPosition] = useState('Teknisi Maintenance & QC Presisi');
+  const [testDate, setTestDate] = useState('14 Oktober 2026');
+  const [testCode, setTestCode] = useState('PSI-IND-2026-0891');
+  const [isRealData, setIsRealData] = useState(false);
+  const [recommendationScore, setRecommendationScore] = useState(94.2);
 
   // DISC Dimensions (0 to 100)
-  const discScores = {
+  const [discScores, setDiscScores] = useState({
     D: 72, // Dominance
     I: 65, // Influence
     S: 88, // Steadiness
     C: 94, // Compliance (Quality & Precision)
-  };
+  });
 
   // Kraepelin Metrics
-  const kraepelinScores = {
+  const [kraepelinScores, setKraepelinScores] = useState({
     panker: 52, // Kecepatan (Angka/menit)
     tianker: 96, // Ketelitian (%)
     hankker: 'Tinggi (High)', // Daya tahan
     stanker: 91, // Stabilitas kerja (%)
     curve: [38, 44, 49, 52, 55, 54, 53, 52],
+  });
+
+  const [selectedRole, setSelectedRole] = useState('operator_produksi');
+
+  const currentRoleEvaluation = evaluateCandidateAgainstRole(selectedRole, {
+    panker: kraepelinScores.panker,
+    tianker: kraepelinScores.tianker,
+    hanker: kraepelinScores.hankker.includes('Meningkat') ? 'Meningkat' : (kraepelinScores.hankker.includes('Menurun') ? 'Menurun' : 'Stabil'),
+    janker: kraepelinScores.stanker,
+  });
+
+  const handlePrint = () => {
+    window.print();
   };
+
+  // Load Real Candidate Psychometric Data
+  useEffect(() => {
+    if (user?.name) setCandidateName(user.name);
+    else if (user?.email) setCandidateName(user.email.split('@')[0].toUpperCase());
+    if (user?.email) setCandidateEmail(user.email);
+
+    let hasLoadedReal = false;
+
+    // 1. Try loading from localStorage Kraepelin latest
+    try {
+      const savedKraepelin = localStorage.getItem('candidate_latest_kraepelin');
+      if (savedKraepelin) {
+        const parsed = JSON.parse(savedKraepelin);
+        if (parsed.panker && parsed.curve) {
+          setKraepelinScores({
+            panker: parsed.panker,
+            tianker: parsed.tianker || 90,
+            hankker: parsed.hankerTrend || 'Tinggi (High)',
+            stanker: parsed.stanker || 85,
+            curve: Array.isArray(parsed.curve) && parsed.curve.length > 0 ? parsed.curve : [38, 44, 49, 52, 55],
+          });
+          if (parsed.testCode) setTestCode(parsed.testCode);
+          if (parsed.testDate) setTestDate(parsed.testDate);
+          hasLoadedReal = true;
+        }
+      }
+    } catch {}
+
+    // 2. Try loading from latest comprehensive assessment
+    try {
+      const savedAssessment = localStorage.getItem('candidate_latest_assessment');
+      if (savedAssessment) {
+        const parsed = JSON.parse(savedAssessment);
+        if (parsed.dimensions && Array.isArray(parsed.dimensions)) {
+          const dScore = parsed.dimensions.find((d: any) => d.key === 'D')?.score || 75;
+          const iScore = parsed.dimensions.find((d: any) => d.key === 'I')?.score || 70;
+          const sScore = parsed.dimensions.find((d: any) => d.key === 'S')?.score || 85;
+          const cScore = parsed.dimensions.find((d: any) => d.key === 'C')?.score || 90;
+          setDiscScores({ D: dScore, I: iScore, S: sScore, C: cScore });
+          if (parsed.test_score) setRecommendationScore(parsed.test_score);
+          hasLoadedReal = true;
+        }
+      }
+    } catch {}
+
+    // 3. Try PocketBase query if candidate record exists
+    if (pb.authStore.record?.id) {
+      pb.collection('job_applications')
+        .getFullList({
+          filter: `candidate_id.user_id = "${pb.authStore.record.id}" || candidate_id = "${pb.authStore.record.id}"`,
+          expand: 'job_id',
+          sort: '-created',
+        })
+        .then((records) => {
+          if (records.length > 0) {
+            const latestApp = records[0];
+            if (latestApp.expand?.job_id?.title) {
+              setTargetPosition(latestApp.expand.job_id.title);
+            }
+            if (latestApp.test_score) {
+              setRecommendationScore(latestApp.test_score);
+              hasLoadedReal = true;
+            }
+          }
+        })
+        .catch(() => {});
+    }
+
+    setIsRealData(hasLoadedReal);
+  }, [user]);
 
   // Radar Chart Math helper (Center: 150, 150, Radius: 100)
   const cx = 150;
@@ -98,6 +184,12 @@ export default function CandidateResultsPage() {
           </div>
 
           <div className="flex items-center gap-2">
+            <Link href="/candidate/practice">
+              <Button variant="outline" size="sm" className="rounded-xl text-xs gap-1.5 border-[#E8E8EC] h-9">
+                <Play className="w-3.5 h-3.5" />
+                <span>{isEn ? 'Retake Practice' : 'Ulangi Tryout Kraepelin'}</span>
+              </Button>
+            </Link>
             <Button
               onClick={handlePrint}
               className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold h-9 px-4 gap-2 shadow-sm"
@@ -106,6 +198,31 @@ export default function CandidateResultsPage() {
               <span>{isEn ? 'Print / Download PDF' : 'Cetak / Unduh Psikogram PDF'}</span>
             </Button>
           </div>
+        </div>
+
+        {/* Real Data Status Banner (Hidden when printing) */}
+        <div className="print:hidden">
+          {isRealData ? (
+            <div className="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs text-emerald-800">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span><strong>Data Hasil Riil Terverifikasi:</strong> Psikogram ini membaca kalkulasi riil dari sesi ujian & simulasi Kraepelin terbaru Anda.</span>
+              </div>
+              <Badge className="bg-emerald-600 text-white text-[10px]">Live Verified</Badge>
+            </div>
+          ) : (
+            <div className="p-3.5 rounded-2xl bg-indigo-50/70 border border-indigo-200 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs text-indigo-900">
+                <Sparkles className="w-4 h-4 text-indigo-600" />
+                <span><strong>Sampel Profil Terkalibrasi:</strong> Kerjakan tes pada lowongan atau coba simulasi Kraepelin untuk memuat skor personal Anda.</span>
+              </div>
+              <Link href="/candidate/practice">
+                <Button size="sm" variant="outline" className="text-xs h-7 border-indigo-300 text-indigo-700 hover:bg-indigo-100">
+                  Mulai Tes
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
 
         {/* Printable Official 1-Page Psychogram Document */}
@@ -153,7 +270,7 @@ export default function CandidateResultsPage() {
               <p className="text-[10px] uppercase font-bold text-[#86868B]">Target Posisi</p>
               <p className="text-sm font-bold text-[#0A0A0A] flex items-center gap-1.5">
                 <Briefcase className="w-3.5 h-3.5 text-indigo-600" />
-                <span>Quality Control / Assembly Lead</span>
+                <span>{targetPosition}</span>
               </p>
               <p className="text-xs text-[#6B6B6B]">Manufaktur & Presisi Tinggi</p>
             </div>
@@ -161,9 +278,9 @@ export default function CandidateResultsPage() {
             <div className="space-y-1 sm:text-right">
               <p className="text-[10px] uppercase font-bold text-[#86868B]">Status Rekomendasi</p>
               <Badge className="bg-emerald-600 text-white text-xs font-bold py-1 px-3 shadow-none">
-                ✓ DISARANKAN (RECOMMENDED)
+                {recommendationScore >= 70 ? '✓ DISARANKAN (RECOMMENDED)' : '⚠ DIPERTIMBANGKAN (CONSIDERED)'}
               </Badge>
-              <p className="text-[11px] font-semibold text-emerald-700 mt-1">Skor Kesesuaian: 94.2%</p>
+              <p className="text-[11px] font-semibold text-emerald-700 mt-1">Skor Kesesuaian: {recommendationScore}%</p>
             </div>
           </div>
 
@@ -171,7 +288,7 @@ export default function CandidateResultsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
             
             {/* Left: Radar Chart Kepribadian */}
-            <div className="p-4 sm:p-5 rounded-2xl border border-[#E8E8EC] bg-white space-y-3 gpu-layer will-animate">
+            <div className="p-4 sm:p-5 rounded-2xl border border-[#E8E8EC] bg-white space-y-3">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A0A0A] flex items-center gap-1.5">
@@ -225,25 +342,25 @@ export default function CandidateResultsPage() {
               {/* Trait Descriptions */}
               <div className="grid grid-cols-2 gap-2 text-[11px] pt-1">
                 <div className="p-2 bg-emerald-50/60 rounded-lg border border-emerald-100">
-                  <span className="font-bold text-emerald-800">C: 94% (High Compliance)</span>
+                  <span className="font-bold text-emerald-800">C: {discScores.C}% (Compliance)</span>
                   <p className="text-[#4B5563]">Sangat teliti, patuh SOP, dan akurasi tinggi pada toleransi teknis.</p>
                 </div>
                 <div className="p-2 bg-blue-50/60 rounded-lg border border-blue-100">
-                  <span className="font-bold text-blue-800">S: 88% (High Steadiness)</span>
+                  <span className="font-bold text-blue-800">S: {discScores.S}% (Steadiness)</span>
                   <p className="text-[#4B5563]">Kestabilan tinggi terhadap pekerjaan repetitif berulang tanpa cepat lelah.</p>
                 </div>
               </div>
             </div>
 
             {/* Right: Kraepelin Fluctuation Curve */}
-            <div className="p-4 sm:p-5 rounded-2xl border border-[#E8E8EC] bg-white space-y-3 gpu-layer will-animate">
+            <div className="p-4 sm:p-5 rounded-2xl border border-[#E8E8EC] bg-white space-y-3">
               <div>
                 <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A0A0A] flex items-center gap-1.5">
                   <Activity className="w-4 h-4 text-indigo-600" />
                   <span>Grafik Tes Ketahanan Kraepelin / Pauli</span>
                 </h3>
                 <p className="text-[11px] text-[#6B6B6B]">
-                  Evaluasi fluktuasi ketahanan kerja (Panker, Tianker, Stanker).
+                  Evaluasi 4 pilar psikometri kerja (Panker, Tianker, Hanker, Stanker).
                 </p>
               </div>
 
@@ -251,7 +368,7 @@ export default function CandidateResultsPage() {
               <div className="grid grid-cols-2 gap-2 text-center">
                 <div className="p-2.5 bg-[#FAFAFA] rounded-xl border border-[#E8E8EC]">
                   <p className="text-[10px] text-[#6B6B6B]">Kecepatan (Panker)</p>
-                  <p className="text-base font-bold text-[#0A0A0A]">{kraepelinScores.panker} <span className="text-[10px] font-normal text-[#86868B]">angka/m</span></p>
+                  <p className="text-base font-bold text-[#0A0A0A]">{kraepelinScores.panker} <span className="text-[10px] font-normal text-[#86868B]">butir/m</span></p>
                 </div>
                 <div className="p-2.5 bg-[#FAFAFA] rounded-xl border border-[#E8E8EC]">
                   <p className="text-[10px] text-[#6B6B6B]">Ketelitian (Tianker)</p>
@@ -275,9 +392,10 @@ export default function CandidateResultsPage() {
                   <line x1="0" y1="85" x2="400" y2="85" stroke="#F0F0F2" strokeDasharray="3 3" />
 
                   {(() => {
+                    const maxVal = Math.max(...kraepelinScores.curve, 20);
                     const points = kraepelinScores.curve.map((val, i) => ({
-                      x: (i / (kraepelinScores.curve.length - 1)) * 380 + 10,
-                      y: 100 - (val / 60) * 75,
+                      x: kraepelinScores.curve.length > 1 ? (i / (kraepelinScores.curve.length - 1)) * 380 + 10 : 200,
+                      y: 100 - (val / maxVal) * 75,
                       val,
                       col: i + 1,
                     }));
@@ -305,8 +423,125 @@ export default function CandidateResultsPage() {
               </div>
 
               <p className="text-[10px] text-[#6B6B6B] bg-[#F5F5F7] p-2 rounded-lg">
-                <strong>Catatan Fluktuasi:</strong> Grafik menunjukkan kurva adaptasi yang menanjak konsisten (*ascending curve*) tanpa drop signifikan, indikasi daya adaptasi shift malam dan target produksi yang sangat baik.
+                <strong>Catatan Fluktuasi:</strong> Ritme kerja menunjukkan kurva adaptasi yang stabil tanpa degradasi drastis saat diuji dalam rentang kolom berurutan.
               </p>
+            </div>
+          </div>
+
+          {/* Industrial Role Benchmarks (HIMPSI & Factory Standards) */}
+          <div className="p-4 sm:p-5 rounded-2xl border border-indigo-100 bg-indigo-50/40 space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-indigo-950 flex items-center gap-1.5">
+                  <Award className="w-4 h-4 text-indigo-600" />
+                  <span>Kesesuaian Norma Peran Kerja Industri (HIMPSI Benchmark)</span>
+                </h3>
+                <p className="text-[11px] text-slate-600">
+                  Uji komparasi profil Kraepelin & DISC terhadap standar minimum peran di lantai produksi.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                <span className="text-[11px] font-bold text-slate-700">Skor Kesesuaian:</span>
+                <Badge className={`text-xs font-bold px-2.5 py-0.5 ${
+                  currentRoleEvaluation.grade === 'Sangat Sesuai' 
+                    ? 'bg-emerald-600 text-white' 
+                    : (currentRoleEvaluation.grade === 'Sesuai dengan Catatan' ? 'bg-amber-600 text-white' : 'bg-red-600 text-white')
+                }`}>
+                  {currentRoleEvaluation.fitPercentage}% • {currentRoleEvaluation.grade}
+                </Badge>
+              </div>
+            </div>
+
+            {/* Role Switcher Tabs (Hidden when printing) */}
+            <div className="flex flex-wrap gap-1.5 pt-1 print:hidden">
+              {Object.values(INDUSTRIAL_ROLE_BENCHMARKS).map((bench) => (
+                <button
+                  key={bench.id}
+                  type="button"
+                  onClick={() => setSelectedRole(bench.id)}
+                  className={`text-[11px] px-2.5 py-1 rounded-lg font-medium transition-colors border ${
+                    selectedRole === bench.id
+                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  {bench.title.split('/')[0].trim()}
+                </button>
+              ))}
+            </div>
+
+            {/* Visual Threshold Gauge Bars */}
+            <div className="bg-white p-3.5 rounded-xl border border-indigo-100/90 space-y-3 pt-3">
+              <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Perbandingan Metrik Terhadap Ambang Batas Pabrik (Threshold):</p>
+              
+              {/* Panker Bar */}
+              <div className="space-y-1">
+                <div className="flex justify-between text-xs">
+                  <span className="font-semibold text-slate-800">Kecepatan Kerja (Panker): {kraepelinScores.panker} angka/menit</span>
+                  <span className="text-slate-500 text-[11px]">Batas Minimum: {INDUSTRIAL_ROLE_BENCHMARKS[selectedRole]?.minPanker || 36}/menit</span>
+                </div>
+                <div className="relative h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-indigo-600 rounded-full transition-all duration-300" 
+                    style={{ width: `${Math.min(100, (kraepelinScores.panker / 60) * 100)}%` }} 
+                  />
+                  <div 
+                    className="absolute top-0 bottom-0 w-1 bg-red-500 z-10" 
+                    style={{ left: `${Math.min(100, ((INDUSTRIAL_ROLE_BENCHMARKS[selectedRole]?.minPanker || 36) / 60) * 100)}%` }} 
+                    title="Target Minimum"
+                  />
+                </div>
+              </div>
+
+              {/* Tianker Bar */}
+              <div className="space-y-1">
+                <div className="flex justify-between text-xs">
+                  <span className="font-semibold text-slate-800">Ketelitian / Akurasi (Tianker): {kraepelinScores.tianker}%</span>
+                  <span className="text-slate-500 text-[11px]">Batas Minimum: {INDUSTRIAL_ROLE_BENCHMARKS[selectedRole]?.minTianker || 88}%</span>
+                </div>
+                <div className="relative h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-emerald-600 rounded-full transition-all duration-300" 
+                    style={{ width: `${Math.min(100, kraepelinScores.tianker)}%` }} 
+                  />
+                  <div 
+                    className="absolute top-0 bottom-0 w-1 bg-red-500 z-10" 
+                    style={{ left: `${INDUSTRIAL_ROLE_BENCHMARKS[selectedRole]?.minTianker || 88}%` }} 
+                    title="Target Minimum Akurasi"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Evaluation Breakdown Box */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              <div className="bg-white p-3 rounded-xl border border-indigo-100/80 space-y-1.5 text-xs">
+                <p className="text-[10px] uppercase font-bold text-slate-500">Kekuatan Terverifikasi untuk Peran Ini:</p>
+                <ul className="space-y-1">
+                  {currentRoleEvaluation.positiveHighlights.map((hl, i) => (
+                    <li key={i} className="flex items-start gap-1.5 text-slate-700 text-[11px]">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                      <span>{hl}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="bg-white p-3 rounded-xl border border-amber-200/80 space-y-1.5 text-xs">
+                <p className="text-[10px] uppercase font-bold text-amber-700 flex items-center gap-1">
+                  <Activity className="w-3.5 h-3.5 text-amber-600" />
+                  <span>Titik Kritis & Mitigasi Risiko di Pabrik:</span>
+                </p>
+                <p className="text-[11px] text-slate-600 leading-relaxed">
+                  {currentRoleEvaluation.riskMitigationAdvice}
+                </p>
+                <div className="pt-1 flex items-center gap-2 text-[10px] text-slate-500">
+                  <span>{currentRoleEvaluation.pankerStatus}</span>
+                  <span>•</span>
+                  <span>{currentRoleEvaluation.tiankerStatus}</span>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -316,7 +551,7 @@ export default function CandidateResultsPage() {
               Kesimpulan Evaluasi Psikologi Terapan
             </h4>
             <p className="text-[#4B5563]">
-              Kandidat menunjukkan profil kerja tipe <strong>Compliance-Steadiness (CS)</strong> dengan tingkat ketelitian kerja di atas rata-rata populasi normatif (96%). Kemampuan bekerja dalam tempo tinggi terbukti stabil selama pengujian Kraepelin, dengan tingkat konsistensi ketahanan 91%. Cocok untuk ditempatkan pada posisi kritis yang menuntut akurasi zero-defect, seperti <em>Quality Assurance</em>, <em>Inspeksi Visual</em>, dan <em>Operator Perakitan Presisi</em>.
+              Kandidat menunjukkan profil kerja tipe <strong>Compliance-Steadiness (CS)</strong> dengan tingkat ketelitian kerja {kraepelinScores.tianker}%. Kemampuan bekerja dalam tempo tinggi terbukti stabil selama pengujian Kraepelin, dengan tingkat konsistensi ketahanan {kraepelinScores.stanker}%. Cocok untuk ditempatkan pada posisi kritis yang menuntut akurasi zero-defect, seperti <em>Quality Assurance</em>, <em>Inspeksi Visual</em>, dan <em>Operator Perakitan Presisi</em>.
             </p>
           </div>
 

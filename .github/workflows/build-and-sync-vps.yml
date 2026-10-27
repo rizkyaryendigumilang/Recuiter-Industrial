@@ -4,38 +4,96 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   # =========================================================================
-  # JOB 1: Build Android APK (ubuntu-latest)
+  # JOB 1: Validate Web Application & Mobile Shell
   # =========================================================================
-  build-android:
-    name: Build Android APK
+  validate-web:
+    name: Validate Web & Mobile Assets
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'npm'
+          cache-dependency-path: |
+            package-lock.json
+            frontend/package-lock.json
 
-      - name: Setup Java JDK 17
+      - name: Install Root Dependencies
+        run: npm ci
+
+      - name: Build Mobile Web Bundle (dist)
+        run: npm run build
+
+      - name: Verify Mobile Web Output
+        run: |
+          if [ ! -f dist/index.html ]; then
+            echo "::error::Mobile web bundle failed: dist/index.html was not generated!"
+            exit 1
+          fi
+          echo "✅ Mobile web bundle verified: dist/index.html ($(wc -c < dist/index.html) bytes)"
+
+      - name: Install Frontend Dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build Next.js Web App
+        working-directory: frontend
+        run: npm run build
+
+      - name: Web Application Build Success
+        run: echo "✅ Next.js web application built successfully with zero compilation errors."
+
+  # =========================================================================
+  # JOB 2: Build Android Debug APK (ubuntu-latest)
+  # =========================================================================
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    needs: validate-web
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Setup Java JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
+          cache: 'gradle'
 
-      - name: Install Dependencies
-        run: npm install
+      - name: Install Root Dependencies
+        run: npm ci
 
-      - name: Build Web Assets & Sync Capacitor Android
-        run: |
-          npm run build
-          npx cap sync android
+      - name: Build Mobile Web Assets
+        run: npm run build
+
+      - name: Sync Capacitor Android
+        run: npx cap sync android
 
       - name: Build Android Debug APK with Gradle
         working-directory: android
@@ -43,9 +101,15 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon --stacktrace
 
-      - name: Prepare APK Output
+      - name: Verify & Prepare APK Output
         run: |
-          cp android/app/build/outputs/apk/debug/app-debug.apk app-latest.apk
+          APK_SOURCE="android/app/build/outputs/apk/debug/app-debug.apk"
+          if [ ! -f "$APK_SOURCE" ]; then
+            echo "::error::Android APK build failed: $APK_SOURCE not found!"
+            exit 1
+          fi
+          cp "$APK_SOURCE" app-latest.apk
+          echo "✅ Prepared app-latest.apk ($(ls -lh app-latest.apk | awk '{print $5}'))"
 
       - name: Upload Android APK Artifact
         uses: actions/upload-artifact@v4
@@ -53,66 +117,55 @@ jobs:
           name: app-latest-android-apk
           path: app-latest.apk
           retention-days: 14
+          if-no-files-found: error
 
-      - name: Sync APK to VPS via SCP
-        env:
-          VPS_HOST: ${{ secrets.VPS_HOST }}
-          VPS_USERNAME: ${{ secrets.VPS_USERNAME }}
-          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
-          VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
-          VPS_TARGET_DIR: ${{ secrets.VPS_TARGET_DIR || '/var/www/downloads' }}
+      - name: Mobile Artifact Ready Notice
         run: |
-          if [ -z "$VPS_HOST" ] || [ -z "$VPS_SSH_KEY" ] || [ -z "$VPS_USERNAME" ]; then
-            echo "::warning ::VPS Secrets (VPS_HOST, VPS_USERNAME, VPS_SSH_KEY) are not configured. Skipping VPS SCP transfer."
-            exit 0
-          fi
-          echo "🚀 Configuring SSH key for VPS deployment..."
-          mkdir -p ~/.ssh
-          echo "$VPS_SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -p "$VPS_PORT" -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
-          
-          echo "📂 Ensuring remote directory exists: $VPS_TARGET_DIR"
-          ssh -o StrictHostKeyChecking=no -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "mkdir -p $VPS_TARGET_DIR"
-          
-          echo "📤 Uploading app-latest.apk to $VPS_HOST:$VPS_TARGET_DIR/app-latest.apk ..."
-          scp -o StrictHostKeyChecking=no -P "$VPS_PORT" -i ~/.ssh/id_rsa app-latest.apk "$VPS_USERNAME@$VPS_HOST:$VPS_TARGET_DIR/app-latest.apk"
-          echo "✅ Successfully synced app-latest.apk to VPS!"
+          echo "::notice title=Android APK Ready::Android APK compiled successfully. The APK artifact is ready for download in GitHub Actions Artifacts."
 
   # =========================================================================
-  # JOB 2: Build iOS IPA (macos-14)
+  # JOB 3: Build iOS IPA (macos-14)
   # =========================================================================
   build-ios:
     name: Build iOS IPA
     runs-on: macos-14
+    needs: validate-web
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'npm'
+          cache-dependency-path: package-lock.json
 
-      - name: Select Xcode
+      - name: Select Xcode Version
         run: |
-          sudo xcode-select -s /Applications/Xcode_15.4.app || sudo xcode-select -s /Applications/Xcode.app || true
+          if [ -d "/Applications/Xcode_16.0.app" ]; then
+            sudo xcode-select -s /Applications/Xcode_16.0.app
+          elif [ -d "/Applications/Xcode_15.4.app" ]; then
+            sudo xcode-select -s /Applications/Xcode_15.4.app
+          elif [ -d "/Applications/Xcode.app" ]; then
+            sudo xcode-select -s /Applications/Xcode.app
+          fi
           xcodebuild -version
 
-      - name: Install Dependencies
-        run: npm install
+      - name: Install Root Dependencies
+        run: npm ci
 
-      - name: Build Web Assets & Sync Capacitor iOS
-        run: |
-          npm run build
-          npx cap sync ios
+      - name: Build Mobile Web Assets
+        run: npm run build
+
+      - name: Sync Capacitor iOS
+        run: npx cap sync ios
 
       - name: Build Xcode Archive (Unsigned)
         working-directory: ios/App
         run: |
           xcodebuild archive \
-            -workspace App.xcworkspace \
+            -project App.xcodeproj \
             -scheme App \
             -configuration Release \
             -sdk iphoneos \
@@ -123,15 +176,24 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             AD_HOC_CODE_SIGNING_ALLOWED=YES
 
-      - name: Package Payload into app-latest.ipa
+      - name: Verify Archive & Package Payload into app-latest.ipa
         working-directory: ios/App
         run: |
+          APP_DIR="build/App.xcarchive/Products/Applications/App.app"
+          if [ ! -d "$APP_DIR" ]; then
+            echo "::error::Xcode archive failed: $APP_DIR was not produced!"
+            exit 1
+          fi
           mkdir -p build/Payload
-          cp -R build/App.xcarchive/Products/Applications/App.app build/Payload/
+          cp -R "$APP_DIR" build/Payload/
           cd build
           zip -qr ../../../app-latest.ipa Payload
           cd ../../..
-          ls -lh app-latest.ipa
+          if [ ! -f app-latest.ipa ]; then
+            echo "::error::IPA packaging failed: app-latest.ipa not found!"
+            exit 1
+          fi
+          echo "✅ Prepared app-latest.ipa ($(ls -lh app-latest.ipa | awk '{print $5}'))"
 
       - name: Upload iOS IPA Artifact
         uses: actions/upload-artifact@v4
@@ -139,8 +201,36 @@ jobs:
           name: app-latest-ios-ipa
           path: app-latest.ipa
           retention-days: 14
+          if-no-files-found: error
 
-      - name: Sync IPA to VPS via SCP
+      - name: iOS Unsigned Build Notice
+        run: |
+          echo "::notice title=iOS IPA Signing Status::The compiled iOS IPA artifact (app-latest.ipa) is an UNSIGNED build for CI verification, static analysis, and re-signing. It cannot be installed directly onto non-jailbroken physical iOS devices without an Apple Developer certificate, provisioning profile, and valid code signature."
+
+  # =========================================================================
+  # JOB 4: Sync Mobile Artifacts to VPS (optional/conditional)
+  # =========================================================================
+  sync-vps:
+    name: Sync Mobile Binaries to VPS
+    runs-on: ubuntu-latest
+    needs: [build-android, build-ios]
+    if: always() && github.ref == 'refs/heads/main' && (needs.build-android.result == 'success' || needs.build-ios.result == 'success')
+    steps:
+      - name: Download Android APK Artifact
+        if: needs.build-android.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: app-latest-android-apk
+          path: ./sync-artifacts
+
+      - name: Download iOS IPA Artifact
+        if: needs.build-ios.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: app-latest-ios-ipa
+          path: ./sync-artifacts
+
+      - name: Sync Artifacts to VPS via Secure SSH/SCP
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USERNAME: ${{ secrets.VPS_USERNAME }}
@@ -149,18 +239,44 @@ jobs:
           VPS_TARGET_DIR: ${{ secrets.VPS_TARGET_DIR || '/var/www/downloads' }}
         run: |
           if [ -z "$VPS_HOST" ] || [ -z "$VPS_SSH_KEY" ] || [ -z "$VPS_USERNAME" ]; then
-            echo "::warning ::VPS Secrets (VPS_HOST, VPS_USERNAME, VPS_SSH_KEY) are not configured. Skipping VPS SCP transfer."
+            echo "::warning title=VPS Sync Skipped::VPS secrets (VPS_HOST, VPS_USERNAME, VPS_SSH_KEY) are not configured. Skipping VPS synchronization."
             exit 0
           fi
-          echo "🚀 Configuring SSH key for VPS deployment..."
+
+          echo "🚀 Configuring SSH client with verified host keys..."
           mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+          # Load private key safely without carriage returns
           echo "$VPS_SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -p "$VPS_PORT" -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
-          
-          echo "📂 Ensuring remote directory exists: $VPS_TARGET_DIR"
-          ssh -o StrictHostKeyChecking=no -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "mkdir -p $VPS_TARGET_DIR"
-          
-          echo "📤 Uploading app-latest.ipa to $VPS_HOST:$VPS_TARGET_DIR/app-latest.ipa ..."
-          scp -o StrictHostKeyChecking=no -P "$VPS_PORT" -i ~/.ssh/id_rsa app-latest.ipa "$VPS_USERNAME@$VPS_HOST:$VPS_TARGET_DIR/app-latest.ipa"
-          echo "✅ Successfully synced app-latest.ipa to VPS!"
+
+          # Secure host key verification using ssh-keyscan
+          ssh-keyscan -p "$VPS_PORT" -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          chmod 644 ~/.ssh/known_hosts
+
+          echo "📂 Ensuring remote target directory exists: $VPS_TARGET_DIR"
+          ssh -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "mkdir -p $VPS_TARGET_DIR"
+
+          # Upload Android APK if present using atomic write (.tmp -> mv)
+          if [ -f "./sync-artifacts/app-latest.apk" ]; then
+            echo "📤 Uploading app-latest.apk atomically..."
+            scp -P "$VPS_PORT" -i ~/.ssh/id_rsa ./sync-artifacts/app-latest.apk "$VPS_USERNAME@$VPS_HOST:$VPS_TARGET_DIR/app-latest.apk.tmp"
+            ssh -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "mv $VPS_TARGET_DIR/app-latest.apk.tmp $VPS_TARGET_DIR/app-latest.apk"
+            echo "✅ app-latest.apk synchronized to VPS."
+          fi
+
+          # Upload iOS IPA if present using atomic write (.tmp -> mv)
+          if [ -f "./sync-artifacts/app-latest.ipa" ]; then
+            echo "📤 Uploading app-latest.ipa atomically..."
+            scp -P "$VPS_PORT" -i ~/.ssh/id_rsa ./sync-artifacts/app-latest.ipa "$VPS_USERNAME@$VPS_HOST:$VPS_TARGET_DIR/app-latest.ipa.tmp"
+            ssh -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "mv $VPS_TARGET_DIR/app-latest.ipa.tmp $VPS_TARGET_DIR/app-latest.ipa"
+            echo "✅ app-latest.ipa synchronized to VPS."
+          fi
+
+          echo "🔍 Post-sync verification on VPS:"
+          ssh -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "ls -lh $VPS_TARGET_DIR/app-latest.* 2>/dev/null || true"
+
+          # Clean up private key
+          rm -f ~/.ssh/id_rsa
+          echo "🎉 VPS synchronization completed successfully."

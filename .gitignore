@@ -41,3 +41,7 @@ id_rsa*
 # OS Files
 .DS_Store
 Thumbs.db
+
+# Database & Backups
+backend/pb_data/
+backend/backups/

@@ -12,8 +12,9 @@ import { LanguageSwitcher } from '@/components/language-switcher';
 import { ShieldCheck, ArrowRight, ChevronLeft, KeyRound } from 'lucide-react';
 
 export default function AdminLoginPage() {
-  const [email, setEmail] = useState('admin@hrtech.id');
-  const [password, setPassword] = useState('Admin@hrtech123');
+  const isProduction = process.env.NODE_ENV === 'production';
+  const [email, setEmail] = useState(isProduction ? '' : 'admin@hrtech.id');
+  const [password, setPassword] = useState(isProduction ? '' : 'Admin@hrtech123');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();

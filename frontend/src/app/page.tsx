@@ -19,40 +19,64 @@ import {
   Sparkles,
 } from 'lucide-react';
 
-// Fallback dummy data jika PocketBase belum di-seed
+// Fallback data industri manufaktur jika PocketBase belum di-seed
 const FALLBACK_SERVICES = [
-  { id: 'fb-1', category: 'Pilar C: Psikologi Terapan', title: 'Decision-Making & Life-Path Coaching', description: 'Pendampingan terarah untuk mengevaluasi dilema karier krusial dan penetapan target hidup jangka panjang.', price: 350000 },
-  { id: 'fb-2', category: 'Pilar C: Psikologi Terapan', title: 'Emotional Regulation & Anger Management', description: 'Metode terapan untuk mengenali pemicu emosional, meredam impulsivitas, dan memulihkan fokus kerja.', price: 300000 },
-  { id: 'fb-3', category: 'Pilar B: Klinik Karier', title: 'Career Offer & Contract Review', description: 'Klinik bedah kontrak kerja profesional per jam: klausul pesangon, non-compete, dan struktur benefit.', price: 250000 },
-  { id: 'fb-4', category: 'Pilar B: Klinik Karier', title: 'Corporate Test Simulation & Coaching', description: 'Simulasi dan bedah strategi pengerjaan tes psikotes korporat (Tes Pauli/Koran, Penalaran Logika, Wartegg).', price: 200000 },
-  { id: 'fb-5', category: 'Pilar C: Psikologi Terapan', title: 'Public Speaking & Social Anxiety Coaching', description: 'Latihan taktis meredam grogi, kecemasan sosial, dan teknik vokal saat berbicara di forum resmi.', price: 300000 },
-  { id: 'fb-6', category: 'Pilar A: Layanan B2B', title: 'Monthly HR Retainer (UMKM)', description: 'Langganan pendampingan HR terpadu: desain peran, audit tim kerja, dan evaluasi kinerja karyawan.', price: 1500000 },
+  { id: 'fb-1', category: 'Pilar C: Asesmen Psikometri', title: 'Asesmen Massal Kraepelin & Ketahanan Kerja Operator', description: 'Uji psikotes Kraepelin/Pauli massal tersertifikasi HIMPSI untuk seleksi operator pabrik dan teknisi perakitan presisi.', price: 150000 },
+  { id: 'fb-2', category: 'Pilar C: Evaluasi Ergonomi', title: 'Beban Mental Kerja & Stabilitas Regulasi Shift Malam', description: 'Evaluasi kesiapan psikologis dan daya tahan shift malam 3-gilir untuk memitigasi risiko insiden kecelakaan kerja.', price: 275000 },
+  { id: 'fb-3', category: 'Pilar B: Sertifikasi K3 & Mutu', title: 'Klinik Sertifikasi Ahli K3 Umum & SIO Kemnaker', description: 'Verifikasi kelengkapan berkas lisensi K3, SIO Forklift, dan standar SMK3 PP 50/2012 sebelum penempatan kerja.', price: 250000 },
+  { id: 'fb-4', category: 'Pilar B: Pemetaan Kompetensi', title: 'Uji Kalibrasi & Akurasi 7 QC Tools (ISO 9001:2015)', description: 'Simulasi pengukuran dimensi presisi menggunakan micrometer/caliper dan studi kasus diagram Ishikawa/Pareto.', price: 200000 },
+  { id: 'fb-5', category: 'Pilar A: Layanan B2B Plant', title: 'Corporate Industrial Recruitment Retainer (Pabrik)', description: 'Layanan penyediaan tenaga teknis siap kerja: screening CV berbasis AI, tes psikometri, dan orientasi plant.', price: 2500000 },
+  { id: 'fb-6', category: 'Pilar A: Layanan B2B Plant', title: 'Audit Ergonomi & Pemetaan Kinerja Line Produksi', description: 'Observasi kepatuhan SOP 5S, laju kelelahan kerja operator, dan rekomendasi rotasi workstation manufaktur.', price: 3200000 },
 ];
 
 const FALLBACK_JOBS = [
   {
     id: 'fb-j1',
-    title: 'Senior Frontend Engineer (React/Next.js)',
-    description: 'Mengembangkan arsitektur aplikasi web modern dengan standar performa tinggi dan desain presisi.',
-    requirements_keywords: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS'],
+    title: 'Teknisi Maintenance & Otomasi PLC (Siemens / Omron)',
+    description: 'Pemeliharaan berkala PLC S7-1200, penanganan breakdown sensor mekatronika, wiring panel 3-phase, dan hidrolik mesin.',
+    requirements_keywords: ['PLC Siemens S7', 'Wiring 3-Phase', 'Hidrolik & Pneumatik', 'Preventive Maint.'],
     is_featured: true,
-    expand: { employer_id: { company_name: 'PT Digital Solusindo' } }
+    expand: { employer_id: { company_name: 'PT Cikarang Presisi Parts' } }
   },
   {
     id: 'fb-j2',
-    title: 'People Operations & HR Generalist',
-    description: 'Mengelola siklus rekrutmen mandiri UMKM, administrasi ketenagakerjaan, dan evaluasi tim kerja.',
-    requirements_keywords: ['Recruitment', 'Psikotes', 'Onboarding', 'Komunikasi'],
-    is_featured: false,
-    expand: { employer_id: { company_name: 'CV Prima Logistik' } }
+    title: 'Operator CNC Milling & Machining Center (3-Axis)',
+    description: 'Setup tooling, running program G-Code mesin CNC, dan inspeksi dimensi toleransi mikro 0.01mm sesuai engineering drawing.',
+    requirements_keywords: ['CNC Milling', 'Caliper & Micrometer', 'Mastercam', 'ISO 9001:2015'],
+    is_featured: true,
+    expand: { employer_id: { company_name: 'PT Karawang Precision Tools' } }
   },
   {
     id: 'fb-j3',
-    title: 'Consumer Behavior Research Specialist',
-    description: 'Melakukan riset psikologi perilaku konsumen untuk optimalisasi produk UMKM dan strategi pasar.',
-    requirements_keywords: ['Market Research', 'Data Analysis', 'Psychology', 'Reporting'],
+    title: 'Supervisor QA/QC & Ahli K3 Umum Kemnaker',
+    description: 'Memastikan kepatuhan zero-accident di lantai fabrikasi serta verifikasi standar mutu inspeksi produk ekspor (FMEA/SPC).',
+    requirements_keywords: ['Ahli K3 Umum', 'ISO 9001:2015', '7 QC Tools', 'Welding Inspection'],
     is_featured: true,
-    expand: { employer_id: { company_name: 'Karya Nusantara Labs' } }
+    expand: { employer_id: { company_name: 'PT Indo Steel Heavy Fabrikasi' } }
+  },
+  {
+    id: 'fb-j4',
+    title: 'Operator Forklift Gudang Raw Material (SIO Kemnaker)',
+    description: 'Bongkar muat bahan baku industri di sistem racking gudang 6 meter, mematuhi SOP manuver keselamatan operasional forklift.',
+    requirements_keywords: ['SIO Forklift', 'Gudang FIFO', 'K3 Gudang', 'PPIC Buffer Stock'],
+    is_featured: false,
+    expand: { employer_id: { company_name: 'PT Cikarang Multi Logistics' } }
+  },
+  {
+    id: 'fb-j5',
+    title: 'Staff PPIC (Production Planning & Inventory Control)',
+    description: 'Menyusun jadwal produksi mingguan assembly plant, sinkronisasi stok bahan baku impor, dan pemantauan OEE mesin.',
+    requirements_keywords: ['PPIC', 'SAP ERP', 'Kaizen / 5S', 'Bill of Materials'],
+    is_featured: true,
+    expand: { employer_id: { company_name: 'PT Astra Otoparts Component' } }
+  },
+  {
+    id: 'fb-j6',
+    title: 'Welder Fabrikasi Struktur Baja 3G / 6G (SMAW & GTAW)',
+    description: 'Pengelasan pipa bertekanan tinggi dan konstruksi girder baja dengan lolos uji penetrant (NDT) standar mutu ASME.',
+    requirements_keywords: ['Welding 3G/6G', 'SMAW & GTAW', 'Uji NDT', 'Keselamatan K3'],
+    is_featured: false,
+    expand: { employer_id: { company_name: 'PT Nusantara Boiler & Vessel' } }
   }
 ];
 

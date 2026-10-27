@@ -14,6 +14,9 @@ export interface ParsedCompetencyResult {
   };
   matchScore: number;
   extractedSnippet: string;
+  experienceYears: number;
+  strengths: string[];
+  gapRecommendations: string[];
 }
 
 // Comprehensive dictionary of industrial competencies and regex patterns
@@ -204,17 +207,35 @@ export async function parseIndustrialResume(
     ];
   }
 
-  // Calculate Match Score against target keywords or industry baseline
-  let score = 82;
-  if (targetJobKeywords && targetJobKeywords.length > 0) {
-    const matchedCount = targetJobKeywords.filter((kw) =>
-      allDetected.some((skill) => skill.toLowerCase().includes(kw.toLowerCase()) || kw.toLowerCase().includes(skill.toLowerCase()))
-    ).length;
-    score = Math.min(98, Math.max(65, Math.round((matchedCount / targetJobKeywords.length) * 100)));
+  // Calculate years of industrial experience from text
+  let expYears = 2;
+  const expMatch = normalizedText.match(/\b(\d{1,2})\s*(?:tahun|thn|years|th)\b/i);
+  if (expMatch && parseInt(expMatch[1], 10) > 0 && parseInt(expMatch[1], 10) < 40) {
+    expYears = parseInt(expMatch[1], 10);
   } else {
-    // Standard baseline based on richness of detected industrial skills
-    score = Math.min(96, Math.max(72, 70 + allDetected.length * 4));
+    const yearMatches = normalizedText.match(/\b(20\d\d)\b/g);
+    if (yearMatches && yearMatches.length >= 2) {
+      const years = yearMatches.map((y) => parseInt(y, 10)).sort();
+      const diff = years[years.length - 1] - years[0];
+      if (diff > 0 && diff <= 30) expYears = diff;
+    }
   }
+
+  // Strengths and Gap recommendations
+  const strengths: string[] = [];
+  if (detectedSafety.length > 0) strengths.push('Memiliki Kepatuhan Standar K3 & Keselamatan Kerja');
+  if (detectedMfg.length >= 2) strengths.push('Keahlian Multi-Mesin & Otomasi Manufaktur');
+  if (detectedQuality.length > 0) strengths.push('Pemahaman Manajemen Mutu & Kaizen/5S');
+  if (expYears >= 3) strengths.push(`Pengalaman Teruji (${expYears} Tahun) di Industri`);
+  if (strengths.length === 0) strengths.push('Fondasi Teknis Manufaktur Siap Kembang');
+
+  const gapRecommendations: string[] = [];
+  if (detectedSafety.length === 0) gapRecommendations.push('Disarankan melengkapi Sertifikasi Ahli K3 Umum Kemnaker');
+  if (detectedQuality.length === 0) gapRecommendations.push('Pelatihan Pemahaman ISO 9001:2015 & 7 QC Tools');
+  if (detectedMfg.length < 2) gapRecommendations.push('Peningkatan keahlian sistem kontrol PLC & Wiring 3-Phase');
+
+  const rawScore = 55 + (allDetected.length * 5) + (detectedCerts.length * 6) + Math.min(expYears * 3, 15);
+  const calculatedMatchScore = Math.min(97, Math.max(68, rawScore));
 
   return {
     detectedSkills: allDetected,
@@ -225,7 +246,10 @@ export async function parseIndustrialResume(
       safety: detectedSafety,
       operations: detectedOps,
     },
-    matchScore: score,
+    matchScore: calculatedMatchScore,
     extractedSnippet: extractedText.slice(0, 300).trim(),
+    experienceYears: expYears,
+    strengths,
+    gapRecommendations,
   };
 }

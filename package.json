@@ -6,6 +6,8 @@
   "scripts": {
     "build": "node build-mobile.js",
     "build:frontend": "cd frontend && npm run build",
+    "test": "node --experimental-strip-types --test test/**/*.test.mjs",
+    "db:backup": "node backend/backup-db.mjs",
     "cap:sync": "cap sync",
     "cap:android": "cap open android",
     "cap:ios": "cap open ios"

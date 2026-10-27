@@ -32,6 +32,9 @@ import {
   UserCheck,
   XCircle,
   HelpCircle,
+  Calendar,
+  CheckSquare,
+  Square,
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import type { PsikogramData } from '@/components/assessment/psikogram-modal';
@@ -160,6 +163,17 @@ export default function EmployerDashboard() {
     jobTitle: string;
     status: string;
   } | null>(null);
+
+  // Batch Multi-Select ATS State
+  const [selectedAppIds, setSelectedAppIds] = useState<string[]>([]);
+
+  // Interview Scheduler State
+  const [isInterviewOpen, setIsInterviewOpen] = useState(false);
+  const [interviewApp, setInterviewApp] = useState<any>(null);
+  const [interviewDate, setInterviewDate] = useState('2026-10-30');
+  const [interviewTime, setInterviewTime] = useState('09:00 WIB');
+  const [interviewLocation, setInterviewLocation] = useState('Head Office / Google Meet');
+  const [interviewNotes, setInterviewNotes] = useState('Harap membawa berkas sertifikasi dan CV terbaru.');
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -298,6 +312,48 @@ export default function EmployerDashboard() {
       console.error(err);
     }
   }
+
+  // Toggle selection for batch actions
+  const toggleSelectApp = (id: string) => {
+    setSelectedAppIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  // Batch status updater
+  const handleBatchStatus = async (newStatus: string) => {
+    if (selectedAppIds.length === 0) return;
+    try {
+      for (const id of selectedAppIds) {
+        const app = applications.find((a) => a.id === id);
+        if (app && app.id && !app.id.startsWith('app-sample-')) {
+          await pb.collection('job_applications').update(app.id, { status: newStatus });
+        }
+      }
+      setApplications((prev) =>
+        prev.map((a) => (selectedAppIds.includes(a.id) ? { ...a, status: newStatus } : a))
+      );
+      setSelectedAppIds([]);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const openInterviewModal = (app: any) => {
+    setInterviewApp(app);
+    setIsInterviewOpen(true);
+  };
+
+  const generateWhatsAppInterview = () => {
+    if (!interviewApp) return;
+    const cName = interviewApp.candidate_name || 'Kandidat';
+    const jTitle = interviewApp.expand?.job_id?.title || 'Posisi Karyawan';
+    const text = encodeURIComponent(
+      `Halo ${cName},\n\nSelamat! Anda diundang ke tahap Wawancara Kerja untuk posisi *${jTitle}* di *${companyName}*.\n\n📅 Tanggal: ${interviewDate}\n⏰ Waktu: ${interviewTime}\n📍 Lokasi/Tautan: ${interviewLocation}\n📝 Catatan: ${interviewNotes}\n\nMohon konfirmasi kehadiran Anda dengan membalas pesan ini. Terima kasih.\n*Tim Rekruter Industrial*`
+    );
+    const phone = interviewApp.candidate_phone || '6281234567890';
+    window.open(`https://wa.me/${phone.replace(/[^0-9]/g, '')}?text=${text}`, '_blank');
+  };
 
   /**
    * Poin 3: Export candidate pipeline data to Excel / CSV (.csv with UTF-8 BOM)
@@ -445,6 +501,31 @@ export default function EmployerDashboard() {
       recommendation = 'TIDAK DISARANKAN';
     }
 
+    // Check for saved psychometric details
+    const details = app.psychometric_details || {};
+    if (details.recommendation) {
+      if (details.recommendation.includes('Direkomendasikan')) recommendation = 'DISARANKAN';
+      else if (details.recommendation.includes('Tidak')) recommendation = 'TIDAK DISARANKAN';
+      else recommendation = 'DIPERTIMBANGKAN';
+    }
+
+    const personalityScores = Array.isArray(details.disc_dimensions) && details.disc_dimensions.length > 0
+      ? details.disc_dimensions
+      : [
+          { label: 'Dominance (Ketegasan)', key: 'D', score: Math.min(95, testScore + 4) },
+          { label: 'Influence (Persuasif)', key: 'I', score: Math.min(92, testScore - 5) },
+          { label: 'Steadiness (Daya Tahan)', key: 'S', score: Math.min(98, testScore + 7) },
+          { label: 'Compliance (Ketelitian)', key: 'C', score: Math.min(96, testScore + 2) },
+          { label: 'Stability (Regulasi Emosi)', key: 'ES', score: Math.min(90, testScore - 2) },
+        ];
+
+    const pauliScores = Array.isArray(details.column_speeds) && details.column_speeds.length > 0
+      ? details.column_speeds
+      : [14, 16, 15, 17, 18];
+
+    const pauliAccuracy = details.tianker || 93;
+    const pauliStability = details.janker || 89;
+
     const psikogramData: PsikogramData = {
       candidateName,
       candidateEmail,
@@ -456,26 +537,20 @@ export default function EmployerDashboard() {
       matchScore,
       testScore,
       recommendation,
-      personalityScores: [
-        { label: 'Dominance (Ketegasan)', key: 'D', score: Math.min(95, testScore + 4) },
-        { label: 'Influence (Persuasif)', key: 'I', score: Math.min(92, testScore - 5) },
-        { label: 'Steadiness (Daya Tahan)', key: 'S', score: Math.min(98, testScore + 7) },
-        { label: 'Compliance (Ketelitian)', key: 'C', score: Math.min(96, testScore + 2) },
-        { label: 'Stability (Regulasi Emosi)', key: 'ES', score: Math.min(90, testScore - 2) },
-      ],
-      pauliScores: [14, 16, 15, 17, 18],
-      pauliAccuracy: 93,
-      pauliStability: 89,
+      personalityScores,
+      pauliScores,
+      pauliAccuracy,
+      pauliStability,
       keyStrengths: [
-        'Kemampuan fokus analitis tinggi dan daya tahan kerja stabil pada tugas berulang & shift.',
-        'Kesesuaian kualifikasi hard skill teknik manufaktur di atas rata-rata kebutuhan industri.',
-        'Regulasi emosi tenang saat menghadapi target output pabrik yang ketat.',
+        'Kemampuan fokus analitis tinggi dan daya tahan kerja stabil pada tugas berulang & shift pabrik.',
+        'Kesesuaian kualifikasi hard skill teknik manufaktur terverifikasi di atas rata-rata industri.',
+        'Regulasi emosi tenang saat menghadapi target output produksi yang ketat.',
       ],
       growthAreas: [
-        'Perlu peningkatan inisiatif delegasi dalam skala kepemimpinan regu pabrik.',
+        'Perlu peningkatan inisiatif delegasi dalam skala kepemimpinan regu lini produksi.',
         'Kecenderungan perfeksionis pada detail kalibrasi yang membutuhkan manajemen waktu seimbang.',
       ],
-      evaluatorNotes: `Kandidat menunjukkan profil kompetensi kerja yang sangat solid untuk posisi ${targetJobTitle}. Memiliki ketelitian tinggi dan kepatuhan standar K3 yang baik. Sangat direkomendasikan untuk lanjut ke tahap penawaran kerja (Offering).`,
+      evaluatorNotes: `Kandidat menunjukkan profil kompetensi kerja yang solid untuk posisi ${targetJobTitle}. Memiliki ketelitian tinggi dan kepatuhan standar K3 Kemnaker yang baik. Disarankan untuk tahap wawancara teknis plant.`,
     };
 
     setSelectedPsikogramData(psikogramData);
@@ -708,20 +783,31 @@ export default function EmployerDashboard() {
                                   onDragStart={(e) => handleDragStart(e, app.id)}
                                   className="p-3.5 rounded-xl bg-white border border-[#E8E8EC] shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:shadow-md hover:border-neutral-300 transition-all cursor-grab active:cursor-grabbing space-y-2.5 gpu-layer will-animate"
                                 >
-                                  {/* Candidate Header */}
+                                  {/* Candidate Header with Multi-Select Checkbox */}
                                   <div>
-                                    <div className="flex items-start justify-between gap-1">
-                                      <h4 className="font-bold text-xs text-neutral-900 leading-tight">
-                                        {cName}
-                                      </h4>
+                                    <div className="flex items-start justify-between gap-1.5">
+                                      <div className="flex items-center gap-2 min-w-0">
+                                        <input
+                                          type="checkbox"
+                                          checked={selectedAppIds.includes(app.id)}
+                                          onChange={(e) => {
+                                            e.stopPropagation();
+                                            toggleSelectApp(app.id);
+                                          }}
+                                          className="rounded border-neutral-300 text-indigo-600 h-3.5 w-3.5 cursor-pointer shrink-0"
+                                        />
+                                        <h4 className="font-bold text-xs text-neutral-900 leading-tight truncate">
+                                          {cName}
+                                        </h4>
+                                      </div>
                                     </div>
-                                    <p className="text-[11px] text-neutral-600 truncate mt-0.5 font-medium">
+                                    <p className="text-[11px] text-neutral-600 truncate mt-0.5 font-medium pl-5">
                                       {jTitle}
                                     </p>
                                   </div>
 
                                   {/* Score Badges */}
-                                  <div className="flex items-center gap-1.5 text-[10px]">
+                                  <div className="flex items-center gap-1.5 text-[10px] pl-5">
                                     <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded-md border border-blue-200 font-mono font-semibold">
                                       OCR: {app.match_score ? `${app.match_score}%` : 'N/A'}
                                     </span>
@@ -742,7 +828,16 @@ export default function EmployerDashboard() {
                                       </button>
                                     ) : <span className="w-8" />}
 
-                                    <div className="flex items-center gap-1.5">
+                                    <div className="flex items-center gap-1">
+                                      {/* Interview Scheduler Button */}
+                                      <button
+                                        onClick={() => openInterviewModal(app)}
+                                        title="Jadwalkan Wawancara"
+                                        className="h-8 w-8 rounded-lg flex items-center justify-center bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 active:scale-90 transition-transform cursor-pointer"
+                                      >
+                                        <Calendar className="w-3.5 h-3.5" />
+                                      </button>
+
                                       {/* Psikogram Button */}
                                       <button
                                         onClick={() => openPsikogram(app)}
@@ -812,25 +907,36 @@ export default function EmployerDashboard() {
                         key={app.id}
                         className="py-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4 hover:bg-[#FAFAFA]/80 p-3 rounded-xl transition-colors content-visibility-auto gpu-layer"
                       >
-                        {/* Info Pelamar */}
-                        <div className="space-y-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-bold text-sm text-[#0A0A0A] truncate">{cName}</h3>
-                            <Badge variant="outline" className="text-[10px] font-mono">
-                              {jTitle}
-                            </Badge>
-                          </div>
-                          <p className="text-xs text-[#6B6B6B]">
-                            Email: <span className="font-mono text-neutral-800">{cEmail}</span> &bull; WA: <span className="font-mono">{cPhone}</span>
-                          </p>
+                        {/* Info Pelamar with Multi-Select Checkbox */}
+                        <div className="flex items-start gap-3 min-w-0">
+                          <input
+                            type="checkbox"
+                            checked={selectedAppIds.includes(app.id)}
+                            onChange={(e) => {
+                              e.stopPropagation();
+                              toggleSelectApp(app.id);
+                            }}
+                            className="mt-1 rounded border-neutral-300 text-indigo-600 h-4 w-4 cursor-pointer shrink-0"
+                          />
+                          <div className="space-y-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <h3 className="font-bold text-sm text-[#0A0A0A] truncate">{cName}</h3>
+                              <Badge variant="outline" className="text-[10px] font-mono">
+                                {jTitle}
+                              </Badge>
+                            </div>
+                            <p className="text-xs text-[#6B6B6B]">
+                              Email: <span className="font-mono text-neutral-800">{cEmail}</span> &bull; WA: <span className="font-mono">{cPhone}</span>
+                            </p>
 
-                          <div className="flex flex-wrap items-center gap-3 pt-1 text-xs">
-                            <span className="font-mono text-blue-700 font-semibold bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
-                              OCR Match: {app.match_score ? `${app.match_score}%` : 'Dalam Review'}
-                            </span>
-                            <span className="font-mono text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                              Skor Psikotes: {app.test_score ?? 'Belum Ujian'} / 100
-                            </span>
+                            <div className="flex flex-wrap items-center gap-3 pt-1 text-xs">
+                              <span className="font-mono text-blue-700 font-semibold bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
+                                OCR Match: {app.match_score ? `${app.match_score}%` : 'Dalam Review'}
+                              </span>
+                              <span className="font-mono text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                                Skor Psikotes: {app.test_score ?? 'Belum Ujian'} / 100
+                              </span>
+                            </div>
                           </div>
                         </div>
 
@@ -858,6 +964,17 @@ export default function EmployerDashboard() {
                               </div>
                             </div>
                           </div>
+
+                          {/* Tombol Jadwalkan Wawancara */}
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => openInterviewModal(app)}
+                            className="rounded-full text-xs h-8 border-purple-200 bg-purple-50 hover:bg-purple-100 text-purple-700 flex items-center gap-1.5 font-semibold"
+                          >
+                            <Calendar className="w-3.5 h-3.5" />
+                            <span>Jadwalkan</span>
+                          </Button>
 
                           {/* Tombol Lihat & Unduh Psikogram PDF */}
                           <Button
@@ -1052,6 +1169,143 @@ export default function EmployerDashboard() {
           companyName={companyName}
           newStatus={notificationTarget.status}
         />
+      )}
+
+      {/* Floating Batch Action Bar for ATS Multi-Select */}
+      {selectedAppIds.length > 0 && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#1D1D1F] text-white px-5 py-3 rounded-2xl shadow-2xl z-50 flex items-center gap-3 border border-neutral-700 animate-in fade-in slide-in-from-bottom-3 max-w-full overflow-x-auto">
+          <span className="text-xs font-semibold whitespace-nowrap">
+            {selectedAppIds.length} Kandidat Dipilih
+          </span>
+          <div className="h-4 w-px bg-neutral-600" />
+          <div className="flex items-center gap-1.5 whitespace-nowrap">
+            <span className="text-[11px] text-neutral-400">Pindahkan ke:</span>
+            <button
+              onClick={() => handleBatchStatus('testing')}
+              className="px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-semibold transition-colors cursor-pointer"
+            >
+              Testing
+            </button>
+            <button
+              onClick={() => handleBatchStatus('interview')}
+              className="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-semibold transition-colors cursor-pointer"
+            >
+              Wawancara
+            </button>
+            <button
+              onClick={() => handleBatchStatus('hired')}
+              className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-semibold transition-colors cursor-pointer"
+            >
+              Diterima
+            </button>
+            <button
+              onClick={() => handleBatchStatus('rejected')}
+              className="px-2.5 py-1 rounded-lg bg-red-600 hover:bg-red-700 text-white text-[11px] font-semibold transition-colors cursor-pointer"
+            >
+              Tolak
+            </button>
+          </div>
+          <button
+            onClick={() => setSelectedAppIds([])}
+            className="text-neutral-400 hover:text-white text-xs underline ml-2 whitespace-nowrap cursor-pointer"
+          >
+            Batal
+          </button>
+        </div>
+      )}
+
+      {/* Interview Slot Scheduler Modal */}
+      {isInterviewOpen && interviewApp && (
+        <div className="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-neutral-200 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#E8E8EC]">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center">
+                  <Calendar className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-sm text-[#0A0A0A]">Penjadwalan Wawancara</h4>
+                  <p className="text-[11px] text-[#6B6B6B]">
+                    {interviewApp.candidate_name || 'Kandidat'} &bull; {interviewApp.expand?.job_id?.title || 'Posisi'}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsInterviewOpen(false)}
+                className="text-neutral-400 hover:text-neutral-700 p-1"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs">
+              <div className="space-y-1">
+                <Label className="text-[11px] font-semibold text-neutral-800">Tanggal Wawancara</Label>
+                <Input
+                  type="date"
+                  value={interviewDate}
+                  onChange={(e) => setInterviewDate(e.target.value)}
+                  className="rounded-xl border-[#E8E8EC] h-9 text-xs"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <Label className="text-[11px] font-semibold text-neutral-800">Waktu / Jam Sesi</Label>
+                <Input
+                  type="text"
+                  value={interviewTime}
+                  onChange={(e) => setInterviewTime(e.target.value)}
+                  placeholder="Contoh: 09:30 WIB - 10:30 WIB"
+                  className="rounded-xl border-[#E8E8EC] h-9 text-xs"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <Label className="text-[11px] font-semibold text-neutral-800">Lokasi / Tautan Online</Label>
+                <Input
+                  type="text"
+                  value={interviewLocation}
+                  onChange={(e) => setInterviewLocation(e.target.value)}
+                  placeholder="Contoh: Ruang Rapat HR Lt. 2 / Google Meet"
+                  className="rounded-xl border-[#E8E8EC] h-9 text-xs"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <Label className="text-[11px] font-semibold text-neutral-800">Instruksi Tambahan</Label>
+                <Input
+                  type="text"
+                  value={interviewNotes}
+                  onChange={(e) => setInterviewNotes(e.target.value)}
+                  placeholder="Contoh: Harap membawa portofolio & berkas asli"
+                  className="rounded-xl border-[#E8E8EC] h-9 text-xs"
+                />
+              </div>
+            </div>
+
+            <div className="pt-2 flex flex-col gap-2">
+              <Button
+                onClick={generateWhatsAppInterview}
+                className="w-full rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-10 font-semibold flex items-center justify-center gap-2"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>Kirim Undangan WhatsApp Langsung</span>
+              </Button>
+
+              <Button
+                variant="outline"
+                onClick={async () => {
+                  await updateCandidateStatus(interviewApp, 'interview');
+                  setIsInterviewOpen(false);
+                  alert('Status kandidat berhasil dipindahkan ke tahap Wawancara!');
+                }}
+                className="w-full rounded-full text-xs h-9 border-[#E8E8EC] hover:bg-neutral-100"
+              >
+                Simpan Jadwal & Loloskan ke Tahap Wawancara
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -324,6 +324,40 @@ export default function CandidatePortal() {
                       </div>
                     </div>
                   )}
+
+                  {/* Strengths & AI Gap Analysis */}
+                  {competencyResult?.strengths && competencyResult.strengths.length > 0 && (
+                    <div className="p-3 bg-emerald-50/70 border border-emerald-100 rounded-xl text-xs space-y-1">
+                      <div className="flex items-center justify-between font-bold text-emerald-900">
+                        <span className="flex items-center gap-1.5">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                          Kekuatan Profil Terverifikasi:
+                        </span>
+                        <Badge variant="outline" className="text-[10px] bg-white text-emerald-800 border-emerald-300">
+                          ±{competencyResult.experienceYears} Thn Pengalaman
+                        </Badge>
+                      </div>
+                      <ul className="list-disc list-inside text-[11px] text-emerald-800 space-y-0.5">
+                        {competencyResult.strengths.map((str, idx) => (
+                          <li key={idx}>{str}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {competencyResult?.gapRecommendations && competencyResult.gapRecommendations.length > 0 && (
+                    <div className="p-3 bg-amber-50/70 border border-amber-200 rounded-xl text-xs space-y-1">
+                      <span className="font-bold text-amber-900 flex items-center gap-1.5">
+                        <AlertCircle className="w-3.5 h-3.5 text-amber-600" />
+                        Saran Pengembangan Kualifikasi:
+                      </span>
+                      <ul className="list-disc list-inside text-[11px] text-amber-800 space-y-0.5">
+                        {competencyResult.gapRecommendations.map((gap, idx) => (
+                          <li key={idx}>{gap}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

@@ -18,62 +18,78 @@ onRecordCreateRequest((e) => {
 }, "consultation_bookings");
 
 // ---------------------------------------------------------------------------
-// 2. Smart CV OCR (mock): ekstrak skills saat kandidat upload/mengubah CV.
-//    Pada implementasi nyata, ganti mock ini dengan pemanggilan OCR API eksternal.
-//    CATATAN: logika di-INLINE di handler (JSVM tidak mengenali referensi
-//    fungsi tingkat-file dari dalam callback hook).
+// 2. Smart CV Parser Manufaktur & Industri: ekstrak kompetensi teknis pabrik saat upload CV.
+//    Mencakup PLC, CNC, K3 Kemnaker, Kalibrasi, ISO 9001, TPM, Pengelasan, dll.
 // ---------------------------------------------------------------------------
+const extractIndustrialSkillsFromFilename = (fileNameRaw) => {
+    const fileName = (typeof fileNameRaw === "string" ? fileNameRaw : String(fileNameRaw)).toLowerCase();
+    const industrialKeywords = [
+        { label: "PLC Siemens & Otomasi", keys: ["plc", "siemens", "tia portal", "scada"] },
+        { label: "CNC Milling & Bubut", keys: ["cnc", "milling", "bubut", "machining", "lathe"] },
+        { label: "AutoCAD & SolidWorks", keys: ["cad", "solidworks", "catia", "inventor", "drawing"] },
+        { label: "Sertifikasi Ahli K3 Umum Kemnaker", keys: ["k3", "ahli k3", "safety", "hse", "smk3"] },
+        { label: "SIO Forklift Kemnaker", keys: ["forklift", "sio", "reach truck"] },
+        { label: "ISO 9001:2015 & 7 QC Tools", keys: ["iso", "9001", "qc", "qa", "quality", "kaizen", "5s"] },
+        { label: "Total Productive Maintenance (TPM)", keys: ["tpm", "maintenance", "perawatan", "overhaul"] },
+        { label: "Caliper & Alat Ukur Presisi", keys: ["caliper", "micrometer", "alat ukur", "metrologi"] },
+        { label: "Panel Listrik & Wiring 3-Phase", keys: ["wiring", "panel", "listrik", "3-phase", "inverter"] },
+        { label: "Welding SMAW/GMAW/GTAW", keys: ["welding", "pengelasan", "welder", "las"] },
+        { label: "PPIC & Supply Chain Industri", keys: ["ppic", "warehouse", "gudang", "logistik", "supply"] },
+    ];
+
+    const detected = [];
+    for (const item of industrialKeywords) {
+        if (item.keys.some((k) => fileName.includes(k))) {
+            detected.push(item.label);
+        }
+    }
+
+    if (detected.length === 0) {
+        return [
+            "Caliper & Alat Ukur Presisi",
+            "ISO 9001:2015 & 7 QC Tools",
+            "5S / 5R & Kaizen Culture",
+            "Sertifikasi Ahli K3 Umum Kemnaker",
+        ];
+    }
+    return detected;
+};
+
 onRecordCreateRequest((e) => {
     try {
         const resume = e.record.get("resume_url");
         if (resume) {
-            const knownSkills = [
-                "JavaScript", "TypeScript", "React", "Node.js", "Next.js",
-                "Tailwind CSS", "Python", "SQL", "Communication",
-                "Teamwork", "Leadership", "Recruitment",
-            ];
-            const fileName = (typeof resume === "string" ? resume : String(resume)).toLowerCase();
-            const extracted = knownSkills.filter((skill) =>
-                fileName.includes(skill.toLowerCase().split(" ")[0])
-            );
-            e.record.set("parsed_skills", extracted.length > 0 ? extracted : ["JavaScript", "React", "Node.js", "Teamwork"]);
+            e.record.set("parsed_skills", extractIndustrialSkillsFromFilename(resume));
         }
     } catch (err) {
-        console.log("[ocr] create ERROR:", err);
+        console.log("[industrial-ocr] create ERROR:", err);
     }
     e.next();
 }, "candidates");
+
 onRecordUpdateRequest((e) => {
     try {
         const resume = e.record.get("resume_url");
         if (resume) {
-            const knownSkills = [
-                "JavaScript", "TypeScript", "React", "Node.js", "Next.js",
-                "Tailwind CSS", "Python", "SQL", "Communication",
-                "Teamwork", "Leadership", "Recruitment",
-            ];
-            const fileName = (typeof resume === "string" ? resume : String(resume)).toLowerCase();
-            const extracted = knownSkills.filter((skill) =>
-                fileName.includes(skill.toLowerCase().split(" ")[0])
-            );
-            e.record.set("parsed_skills", extracted.length > 0 ? extracted : ["JavaScript", "React", "Node.js", "Teamwork"]);
+            e.record.set("parsed_skills", extractIndustrialSkillsFromFilename(resume));
         }
     } catch (err) {
-        console.log("[ocr] update ERROR:", err);
+        console.log("[industrial-ocr] update ERROR:", err);
     }
     e.next();
 }, "candidates");
 
 // ---------------------------------------------------------------------------
-// 3. Psychological Test Engine: auto-scoring berdasarkan bobot psikologi.
-//    POST /api/submit-test  { application_id, answers: [{question_id, selected_option}] }
+// 3. Psychological Test Engine: auto-scoring berdasarkan bobot psikologi
+//    serta persistensi data detail Kraepelin (Panker, Tianker, Hanker, Janker) & DISC.
+//    POST /api/submit-test
 // ---------------------------------------------------------------------------
 routerAdd("POST", "/api/submit-test", (e) => {
     const data = e.requestInfo().body;
     const applicationId = data.application_id || "";
     const answers = data.answers || [];
+    const psychDetails = data.psychometric_details || null;
 
-    // Application boleh kosong (mode skor-saja untuk demo/tryout tanpa lamaran)
     let application = null;
     if (applicationId) {
         try {
@@ -92,7 +108,6 @@ routerAdd("POST", "/api/submit-test", (e) => {
             continue;
         }
 
-        // record.get() untuk field json bisa berupa byte array / string / map
         let weights = question.get("scoring_weight");
         if (weights != null && typeof weights === "object" && typeof weights.length === "number" && typeof weights[0] === "number") {
             let text = "";
@@ -113,16 +128,65 @@ routerAdd("POST", "/api/submit-test", (e) => {
         }
     }
 
-    // Penalty jika anti-cheat terdeteksi (pindah tab > batas)
-    if (data.penalty) {
-        totalScore = Math.max(0, totalScore - 20);
+    // Hitung rata-rata persentase jika ada pertanyaan
+    if (answers.length > 0) {
+        totalScore = Math.round((totalScore / (answers.length * 5)) * 100);
+    } else if (psychDetails && typeof psychDetails.total_score === "number") {
+        totalScore = psychDetails.total_score;
     }
 
+    // Penalty jika anti-cheat terdeteksi (pindah tab > batas toleransi)
+    if (data.penalty) {
+        totalScore = Math.max(35, totalScore - 20);
+    }
+
+    const nextStatus = totalScore >= 70 ? "interview" : "testing";
+
+    // Simpan ke record job_applications
     if (application) {
         application.set("test_score", totalScore);
-        application.set("status", "interview");
+        application.set("status", nextStatus);
+        if (psychDetails) {
+            try {
+                application.set("psychometric_details", psychDetails);
+            } catch (err) {
+                console.log("[submit-test] note on psychometric_details:", err);
+            }
+        }
         $app.save(application);
     }
 
-    return e.json(200, { success: true, test_score: totalScore });
+    // Simpan riwayat asesmen komprehensif ke candidate_assessments jika collection tersedia
+    try {
+        const assessmentColl = $app.findCollectionByNameOrId("candidate_assessments");
+        if (assessmentColl && psychDetails) {
+            const newAssessment = new Record(assessmentColl);
+            if (data.user_id) newAssessment.set("user_id", data.user_id);
+            if (data.candidate_id) newAssessment.set("candidate_id", data.candidate_id);
+            if (data.job_id) newAssessment.set("job_id", data.job_id);
+            if (data.candidate_name) newAssessment.set("candidate_name", data.candidate_name);
+            if (data.candidate_email) newAssessment.set("candidate_email", data.candidate_email);
+            newAssessment.set("test_type", psychDetails.test_type || "full_industrial");
+            newAssessment.set("total_score", totalScore);
+            newAssessment.set("panker", psychDetails.panker || 0);
+            newAssessment.set("tianker", psychDetails.tianker || 0);
+            newAssessment.set("hanker", psychDetails.hanker || "Stabil");
+            newAssessment.set("janker", psychDetails.janker || 0);
+            newAssessment.set("column_speeds", psychDetails.column_speeds || []);
+            newAssessment.set("disc_dimensions", psychDetails.disc_dimensions || []);
+            newAssessment.set("anti_cheat_violations", psychDetails.anti_cheat_violations || (data.penalty ? 1 : 0));
+            newAssessment.set("recommendation", totalScore >= 75 ? "Direkomendasikan" : (totalScore >= 60 ? "Dipertimbangkan" : "Tidak Direkomendasikan"));
+            if (psychDetails.role_fit) newAssessment.set("role_fit", psychDetails.role_fit);
+            $app.save(newAssessment);
+        }
+    } catch (err) {
+        // Abaikan jika collection belum ter-migrate
+    }
+
+    return e.json(200, {
+        success: true,
+        test_score: totalScore,
+        status: nextStatus,
+        psychometric_details: psychDetails,
+    });
 });
