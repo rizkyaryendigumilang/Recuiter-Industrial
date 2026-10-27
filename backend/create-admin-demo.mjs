@@ -49,11 +49,20 @@ async function createAdminAccount() {
 
   // 2. Login sebagai superuser untuk dapat token
   console.log("\n[2/5] Login sebagai superuser untuk mendapat token API...");
-  const loginRes = await fetch(`${PB_URL}/api/superusers/auth-with-password`, {
+  let loginRes = await fetch(`${PB_URL}/api/collections/_superusers/auth-with-password`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ identity: ADMIN_EMAIL, password: ADMIN_PASSWORD }),
   });
+
+  if (!loginRes.ok) {
+    // Fallback to legacy endpoint if any
+    loginRes = await fetch(`${PB_URL}/api/admins/auth-with-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ identity: ADMIN_EMAIL, password: ADMIN_PASSWORD }),
+    });
+  }
 
   if (!loginRes.ok) {
     const err = await loginRes.text();
