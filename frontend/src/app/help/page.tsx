@@ -186,27 +186,27 @@ export default function HelpAndGuidesPage() {
             </CardHeader>
             <CardContent className="space-y-4 text-xs text-[#4B5563] leading-relaxed">
               <div className="grid grid-cols-2 gap-2.5">
-                <div className="p-3 bg-red-50/60 rounded-xl border border-red-100">
-                  <span className="font-bold text-red-800 text-xs">D — Dominance</span>
-                  <p className="text-[11px] text-red-900/80 mt-1">
+                <div className="p-3 bg-neutral-50 rounded-lg border border-neutral-200">
+                  <span className="font-semibold text-neutral-900 text-xs">D — Dominance</span>
+                  <p className="text-[11px] text-neutral-600 mt-1">
                     {isEn ? 'Decisive, goal-driven, strong under urgency (Supervisor, Foreman).' : 'Tegas, fokus target, tangguh dalam tekanan target output (Foreman/Leader).'}
                   </p>
                 </div>
-                <div className="p-3 bg-amber-50/60 rounded-xl border border-amber-100">
-                  <span className="font-bold text-amber-800 text-xs">I — Influence</span>
-                  <p className="text-[11px] text-amber-900/80 mt-1">
+                <div className="p-3 bg-neutral-50 rounded-lg border border-neutral-200">
+                  <span className="font-semibold text-neutral-900 text-xs">I — Influence</span>
+                  <p className="text-[11px] text-neutral-600 mt-1">
                     {isEn ? 'Persuasive, communicative, enthusiastic (Trainer, Safety Officer).' : 'Komunikatif, antusias, mudah berkoordinasi (HSE & Safety, Trainer).'}
                   </p>
                 </div>
-                <div className="p-3 bg-blue-50/60 rounded-xl border border-blue-100">
-                  <span className="font-bold text-blue-800 text-xs">S — Steadiness</span>
-                  <p className="text-[11px] text-blue-900/80 mt-1">
+                <div className="p-3 bg-neutral-50 rounded-lg border border-neutral-200">
+                  <span className="font-semibold text-neutral-900 text-xs">S — Steadiness</span>
+                  <p className="text-[11px] text-neutral-600 mt-1">
                     {isEn ? 'Patient, reliable, loyal, high endurance for repetitive tasks (Operator).' : 'Sabar, konsisten, tahan kerja berulang berjam-jam (Operator Line).'}
                   </p>
                 </div>
-                <div className="p-3 bg-emerald-50/60 rounded-xl border border-emerald-100">
-                  <span className="font-bold text-emerald-800 text-xs">C — Compliance</span>
-                  <p className="text-[11px] text-emerald-900/80 mt-1">
+                <div className="p-3 bg-neutral-50 rounded-lg border border-neutral-200">
+                  <span className="font-semibold text-neutral-900 text-xs">C — Compliance</span>
+                  <p className="text-[11px] text-neutral-600 mt-1">
                     {isEn ? 'Detail-oriented, precision, SOP adherence (Quality Control / QA).' : 'Teliti, taat SOP standar industri, zero defect (Quality Control).'}
                   </p>
                 </div>

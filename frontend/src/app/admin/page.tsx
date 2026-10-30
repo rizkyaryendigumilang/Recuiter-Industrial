@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { pb } from '@/lib/pocketbase';
+import dynamic from 'next/dynamic';
+import { pb, cachedPbGetFullList, invalidatePbCache } from '@/lib/pocketbase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -31,9 +32,18 @@ import {
   FileText,
   MessageCircle,
 } from 'lucide-react';
-import { PsikogramModal, PsikogramData } from '@/components/assessment/psikogram-modal';
-import { CandidateNotificationModal } from '@/components/employer/candidate-notification-modal';
+import type { PsikogramData } from '@/components/assessment/psikogram-modal';
 import { useLanguage } from '@/lib/language-context';
+
+// Dynamic lazy import to dramatically reduce initial JavaScript bundle size
+const PsikogramModal = dynamic(
+  () => import('@/components/assessment/psikogram-modal').then((m) => m.PsikogramModal),
+  { ssr: false }
+);
+const CandidateNotificationModal = dynamic(
+  () => import('@/components/employer/candidate-notification-modal').then((m) => m.CandidateNotificationModal),
+  { ssr: false }
+);
 
 interface ServiceForm {
   category: string;
@@ -282,12 +292,12 @@ export default function AdminDashboard() {
     setLoading(true);
     try {
       const [b, s, j, q, a, e] = await Promise.all([
-        pb.collection('consultation_bookings').getFullList({ sort: '-created', expand: 'user_id,service_id' }),
-        pb.collection('services_catalog').getFullList({ sort: '-created' }),
-        pb.collection('job_postings').getFullList({ sort: '-created', expand: 'employer_id' }),
-        pb.collection('test_questions').getFullList({ sort: '-created' }),
-        pb.collection('job_applications').getFullList({ sort: '-created', expand: 'job_id,candidate_id.user_id' }),
-        pb.collection('employers').getFullList(),
+        cachedPbGetFullList('consultation_bookings', { sort: '-created', expand: 'user_id,service_id' }),
+        cachedPbGetFullList('services_catalog', { sort: '-created' }),
+        cachedPbGetFullList('job_postings', { sort: '-created', expand: 'employer_id' }),
+        cachedPbGetFullList('test_questions', { sort: '-created' }),
+        cachedPbGetFullList('job_applications', { sort: '-created', expand: 'job_id,candidate_id.user_id' }),
+        cachedPbGetFullList('employers'),
       ]);
       setBookings(b);
       setServices(s);
@@ -421,10 +431,12 @@ export default function AdminDashboard() {
       if (editingServiceId) {
         const updated = await pb.collection('services_catalog').update(editingServiceId, serviceForm);
         setServices(prev => prev.map(s => s.id === editingServiceId ? updated : s));
+        invalidatePbCache('services_catalog');
         alert('Layanan berhasil diperbarui dan langsung tayang ke publik!');
       } else {
         const created = await pb.collection('services_catalog').create(serviceForm);
         setServices(prev => [created, ...prev]);
+        invalidatePbCache('services_catalog');
         alert('Layanan baru berhasil disimpan dan dipublikasikan!');
       }
       setServiceForm(emptyService);
@@ -453,6 +465,7 @@ export default function AdminDashboard() {
     if (!confirm('Hapus layanan ini dari katalog publik?')) return;
     try {
       await pb.collection('services_catalog').delete(id);
+      invalidatePbCache('services_catalog');
       setServices(prev => prev.filter(s => s.id !== id));
       if (editingServiceId === id) {
         setServiceForm(emptyService);
@@ -466,6 +479,7 @@ export default function AdminDashboard() {
   async function handleToggleServiceActive(svc: RecordModel) {
     try {
       const updated = await pb.collection('services_catalog').update(svc.id, { is_active: !svc.is_active });
+      invalidatePbCache('services_catalog');
       setServices(prev => prev.map(s => s.id === svc.id ? updated : s));
     } catch (err) {
       console.error(err);
@@ -508,6 +522,7 @@ export default function AdminDashboard() {
   async function verifyPayment(id: string) {
     try {
       await pb.collection('consultation_bookings').update(id, { payment_status: 'paid' });
+      invalidatePbCache('consultation_bookings');
       setBookings(prev => prev.map(b => b.id === id ? { ...b, payment_status: 'paid' } : b));
       alert('Pembayaran disetujui! Tombol WhatsApp pada klien kini aktif.');
     } catch (err) {
@@ -535,10 +550,6 @@ export default function AdminDashboard() {
         {/* Apple-style restrained header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-[#E8E8EC]">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFFFFF] border border-[#E8E8EC] text-[11px] font-semibold uppercase tracking-wider text-[#1D1D1F] mb-2 shadow-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#6366F1]" />
-              {isEn ? 'Administration Control Center' : 'Pusat Kendali Administrasi'}
-            </div>
             <h1 className="text-3xl font-bold tracking-tight text-[#0A0A0A]">
               {t.adminPortal.title}
             </h1>
@@ -708,7 +719,7 @@ export default function AdminDashboard() {
                       value={serviceForm.price}
                       onChange={(e) => setServiceForm({ ...serviceForm, price: Number(e.target.value) })}
                       placeholder="Contoh: 350000"
-                      className="rounded-xl border-[#E8E8EC] text-xs h-9 bg-white font-mono"
+                      className="rounded-lg border-[#E8E8EC] text-xs h-9 bg-white"
                       required
                     />
                   </div>
@@ -786,15 +797,15 @@ export default function AdminDashboard() {
                             {svc.category}
                           </span>
                           <span
-                            className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                              svc.is_active ? 'bg-emerald-50 text-emerald-700' : 'bg-neutral-100 text-neutral-500'
+                            className={`text-[10px] font-semibold px-2 py-0.5 rounded-md ${
+                              svc.is_active ? 'bg-neutral-900 text-white' : 'bg-neutral-100 text-neutral-500'
                             }`}
                           >
                             {svc.is_active ? 'Aktif di Publik' : 'Nonaktif'}
                           </span>
                         </div>
                         <h4 className="font-bold text-sm text-[#0A0A0A]">{svc.title}</h4>
-                        <p className="text-xs font-mono font-medium text-[#1D1D1F] mt-0.5">
+                        <p className="text-xs font-semibold text-[#1D1D1F] mt-0.5">
                           Rp {Number(svc.price).toLocaleString('id-ID')}
                         </p>
                         {svc.description && (
@@ -807,7 +818,7 @@ export default function AdminDashboard() {
                           size="sm"
                           variant="outline"
                           onClick={() => handleToggleServiceActive(svc)}
-                          className="rounded-full text-xs h-8 border-[#E8E8EC]"
+                          className="rounded-lg text-xs h-8 border-[#E8E8EC]"
                         >
                           {svc.is_active ? 'Sembunyikan' : 'Tampilkan'}
                         </Button>
@@ -857,7 +868,7 @@ export default function AdminDashboard() {
                 <a
                   href={`${process.env.NEXT_PUBLIC_BASE_PATH ?? '/recruiter'}/api/calendar/interviews.ics`}
                   download="interviews.ics"
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#1D1D1F] hover:bg-[#000000] text-white text-xs font-semibold shadow-sm transition-all"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#1D1D1F] hover:bg-[#000000] text-white text-xs font-medium shadow-xs transition-colors duration-150"
                 >
                   <Download className="w-3.5 h-3.5" />
                   Langganan Kalender (.ICS)
@@ -873,7 +884,7 @@ export default function AdminDashboard() {
                     navigator.clipboard.writeText(icsUrl);
                     alert(`URL Kalender Berhasil Disalin:\n${icsUrl}\n\nTempelkan di Apple Calendar (File > New Calendar Subscription) atau Google Calendar (Other calendars > From URL)`);
                   }}
-                  className="rounded-full border-[#E8E8EC] text-xs h-9"
+                  className="rounded-lg border-[#E8E8EC] text-xs h-9"
                 >
                   Salin Feed URL
                 </Button>
@@ -884,30 +895,30 @@ export default function AdminDashboard() {
             <div className="flex gap-2">
               <button
                 onClick={() => setScheduleFilter('all')}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors duration-150 ${
                   scheduleFilter === 'all'
                     ? 'bg-[#1D1D1F] text-white'
-                    : 'bg-white text-[#6B6B6B] border border-[#E8E8EC]'
+                    : 'bg-white text-[#6B6B6B] border border-[#E8E8EC] hover:bg-[#F5F5F7]'
                 }`}
               >
                 Semua Jadwal ({DUMMY_SCHEDULES.length})
               </button>
               <button
                 onClick={() => setScheduleFilter('interview')}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors duration-150 ${
                   scheduleFilter === 'interview'
                     ? 'bg-[#1D1D1F] text-white'
-                    : 'bg-white text-[#6B6B6B] border border-[#E8E8EC]'
+                    : 'bg-white text-[#6B6B6B] border border-[#E8E8EC] hover:bg-[#F5F5F7]'
                 }`}
               >
                 Wawancara Rekrutmen
               </button>
               <button
                 onClick={() => setScheduleFilter('consultation')}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors duration-150 ${
                   scheduleFilter === 'consultation'
                     ? 'bg-[#1D1D1F] text-white'
-                    : 'bg-white text-[#6B6B6B] border border-[#E8E8EC]'
+                    : 'bg-white text-[#6B6B6B] border border-[#E8E8EC] hover:bg-[#F5F5F7]'
                 }`}
               >
                 Sesi Konseling Privat
@@ -1096,7 +1107,7 @@ export default function AdminDashboard() {
                   {questions.map((q, idx) => (
                     <div key={q.id} className="p-4 border border-[#E8E8EC] rounded-xl bg-white space-y-2">
                       <div className="flex items-center justify-between text-xs">
-                        <span className="font-mono text-[#86868B]">Soal #{idx + 1}</span>
+                        <span className="text-xs font-medium text-[#86868B]">Soal #{idx + 1}</span>
                         <span className="uppercase text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#F5F5F7] text-[#1D1D1F]">
                           {q.test_type}
                         </span>

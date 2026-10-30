@@ -277,10 +277,10 @@ export default function CandidateResultsPage() {
 
             <div className="space-y-1 sm:text-right">
               <p className="text-[10px] uppercase font-bold text-[#86868B]">Status Rekomendasi</p>
-              <Badge className="bg-emerald-600 text-white text-xs font-bold py-1 px-3 shadow-none">
-                {recommendationScore >= 70 ? '✓ DISARANKAN (RECOMMENDED)' : '⚠ DIPERTIMBANGKAN (CONSIDERED)'}
+              <Badge className="bg-[#1D1D1F] text-white text-xs font-medium py-1 px-3 shadow-none">
+                {recommendationScore >= 70 ? 'DISARANKAN (RECOMMENDED)' : 'DIPERTIMBANGKAN (CONSIDERED)'}
               </Badge>
-              <p className="text-[11px] font-semibold text-emerald-700 mt-1">Skor Kesesuaian: {recommendationScore}%</p>
+              <p className="text-[11px] font-medium text-neutral-600 mt-1">Skor Kesesuaian: {recommendationScore}%</p>
             </div>
           </div>
 

@@ -301,19 +301,19 @@ function BookingContent() {
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl bg-blue-50/70 border border-blue-200 text-xs text-blue-800 space-y-1">
-                <div className="font-bold flex items-center gap-1.5">
-                  <ShieldCheck className="w-4 h-4 text-blue-600" />
-                  Sistem Transaksi Hibrida Terverifikasi
+              <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200 text-xs text-neutral-800 space-y-1">
+                <div className="font-semibold flex items-center gap-1.5 text-neutral-900">
+                  <ShieldCheck className="w-4 h-4 text-neutral-700" />
+                  Sistem Transaksi Terverifikasi
                 </div>
-                <p className="text-[11px] text-blue-700 leading-relaxed">
+                <p className="text-[11px] text-neutral-600 leading-relaxed">
                   Kode unik 3 digit berfungsi untuk memverifikasi pembayaran secara akurat tanpa antrean manual.
                 </p>
               </div>
 
               <Button
                 onClick={handleBook}
-                className="w-full h-12 rounded-full bg-[#1D1D1F] hover:bg-black text-white font-semibold text-sm shadow-sm transition-all"
+                className="w-full h-11 rounded-lg bg-[#1D1D1F] hover:bg-black text-white font-medium text-xs shadow-sm transition-colors duration-150"
               >
                 {isEn ? 'Confirm & Generate Invoice' : 'Konfirmasi Pemesanan & Tampilkan No. Rekening'}
               </Button>
@@ -325,15 +325,15 @@ function BookingContent() {
             <div className="space-y-6">
               {/* Box Nominal Transfer Wajib */}
               <div className="text-center p-6 rounded-2xl bg-neutral-50 border border-neutral-200">
-                <span className="text-xs text-neutral-500 uppercase tracking-wider font-semibold block mb-1">
+                <span className="text-xs text-neutral-600 font-medium block mb-1">
                   {isEn ? 'Mandatory Transfer Amount (Includes 3-Digit Code)' : 'Nominal Transfer Wajib (Tepat Termasuk 3 Digit Kode Unik)'}
                 </span>
-                <div className="text-3xl sm:text-4xl font-extrabold font-mono text-neutral-900 my-2">
+                <div className="text-3xl sm:text-4xl font-extrabold text-neutral-900 my-2">
                   Rp {totalAmount.toLocaleString('id-ID')}
                 </div>
                 <button
                   onClick={copyAmount}
-                  className="inline-flex items-center gap-1.5 text-xs text-neutral-700 hover:text-neutral-900 font-semibold px-4 py-1.5 rounded-full bg-white border border-neutral-300 mt-1 shadow-sm active:scale-95 transition-all"
+                  className="inline-flex items-center gap-1.5 text-xs text-neutral-700 hover:text-neutral-900 font-medium px-4 py-1.5 rounded-lg bg-white border border-neutral-300 mt-1 shadow-xs active:scale-95 transition-all"
                 >
                   {copiedAmount ? (
                     <>
@@ -354,7 +354,7 @@ function BookingContent() {
 
               {/* Box Rincian Rekening Resmi (Mandiri & BCA) */}
               <div className="space-y-3">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-600">
+                <h3 className="text-xs font-semibold text-neutral-700">
                   {isEn ? 'Official Bank Accounts' : 'Rekening Bank Tujuan Transfer:'}
                 </h3>
 
@@ -419,13 +419,13 @@ function BookingContent() {
               {booking.payment_status === 'pending' ? (
                 /* STATUS: PENDING & UNGGAH BUKTI */
                 <div className="space-y-4 pt-2">
-                  <div className="border border-amber-200 bg-amber-50/70 rounded-2xl p-4 text-xs space-y-1.5">
-                    <div className="flex items-center gap-2 font-bold text-amber-900">
+                  <div className="border border-neutral-200 border-l-2 border-l-amber-600 bg-neutral-50 rounded-xl p-4 text-xs space-y-1.5">
+                    <div className="flex items-center gap-2 font-semibold text-neutral-900">
                       <Clock className="w-4 h-4 text-amber-600" />
                       <span>Menunggu Pembayaran &amp; Verifikasi Admin</span>
                     </div>
-                    <p className="text-[11px] text-amber-800">
-                      ID Pesanan: <strong className="font-mono">{booking.id}</strong>. Unggah foto atau tangkapan layar bukti transfer Anda di bawah ini agar proses verifikasi lebih cepat.
+                    <p className="text-[11px] text-neutral-600">
+                      ID Pesanan: <strong className="font-mono text-neutral-900">{booking.id}</strong>. Unggah foto atau tangkapan layar bukti transfer Anda di bawah ini agar proses verifikasi lebih cepat.
                     </p>
                   </div>
 

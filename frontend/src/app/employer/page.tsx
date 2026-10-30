@@ -633,13 +633,13 @@ export default function EmployerDashboard() {
               onClick={exportToCsv}
               variant="outline"
               size="sm"
-              className="rounded-full text-xs h-9 bg-white border-emerald-300 text-emerald-800 hover:bg-emerald-50 flex items-center gap-1.5 font-semibold shadow-sm"
+              className="rounded-lg text-xs h-9 bg-white border-[#E8E8EC] text-neutral-800 hover:bg-neutral-50 flex items-center gap-1.5 font-medium shadow-xs"
             >
-              <Download className="w-3.5 h-3.5 text-emerald-600" />
+              <Download className="w-3.5 h-3.5 text-neutral-600" />
               {isEn ? 'Export to Excel (.CSV)' : 'Ekspor Pipeline ke Excel (.CSV)'}
             </Button>
 
-            <Badge variant="outline" className="text-xs font-mono">
+            <Badge variant="outline" className="text-xs font-normal">
               {isEn ? 'Assessment Credits:' : 'Kredit Asesmen:'} {employer?.credit_balance ?? 5}
             </Badge>
             <Badge variant={employer?.retainer_active ? 'default' : 'secondary'} className="text-xs">
@@ -650,30 +650,30 @@ export default function EmployerDashboard() {
 
         {/* Tabs Navigation */}
         <Tabs defaultValue="candidates">
-          <TabsList className="mb-6 bg-white border border-[#E8E8EC] p-1 rounded-full shadow-sm flex flex-wrap h-auto gap-1">
+          <TabsList className="mb-6 bg-white border border-[#E8E8EC] p-1 rounded-xl shadow-xs flex flex-wrap h-auto gap-1">
             <TabsTrigger
               value="candidates"
-              className="rounded-full text-xs font-semibold data-[state=active]:bg-[#1D1D1F] data-[state=active]:text-white px-5 py-2"
+              className="rounded-lg text-xs font-medium data-[state=active]:bg-[#1D1D1F] data-[state=active]:text-white px-4 py-2 transition-colors duration-150"
             >
               <Users className="w-3.5 h-3.5 mr-1.5" />
               {t.employerPortal.tabApplicants} ({applications.length})
             </TabsTrigger>
             <TabsTrigger
               value="jobs"
-              className="rounded-full text-xs font-semibold data-[state=active]:bg-[#1D1D1F] data-[state=active]:text-white px-5 py-2"
+              className="rounded-lg text-xs font-medium data-[state=active]:bg-[#1D1D1F] data-[state=active]:text-white px-4 py-2 transition-colors duration-150"
             >
               <Briefcase className="w-3.5 h-3.5 mr-1.5" />
               {isEn ? 'My Openings' : 'Lowongan Saya'} ({jobs.length})
             </TabsTrigger>
             <TabsTrigger
               value="create"
-              className="rounded-full text-xs font-semibold data-[state=active]:bg-[#1D1D1F] data-[state=active]:text-white px-5 py-2"
+              className="rounded-lg text-xs font-medium data-[state=active]:bg-[#1D1D1F] data-[state=active]:text-white px-4 py-2 transition-colors duration-150"
             >
               + {t.employerPortal.tabCreateJob}
             </TabsTrigger>
             <TabsTrigger
               value="profile"
-              className="rounded-full text-xs font-semibold data-[state=active]:bg-[#1D1D1F] data-[state=active]:text-white px-5 py-2"
+              className="rounded-lg text-xs font-medium data-[state=active]:bg-[#1D1D1F] data-[state=active]:text-white px-4 py-2 transition-colors duration-150"
             >
               <Building2 className="w-3.5 h-3.5 mr-1.5" />
               {t.employerPortal.tabProfile}
@@ -739,7 +739,7 @@ export default function EmployerDashboard() {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between text-xs text-neutral-500 mb-1">
                     <span>Tips: Tarik &amp; lepas (drag &amp; drop) kartu kandidat untuk memindahkan status seleksi secara instan.</span>
-                    <span className="font-mono">{applications.length} Total Kandidat</span>
+                    <span className="font-medium text-neutral-700">{applications.length} Total Kandidat</span>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3.5 overflow-x-auto pb-4">
@@ -751,7 +751,7 @@ export default function EmployerDashboard() {
                           key={stage.key}
                           onDragOver={handleDragOver}
                           onDrop={(e) => handleDrop(e, stage.key)}
-                          className={`flex flex-col rounded-3xl border border-[#E8E8EC] bg-[#FAFAFA] min-h-[500px] transition-colors p-3 ${stage.dropBg}`}
+                          className={`flex flex-col rounded-2xl border border-[#E8E8EC] bg-[#FAFAFA] min-h-[500px] transition-colors p-3 ${stage.dropBg}`}
                         >
                           {/* Column Header */}
                           <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#E8E8EC]">
@@ -1216,8 +1216,8 @@ export default function EmployerDashboard() {
 
       {/* Interview Slot Scheduler Modal */}
       {isInterviewOpen && interviewApp && (
-        <div className="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-neutral-200 space-y-4">
+        <div className="fixed inset-0 bg-neutral-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-lg border border-neutral-200 space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-[#E8E8EC]">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center">

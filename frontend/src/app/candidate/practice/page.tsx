@@ -34,6 +34,73 @@ interface ColumnResult {
   wrong: number;
 }
 
+// ============================================================================
+// MEMOIZED HIGH-PERFORMANCE WORKBOARD & KEYPAD (Zero Re-render Lag on Timer Ticks)
+// ============================================================================
+
+const KraepelinWorkingBoard = React.memo(function KraepelinWorkingBoard({
+  topNum,
+  bottomNum,
+}: {
+  topNum: number;
+  bottomNum: number;
+}) {
+  return (
+    <div className="bg-white border border-[#E8E8EC] rounded-2xl shadow-sm p-6 flex flex-col items-center justify-center min-h-[280px] relative overflow-hidden">
+      <div className="text-center space-y-4 max-w-xs w-full">
+        <span className="text-[10px] uppercase font-bold text-[#86868B] tracking-wider">
+          PENJUMLAHAN SEKARANG:
+        </span>
+
+        {/* Big numbers stack */}
+        <div className="flex flex-col items-center justify-center gap-2 p-6 bg-[#FAFAFA] border border-[#E8E8EC] rounded-2xl shadow-sm gpu-layer">
+          {/* Top Number */}
+          <div className="w-16 h-16 rounded-2xl bg-white border border-[#E8E8EC] shadow-sm flex items-center justify-center text-3xl font-black text-[#0A0A0A]">
+            {topNum}
+          </div>
+          
+          <div className="text-indigo-600 font-black text-lg">+</div>
+
+          {/* Bottom Number */}
+          <div className="w-16 h-16 rounded-2xl bg-white border border-[#E8E8EC] shadow-sm flex items-center justify-center text-3xl font-black text-[#0A0A0A]">
+            {bottomNum}
+          </div>
+        </div>
+
+        <p className="text-xs text-[#52525B] font-medium">
+          Ketik <strong>angka satuan</strong> hasil penjumlahan di bawah:
+        </p>
+      </div>
+    </div>
+  );
+});
+
+const KraepelinKeypad = React.memo(function KraepelinKeypad({
+  onSubmitAnswer,
+}: {
+  onSubmitAnswer: (digit: number) => void;
+}) {
+  return (
+    <div className="bg-white border border-[#E8E8EC] rounded-2xl p-4 shadow-sm">
+      <div className="grid grid-cols-5 gap-2 max-w-md mx-auto">
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((digit) => (
+          <button
+            key={digit}
+            type="button"
+            onClick={() => onSubmitAnswer(digit)}
+            className="h-14 sm:h-16 rounded-xl bg-[#F5F5F7] hover:bg-indigo-600 hover:text-white active:scale-90 text-[#0A0A0A] font-bold text-xl sm:text-2xl transition-transform duration-75 ease-out border border-[#E8E8EC] shadow-sm flex items-center justify-center select-none gpu-layer will-animate cursor-pointer touch-manipulation"
+          >
+            {digit}
+          </button>
+        ))}
+      </div>
+      <p className="text-center text-[10px] text-[#86868B] mt-2">
+        Tekan tombol angka di atas atau gunakan NumPad keyboard
+      </p>
+    </div>
+  );
+});
+
 export default function KraepelinPracticePage() {
   const { language } = useLanguage();
   const isEn = language === 'en';
@@ -196,8 +263,8 @@ export default function KraepelinPracticePage() {
     };
   }, [gameState, nextColumn, secondsPerColumn]);
 
-  // Submit Answer
-  const submitAnswer = (num: number) => {
+  // Submit Answer (Memoized for high-speed calculation without closures recreating)
+  const submitAnswer = useCallback((num: number) => {
     if (gameState !== 'playing') return;
 
     triggerHaptic.light();
@@ -222,7 +289,7 @@ export default function KraepelinPracticePage() {
     if (currentIndexInCol + 2 < columnNumbers.length) {
       setCurrentIndexInCol((idx) => idx + 1);
     }
-  };
+  }, [gameState, columnNumbers, currentIndexInCol]);
 
   // Physical Keyboard Listener
   useEffect(() => {
@@ -256,10 +323,10 @@ export default function KraepelinPracticePage() {
     <div className="min-h-screen bg-[#FAFAFA] py-8 px-4 sm:px-6 lg:px-8 relative">
       {/* Anti-Cheat Floating Warning Modal */}
       {showWarningModal && (
-        <div className="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl border border-red-200">
-            <div className="w-12 h-12 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-3">
-              <ShieldAlert className="w-6 h-6" />
+        <div className="fixed inset-0 bg-neutral-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full text-center shadow-lg border border-neutral-200">
+            <div className="w-12 h-12 rounded-xl bg-neutral-100 text-neutral-800 flex items-center justify-center mx-auto mb-3">
+              <ShieldAlert className="w-6 h-6 text-red-600" />
             </div>
             <h4 className="font-bold text-base text-neutral-900 mb-1">
               {isEn ? 'Exam Integrity Warning' : 'Peringatan Integritas Ujian'}
@@ -267,12 +334,12 @@ export default function KraepelinPracticePage() {
             <p className="text-xs text-neutral-600 mb-4">
               {lastViolationReason || (isEn ? 'Browser tab switch or focus loss detected.' : 'Perpindahan tab atau kehilangan fokus browser terdeteksi.')}
             </p>
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-5 text-left">
-              <div className="flex items-center justify-between text-xs font-semibold text-amber-900 mb-1">
+            <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-3 mb-5 text-left">
+              <div className="flex items-center justify-between text-xs font-semibold text-neutral-900 mb-1">
                 <span>{isEn ? 'Warning Count:' : 'Peringatan ke:'}</span>
                 <span className="font-mono text-red-600">{antiCheatWarnings} / 3</span>
               </div>
-              <p className="text-[11px] text-amber-700">
+              <p className="text-[11px] text-neutral-600">
                 {isEn
                   ? 'Please remain on this browser window during the assessment.'
                   : 'Tetap berada di halaman ini selama tes berlangsung untuk menjaga validitas skor.'}
@@ -280,7 +347,7 @@ export default function KraepelinPracticePage() {
             </div>
             <Button
               onClick={dismissWarningModal}
-              className="w-full rounded-full bg-neutral-900 hover:bg-neutral-800 text-white text-xs h-10 font-semibold"
+              className="w-full rounded-lg bg-neutral-900 hover:bg-neutral-800 text-white text-xs h-10 font-medium transition-colors duration-150"
             >
               {isEn ? 'I Understand, Return to Test' : 'Saya Mengerti, Lanjutkan Tes'}
             </Button>
@@ -293,7 +360,7 @@ export default function KraepelinPracticePage() {
         {/* Header Breadcrumb */}
         <div className="flex items-center justify-between border-b border-[#E8E8EC] pb-3">
           <div className="flex items-center gap-2">
-            <span className="p-1.5 rounded-lg bg-indigo-50 text-indigo-700">
+            <span className="p-1.5 rounded-lg bg-neutral-100 text-neutral-800">
               <Activity className="w-5 h-5" />
             </span>
             <div>
@@ -434,59 +501,21 @@ export default function KraepelinPracticePage() {
               </div>
             </div>
 
-            {/* Switch Banner Animation */}
+            {/* Switch Banner */}
             {showSwitchBanner && (
-              <div className="p-3 bg-rose-600 text-white font-black text-center text-sm rounded-xl animate-bounce shadow-md tracking-wider">
-                ⚡ PINDAH KE KOLOM BERIKUTNYA! ⚡
+              <div className="p-3 bg-[#1D1D1F] text-white font-bold text-center text-xs rounded-xl shadow-sm tracking-wider">
+                {isEn ? 'SWITCH TO NEXT COLUMN' : 'PINDAH KE KOLOM BERIKUTNYA'}
               </div>
             )}
 
-            {/* Main Column Working Board */}
-            <div className="bg-white border border-[#E8E8EC] rounded-2xl shadow-sm p-6 flex flex-col items-center justify-center min-h-[280px] relative overflow-hidden">
-              <div className="text-center space-y-4 max-w-xs w-full">
-                <span className="text-[10px] uppercase font-bold text-[#86868B] tracking-wider">
-                  PENJUMLAHAN SEKARANG:
-                </span>
+            {/* Memoized Column Working Board */}
+            <KraepelinWorkingBoard
+              topNum={columnNumbers[currentIndexInCol + 1] ?? 5}
+              bottomNum={columnNumbers[currentIndexInCol] ?? 7}
+            />
 
-                {/* Big numbers stack */}
-                <div className="flex flex-col items-center justify-center gap-2 p-6 bg-[#FAFAFA] border border-[#E8E8EC] rounded-2xl shadow-sm">
-                  {/* Top Number */}
-                  <div className="w-16 h-16 rounded-2xl bg-white border border-[#E8E8EC] shadow-sm flex items-center justify-center text-3xl font-black text-[#0A0A0A]">
-                    {columnNumbers[currentIndexInCol + 1] ?? 5}
-                  </div>
-                  
-                  <div className="text-indigo-600 font-black text-lg">+</div>
-
-                  {/* Bottom Number */}
-                  <div className="w-16 h-16 rounded-2xl bg-white border border-[#E8E8EC] shadow-sm flex items-center justify-center text-3xl font-black text-[#0A0A0A]">
-                    {columnNumbers[currentIndexInCol] ?? 7}
-                  </div>
-                </div>
-
-                <p className="text-xs text-[#52525B] font-medium">
-                  Ketik <strong>angka satuan</strong> hasil penjumlahan di bawah:
-                </p>
-              </div>
-            </div>
-
-            {/* On-Screen Touch Numpad (Essential for Mobile PWA) */}
-            <div className="bg-white border border-[#E8E8EC] rounded-2xl p-4 shadow-sm">
-              <div className="grid grid-cols-5 gap-2 max-w-md mx-auto">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((digit) => (
-                  <button
-                    key={digit}
-                    type="button"
-                    onClick={() => submitAnswer(digit)}
-                    className="h-14 sm:h-16 rounded-xl bg-[#F5F5F7] hover:bg-indigo-600 hover:text-white active:scale-90 text-[#0A0A0A] font-bold text-xl sm:text-2xl transition-transform duration-75 ease-out border border-[#E8E8EC] shadow-sm flex items-center justify-center select-none gpu-layer will-animate cursor-pointer"
-                  >
-                    {digit}
-                  </button>
-                ))}
-              </div>
-              <p className="text-center text-[10px] text-[#86868B] mt-2">
-                Tekan tombol angka di atas atau gunakan NumPad keyboard
-              </p>
-            </div>
+            {/* Memoized On-Screen Touch Numpad */}
+            <KraepelinKeypad onSubmitAnswer={submitAnswer} />
           </div>
         )}
 

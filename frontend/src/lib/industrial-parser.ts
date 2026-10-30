@@ -116,6 +116,16 @@ export async function extractTextFromPdf(file: File): Promise<string> {
   }
 }
 
+// Yield to main thread to guarantee smooth 60-120fps UI rendering during heavy PDF text extraction
+const yieldToMain = () =>
+  new Promise<void>((resolve) => {
+    if (typeof window !== 'undefined' && 'requestAnimationFrame' in window) {
+      window.requestAnimationFrame(() => resolve());
+    } else {
+      setTimeout(resolve, 0);
+    }
+  });
+
 /**
  * Parse an uploaded resume file and extract industrial competencies, certifications, and calculate match score
  */
@@ -124,8 +134,7 @@ export async function parseIndustrialResume(
   targetJobKeywords?: string[]
 ): Promise<ParsedCompetencyResult> {
   const extractedText = await extractTextFromPdf(file);
-  // Yield to main thread before regex categorization
-  await new Promise((resolve) => setTimeout(resolve, 0));
+  await yieldToMain();
   const normalizedText = extractedText.toLowerCase();
 
   const detectedMfg: string[] = [];
@@ -150,6 +159,9 @@ export async function parseIndustrialResume(
       }
     }
   });
+
+  // Yield between heavy categories
+  await yieldToMain();
 
   // 3. Safety
   INDUSTRIAL_DICTIONARY.safety.forEach((item) => {

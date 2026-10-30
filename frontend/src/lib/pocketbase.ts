@@ -37,3 +37,76 @@ export const getUserRole = (): string | null => {
   }
   return null;
 };
+
+// ============================================================================
+// IN-MEMORY TTL CACHE & REQUEST DEDUPLICATION (0ms Tab Switching & Stale-While-Revalidate)
+// ============================================================================
+
+interface CacheEntry<T> {
+  data: T;
+  expiresAt: number;
+}
+
+const memoryCache = new Map<string, CacheEntry<any>>();
+const inFlightRequests = new Map<string, Promise<any>>();
+
+/**
+ * Fetch a full list with automatic in-memory caching and request deduplication.
+ * Default TTL: 30 seconds.
+ */
+export async function cachedPbGetFullList<T = RecordModel>(
+  collectionName: string,
+  options?: Record<string, any>,
+  ttlMs = 30000
+): Promise<T[]> {
+  const cacheKey = `${collectionName}:${JSON.stringify(options || {})}`;
+  const now = Date.now();
+
+  // 1. Check valid cache
+  const cached = memoryCache.get(cacheKey);
+  if (cached && now < cached.expiresAt) {
+    return cached.data as T[];
+  }
+
+  // 2. Deduplicate in-flight requests
+  if (inFlightRequests.has(cacheKey)) {
+    return inFlightRequests.get(cacheKey) as Promise<T[]>;
+  }
+
+  // 3. Execute and store
+  const requestPromise = pb
+    .collection(collectionName)
+    .getFullList(options)
+    .then((result) => {
+      memoryCache.set(cacheKey, {
+        data: result,
+        expiresAt: Date.now() + ttlMs,
+      });
+      inFlightRequests.delete(cacheKey);
+      return result as T[];
+    })
+    .catch((err) => {
+      inFlightRequests.delete(cacheKey);
+      // If we have stale data on error, return it as fallback
+      if (cached) return cached.data as T[];
+      throw err;
+    });
+
+  inFlightRequests.set(cacheKey, requestPromise);
+  return requestPromise;
+}
+
+/**
+ * Invalidate cache for a specific collection or all collections.
+ */
+export function invalidatePbCache(collectionName?: string): void {
+  if (!collectionName) {
+    memoryCache.clear();
+    return;
+  }
+  for (const key of memoryCache.keys()) {
+    if (key.startsWith(`${collectionName}:`)) {
+      memoryCache.delete(key);
+    }
+  }
+}

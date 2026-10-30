@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { pb } from '@/lib/pocketbase';
+import { pb, cachedPbGetFullList } from '@/lib/pocketbase';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import type { RecordModel } from 'pocketbase';
@@ -94,8 +94,8 @@ export default function HomePage() {
     async function load() {
       try {
         const [s, j] = await Promise.all([
-          pb.collection('services_catalog').getFullList({ filter: 'is_active = true', sort: 'price' }),
-          pb.collection('job_postings').getFullList({ filter: 'status = "open"', expand: 'employer_id', sort: '-created' }),
+          cachedPbGetFullList('services_catalog', { filter: 'is_active = true', sort: 'price' }),
+          cachedPbGetFullList('job_postings', { filter: 'status = "open"', expand: 'employer_id', sort: '-created' }),
         ]);
         setServices(s.length > 0 ? s : FALLBACK_SERVICES);
         setJobs(j.length > 0 ? j : FALLBACK_JOBS);
@@ -145,12 +145,12 @@ export default function HomePage() {
             {t.hero.subtitle}
           </p>
 
-          {/* Quiet, Confident Pill CTAs */}
+          {/* Quiet, Confident CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link href="#jobs" className="w-full sm:w-auto">
               <Button
                 size="lg"
-                className="w-full sm:w-auto h-11 px-7 rounded-full bg-[#1D1D1F] hover:bg-[#000000] text-white text-xs font-medium shadow-sm transition-all"
+                className="w-full sm:w-auto h-11 px-7 rounded-lg bg-[#1D1D1F] hover:bg-[#000000] text-white text-xs font-medium shadow-sm transition-colors duration-150"
               >
                 {t.hero.exploreJobs}
                 <ArrowRight className="w-3.5 h-3.5 ml-2" />
@@ -160,7 +160,7 @@ export default function HomePage() {
               <Button
                 variant="outline"
                 size="lg"
-                className="w-full sm:w-auto h-11 px-7 rounded-full border-[#E8E8EC] bg-white hover:bg-[#F5F5F7] text-[#1D1D1F] text-xs font-medium"
+                className="w-full sm:w-auto h-11 px-7 rounded-lg border-[#E8E8EC] bg-white hover:bg-[#F5F5F7] text-[#1D1D1F] text-xs font-medium transition-colors duration-150"
               >
                 {t.hero.bookConsultation}
               </Button>
@@ -169,35 +169,35 @@ export default function HomePage() {
               <Button
                 variant="outline"
                 size="lg"
-                className="w-full sm:w-auto h-11 px-6 rounded-full border-dashed border-[#6366F1] bg-indigo-50/40 hover:bg-indigo-50 text-[#6366F1] text-xs font-semibold"
+                className="w-full sm:w-auto h-11 px-6 rounded-lg border-[#E8E8EC] bg-[#F5F5F7] hover:bg-neutral-200 text-[#1D1D1F] text-xs font-medium transition-colors duration-150"
               >
                 {t.nav.loginDemo} &rarr;
               </Button>
             </Link>
           </div>
 
-          {/* Minimal Hardware Metrics */}
+          {/* Key Metrics */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-20 pt-10 border-t border-[#E8E8EC] text-left">
             <div>
-              <p className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-[#0A0A0A]">
+              <p className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0A0A0A]">
                 {t.hero.statMatchRateVal}
               </p>
               <p className="text-xs text-[#86868B] mt-1">{t.hero.statMatchRate}</p>
             </div>
             <div>
-              <p className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-[#0A0A0A]">
+              <p className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0A0A0A]">
                 {t.hero.statPillarsVal}
               </p>
               <p className="text-xs text-[#86868B] mt-1">{t.hero.statPillars}</p>
             </div>
             <div>
-              <p className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-[#0A0A0A]">
+              <p className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0A0A0A]">
                 {t.hero.statPsikogramVal}
               </p>
               <p className="text-xs text-[#86868B] mt-1">{t.hero.statPsikogram}</p>
             </div>
             <div>
-              <p className="text-2xl sm:text-3xl font-semibold font-mono tracking-tight text-[#0A0A0A]">Sync .ICS</p>
+              <p className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0A0A0A]">Sync .ICS</p>
               <p className="text-xs text-[#86868B] mt-1">Apple &amp; Google Calendar</p>
             </div>
           </div>
@@ -212,7 +212,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
             <div>
-              <span className="text-xs font-mono font-medium text-[#6366F1] uppercase tracking-wider">
+              <span className="text-xs font-semibold text-[#6366F1] uppercase tracking-wider">
                 {t.jobsSection.badge}
               </span>
               <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] text-[#0A0A0A] mt-1">
@@ -302,7 +302,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
             <div>
-              <span className="text-xs font-mono font-medium text-[#6366F1] uppercase tracking-wider">
+              <span className="text-xs font-semibold text-[#6366F1] uppercase tracking-wider">
                 {t.servicesSection.badge}
               </span>
               <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] text-[#0A0A0A] mt-1">
@@ -376,7 +376,7 @@ export default function HomePage() {
                     <span className="text-[10px] text-[#86868B] uppercase tracking-wider block font-medium">
                       {t.servicesSection.sessionFee}
                     </span>
-                    <span className="text-base font-bold font-mono text-[#0A0A0A]">
+                    <span className="text-base font-bold text-[#0A0A0A]">
                       Rp {Number(svc.price).toLocaleString('id-ID')}
                     </span>
                   </div>
@@ -384,7 +384,7 @@ export default function HomePage() {
                   <Link href={`/booking/${svc.id}`}>
                     <Button
                       size="sm"
-                      className="rounded-full bg-[#6366F1] hover:bg-[#4F46E5] text-white text-xs font-medium px-4 h-8 shadow-sm"
+                      className="rounded-lg bg-[#6366F1] hover:bg-[#4F46E5] text-white text-xs font-medium px-4 h-8 shadow-sm transition-colors duration-150"
                     >
                       {t.servicesSection.bookSession}
                       <ArrowRight className="w-3 h-3 ml-1" />

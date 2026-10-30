@@ -83,8 +83,8 @@ export default function RegisterPage() {
         <CardContent>
           <form onSubmit={handleRegister} className="space-y-4">
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 text-xs px-4 py-3 rounded-xl leading-relaxed">
-                {error}
+              <div className="bg-neutral-50 border border-neutral-200 border-l-2 border-l-red-600 text-neutral-800 text-xs px-4 py-3 rounded-lg leading-relaxed">
+                <strong className="text-red-700 font-semibold">{isEn ? 'Error:' : 'Gagal:'}</strong> {error}
               </div>
             )}
             <div className="space-y-1.5">
@@ -97,7 +97,7 @@ export default function RegisterPage() {
                 placeholder={t.auth.emailPlaceholder}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="rounded-xl border-[#E8E8EC] text-xs h-10 bg-white"
+                className="rounded-lg border-[#E8E8EC] text-xs h-10 bg-white"
                 required
               />
             </div>
@@ -111,7 +111,7 @@ export default function RegisterPage() {
                 placeholder={t.auth.passwordPlaceholder}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="rounded-xl border-[#E8E8EC] text-xs h-10 bg-white"
+                className="rounded-lg border-[#E8E8EC] text-xs h-10 bg-white"
                 required
               />
             </div>
@@ -125,7 +125,7 @@ export default function RegisterPage() {
                 placeholder={isEn ? 'Re-type password' : 'Ulangi kata sandi'}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="rounded-xl border-[#E8E8EC] text-xs h-10 bg-white"
+                className="rounded-lg border-[#E8E8EC] text-xs h-10 bg-white"
                 required
               />
             </div>
@@ -137,7 +137,7 @@ export default function RegisterPage() {
                 <button
                   type="button"
                   onClick={() => setRole('candidate')}
-                  className={`p-3 rounded-xl border text-xs font-semibold transition-all text-center ${
+                  className={`p-3 rounded-lg border text-xs font-semibold transition-colors duration-150 text-center ${
                     role === 'candidate'
                       ? 'border-[#1D1D1F] bg-[#1D1D1F] text-white shadow-sm'
                       : 'border-[#E8E8EC] bg-white text-[#6B6B6B] hover:bg-[#F5F5F7]'
@@ -148,7 +148,7 @@ export default function RegisterPage() {
                 <button
                   type="button"
                   onClick={() => setRole('employer')}
-                  className={`p-3 rounded-xl border text-xs font-semibold transition-all text-center ${
+                  className={`p-3 rounded-lg border text-xs font-semibold transition-colors duration-150 text-center ${
                     role === 'employer'
                       ? 'border-[#1D1D1F] bg-[#1D1D1F] text-white shadow-sm'
                       : 'border-[#E8E8EC] bg-white text-[#6B6B6B] hover:bg-[#F5F5F7]'
@@ -162,7 +162,7 @@ export default function RegisterPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-11 rounded-full bg-[#1D1D1F] hover:bg-[#000000] text-white font-medium text-xs shadow-sm transition-all mt-3"
+              className="w-full h-10 rounded-lg bg-[#1D1D1F] hover:bg-[#000000] text-white font-medium text-xs transition-colors duration-150 mt-3"
             >
               {loading ? t.common.loading : t.auth.registerBtn}
             </Button>

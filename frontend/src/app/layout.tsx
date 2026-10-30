@@ -6,7 +6,6 @@ import { AuthProvider } from "@/lib/auth-context";
 import { LanguageProvider } from "@/lib/language-context";
 import { SiteFooter } from "@/components/site-footer";
 import { PwaRegistrar } from "@/components/pwa-registrar";
-import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -61,7 +60,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <PwaRegistrar />
             <Navbar />
             <main className="flex-1">{children}</main>
-            <PwaInstallPrompt />
             <SiteFooter />
           </AuthProvider>
         </LanguageProvider>

@@ -69,11 +69,11 @@ export default function AdminLoginPage() {
       </div>
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-[#FFFFFF] border border-[#E8E8EC] rounded-3xl p-6 sm:p-8 shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-5">
+        <div className="bg-[#FFFFFF] border border-[#E8E8EC] rounded-2xl p-6 sm:p-8 shadow-sm space-y-5">
           <form onSubmit={handleLogin} className="space-y-4">
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 text-xs px-4 py-3 rounded-xl">
-                {error}
+              <div className="bg-neutral-50 border border-neutral-200 border-l-2 border-l-red-600 text-neutral-800 text-xs px-4 py-3 rounded-lg">
+                <strong className="text-red-700 font-semibold">{isEn ? 'Error:' : 'Gagal:'}</strong> {error}
               </div>
             )}
 
@@ -86,7 +86,7 @@ export default function AdminLoginPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="rounded-xl border-[#E8E8EC] text-xs h-10 bg-white font-mono"
+                className="rounded-lg border-[#E8E8EC] text-sm h-10 bg-white"
                 required
               />
             </div>
@@ -100,7 +100,7 @@ export default function AdminLoginPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="rounded-xl border-[#E8E8EC] text-xs h-10 bg-white font-mono"
+                className="rounded-lg border-[#E8E8EC] text-sm h-10 bg-white"
                 required
               />
             </div>
@@ -108,7 +108,7 @@ export default function AdminLoginPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-11 rounded-full bg-[#1D1D1F] hover:bg-[#000000] text-white font-medium text-xs shadow-sm transition-all"
+              className="w-full h-10 rounded-lg bg-[#1D1D1F] hover:bg-[#000000] text-white font-medium text-xs transition-colors duration-150"
             >
               {loading ? t.common.loading : t.auth.adminLoginBtn}
               <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
@@ -121,10 +121,10 @@ export default function AdminLoginPage() {
               type="button"
               variant="outline"
               onClick={handle1ClickDemo}
-              className="w-full h-10 rounded-full border-dashed border-[#6366F1] bg-indigo-50/50 hover:bg-indigo-50 text-[#6366F1] text-xs font-semibold"
+              className="w-full h-10 rounded-lg border-[#E8E8EC] bg-white hover:bg-[#F5F5F7] text-[#1D1D1F] text-xs font-medium"
             >
-              <KeyRound className="w-3.5 h-3.5 mr-1.5" />
-              {isEn ? '1-Click Fast Pass: Auto-login as Admin' : '1-Click Fast Pass: Langsung Masuk Admin'}
+              <KeyRound className="w-3.5 h-3.5 mr-1.5 text-neutral-500" />
+              {isEn ? 'Auto-fill Demo Credentials' : 'Isi Kredensial Demo Admin'}
             </Button>
           </div>
         </div>

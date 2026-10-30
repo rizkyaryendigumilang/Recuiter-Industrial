@@ -76,7 +76,7 @@ export function CorporateTimeline() {
               {isEn ? 'Hybrid Process Architecture' : 'Arsitektur Proses Hibrida'}
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] text-[#0A0A0A]">
-              {isEn ? 'Integrated Ecosystem Workflow' : 'Alur Kerja Ekosistem Terpadu'}
+              {isEn ? 'End-to-End Recruitment & Assessment Pipeline' : 'Alur Rekrutmen & Asesmen Terintegrasi'}
             </h2>
             <p className="text-xs sm:text-sm text-[#6B6B6B] mt-1.5 leading-relaxed">
               {isEn
@@ -84,7 +84,7 @@ export function CorporateTimeline() {
                 : 'Rangkaian end-to-end terstruktur yang menghubungkan rekrutmen UMKM, simulasi karier, konseling terapan, hingga sinkronisasi kalender iOS/Google.'}
             </p>
           </div>
-          <div className="text-xs text-[#86868B] font-mono hidden md:block">
+          <div className="text-xs text-[#86868B] font-medium hidden md:block">
             {isEn ? '5 Integrated Stages' : '5 Tahapan Terintegrasi'}
           </div>
         </div>

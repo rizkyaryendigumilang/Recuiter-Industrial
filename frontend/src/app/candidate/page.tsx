@@ -182,10 +182,6 @@ export default function CandidatePortal() {
       <div className="container mx-auto px-4 sm:px-6 max-w-5xl">
         {/* Header */}
         <div className="mb-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-100 border border-neutral-200 text-xs font-semibold uppercase tracking-wider text-neutral-700 mb-2">
-            <span className="w-2 h-2 rounded-full bg-[#6366F1]" />
-            {t.candidatePortal.title}
-          </div>
           <h1 className="text-3xl font-extrabold tracking-tight text-neutral-900">
             {t.candidatePortal.title}
           </h1>
@@ -195,18 +191,17 @@ export default function CandidatePortal() {
         </div>
 
         {/* Candidate Sub-Navigation Hub */}
-        <div className="flex flex-wrap items-center gap-2 mb-8 p-1.5 bg-[#F5F5F7] rounded-2xl border border-[#E8E8EC]">
-          <a href="#resume" className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white text-[#0A0A0A] shadow-sm">
+        <div className="flex flex-wrap items-center gap-2 mb-8 p-1.5 bg-[#F5F5F7] rounded-xl border border-[#E8E8EC]">
+          <a href="#resume" className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white text-[#0A0A0A] shadow-xs">
             {isEn ? 'Resume & Skills' : 'Resume & Kompetensi'}
           </a>
-          <a href="#applications" className="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-[#6B6B6B] hover:text-[#0A0A0A]">
+          <a href="#applications" className="px-3.5 py-1.5 rounded-lg text-xs font-medium text-[#6B6B6B] hover:text-[#0A0A0A]">
             {isEn ? 'My Applications' : 'Lamaran Saya'} ({applications.length})
           </a>
-          <Link href="/candidate/results" className="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 flex items-center gap-1.5">
+          <Link href="/candidate/results" className="px-3.5 py-1.5 rounded-lg text-xs font-medium text-[#1D1D1F] bg-white border border-[#E8E8EC] hover:bg-neutral-50 flex items-center gap-1.5 shadow-xs">
             <span>{isEn ? 'Psychogram Results' : 'Hasil Tes & Psikogram'}</span>
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
           </Link>
-          <Link href="/candidate/practice" className="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-[#6B6B6B] hover:text-[#0A0A0A] flex items-center gap-1">
+          <Link href="/candidate/practice" className="px-3.5 py-1.5 rounded-lg text-xs font-medium text-[#6B6B6B] hover:text-[#0A0A0A] flex items-center gap-1">
             <span>{isEn ? 'Kraepelin Tryout' : 'Simulasi Kraepelin'}</span>
           </Link>
         </div>
@@ -346,12 +341,12 @@ export default function CandidatePortal() {
                   )}
 
                   {competencyResult?.gapRecommendations && competencyResult.gapRecommendations.length > 0 && (
-                    <div className="p-3 bg-amber-50/70 border border-amber-200 rounded-xl text-xs space-y-1">
-                      <span className="font-bold text-amber-900 flex items-center gap-1.5">
+                    <div className="p-3 bg-neutral-50 border border-neutral-200 border-l-2 border-l-amber-600 rounded-lg text-xs space-y-1">
+                      <span className="font-semibold text-neutral-900 flex items-center gap-1.5">
                         <AlertCircle className="w-3.5 h-3.5 text-amber-600" />
                         Saran Pengembangan Kualifikasi:
                       </span>
-                      <ul className="list-disc list-inside text-[11px] text-amber-800 space-y-0.5">
+                      <ul className="list-disc list-inside text-[11px] text-neutral-600 space-y-0.5">
                         {competencyResult.gapRecommendations.map((gap, idx) => (
                           <li key={idx}>{gap}</li>
                         ))}

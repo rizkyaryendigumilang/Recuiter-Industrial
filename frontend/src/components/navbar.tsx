@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { useState, Suspense } from 'react';
-import { Menu, LogOut, User, Briefcase, ShieldCheck, ArrowRight, LogIn, Settings, Activity, HelpCircle, Award } from 'lucide-react';
+import { Menu, LogOut, User, Briefcase, ShieldCheck, ArrowRight, Settings, Activity, HelpCircle, Award } from 'lucide-react';
 
 function NavContent() {
   const { isLoggedIn, role, logout, user } = useAuth();
@@ -31,12 +31,6 @@ function NavContent() {
     ...(isLoggedIn && role === 'employer' ? [{ href: '/employer', label: t.nav.employerDashboard, icon: Briefcase }] : []),
     ...(isLoggedIn && role === 'admin' ? [{ href: '/admin', label: t.nav.admin, icon: ShieldCheck }] : []),
     ...(isLoggedIn ? [{ href: '/settings', label: t.nav.settings, icon: Settings }] : []),
-    ...(!isLoggedIn
-      ? [
-          { href: '/login', label: t.nav.loginDemo, icon: LogIn },
-          { href: '/admin/login', label: t.nav.adminPortal, icon: ShieldCheck },
-        ]
-      : []),
   ];
 
   const isActive = (href: string) => pathname === href;

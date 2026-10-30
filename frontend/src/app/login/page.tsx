@@ -80,11 +80,11 @@ export default function LoginPage() {
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md space-y-4">
         {/* Main Login Card */}
-        <div className="bg-[#FFFFFF] border border-[#E8E8EC] rounded-3xl p-6 sm:p-8 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+        <div className="bg-[#FFFFFF] border border-[#E8E8EC] rounded-2xl p-6 sm:p-8 shadow-sm">
           <form onSubmit={handleLogin} className="space-y-4">
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 text-xs px-4 py-3 rounded-xl leading-relaxed">
-                {error}
+              <div className="bg-neutral-50 border border-neutral-200 border-l-2 border-l-red-600 text-neutral-800 text-xs px-4 py-3 rounded-lg leading-relaxed">
+                <strong className="text-red-700 font-semibold">{isEn ? 'Error:' : 'Gagal:'}</strong> {error}
               </div>
             )}
 
@@ -98,7 +98,7 @@ export default function LoginPage() {
                 placeholder={t.auth.emailPlaceholder}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="rounded-xl border-[#E8E8EC] text-xs h-10 bg-white"
+                className="rounded-lg border-[#E8E8EC] text-xs h-10 bg-white"
                 required
               />
             </div>
@@ -115,7 +115,7 @@ export default function LoginPage() {
                 placeholder={t.auth.passwordPlaceholder}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="rounded-xl border-[#E8E8EC] text-xs h-10 bg-white"
+                className="rounded-lg border-[#E8E8EC] text-xs h-10 bg-white"
                 required
               />
             </div>
@@ -123,7 +123,7 @@ export default function LoginPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-11 rounded-full bg-[#1D1D1F] hover:bg-[#000000] text-white font-medium text-xs shadow-sm transition-all mt-2"
+              className="w-full h-10 rounded-lg bg-[#1D1D1F] hover:bg-[#000000] text-white font-medium text-xs transition-colors duration-150 mt-2"
             >
               {loading ? t.common.loading : t.auth.loginBtn}
               <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
@@ -147,14 +147,14 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => handleQuickDemo('admin')}
-              className="w-full p-3 rounded-xl border border-[#E8E8EC] hover:border-[#1D1D1F] hover:bg-[#F5F5F7] text-left transition-all flex items-center justify-between group"
+              className="w-full p-3 rounded-xl border border-[#E8E8EC] hover:border-neutral-400 hover:bg-[#F5F5F7] text-left transition-colors duration-150 flex items-center justify-between group"
             >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-indigo-50 text-[#6366F1] flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-neutral-100 text-neutral-800 flex items-center justify-center shrink-0">
                   <ShieldCheck className="w-4 h-4" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#0A0A0A] group-hover:text-[#6366F1] transition-colors">
+                  <p className="text-xs font-bold text-[#0A0A0A] group-hover:text-black transition-colors">
                     {isEn ? 'Log in as Administrator' : 'Login sebagai Administrator'}
                   </p>
                   <p className="text-[10px] text-[#86868B]">
@@ -162,20 +162,20 @@ export default function LoginPage() {
                   </p>
                 </div>
               </div>
-              <ArrowRight className="w-3.5 h-3.5 text-[#86868B] group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-3.5 h-3.5 text-[#86868B] group-hover:translate-x-0.5 transition-transform" />
             </button>
 
             <button
               type="button"
               onClick={() => handleQuickDemo('employer')}
-              className="w-full p-3 rounded-xl border border-[#E8E8EC] hover:border-[#1D1D1F] hover:bg-[#F5F5F7] text-left transition-all flex items-center justify-between group"
+              className="w-full p-3 rounded-xl border border-[#E8E8EC] hover:border-neutral-400 hover:bg-[#F5F5F7] text-left transition-colors duration-150 flex items-center justify-between group"
             >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-neutral-100 text-neutral-800 flex items-center justify-center shrink-0">
                   <Briefcase className="w-4 h-4" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#0A0A0A] group-hover:text-blue-600 transition-colors">
+                  <p className="text-xs font-bold text-[#0A0A0A] group-hover:text-black transition-colors">
                     {isEn ? 'Log in as Employer (SME)' : 'Login sebagai Employer (UMKM)'}
                   </p>
                   <p className="text-[10px] text-[#86868B]">
@@ -183,20 +183,20 @@ export default function LoginPage() {
                   </p>
                 </div>
               </div>
-              <ArrowRight className="w-3.5 h-3.5 text-[#86868B] group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-3.5 h-3.5 text-[#86868B] group-hover:translate-x-0.5 transition-transform" />
             </button>
 
             <button
               type="button"
               onClick={() => handleQuickDemo('candidate')}
-              className="w-full p-3 rounded-xl border border-[#E8E8EC] hover:border-[#1D1D1F] hover:bg-[#F5F5F7] text-left transition-all flex items-center justify-between group"
+              className="w-full p-3 rounded-xl border border-[#E8E8EC] hover:border-neutral-400 hover:bg-[#F5F5F7] text-left transition-colors duration-150 flex items-center justify-between group"
             >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-neutral-100 text-neutral-800 flex items-center justify-center shrink-0">
                   <User className="w-4 h-4" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#0A0A0A] group-hover:text-emerald-600 transition-colors">
+                  <p className="text-xs font-bold text-[#0A0A0A] group-hover:text-black transition-colors">
                     {isEn ? 'Log in as Job Seeker' : 'Login sebagai Kandidat Pelamar'}
                   </p>
                   <p className="text-[10px] text-[#86868B]">
@@ -204,7 +204,7 @@ export default function LoginPage() {
                   </p>
                 </div>
               </div>
-              <ArrowRight className="w-3.5 h-3.5 text-[#86868B] group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-3.5 h-3.5 text-[#86868B] group-hover:translate-x-0.5 transition-transform" />
             </button>
           </div>
 
