@@ -21,6 +21,7 @@ interface AuthContextType {
   needsRoleSelection: boolean;
   login: (email: string, password: string) => Promise<void>;
   loginWithOAuth: (provider: 'google' | 'github') => Promise<void>;
+  loginWithTelegram: (telegramData: Record<string, any>) => Promise<void>;
   loginAsDemo: (role: 'admin' | 'employer' | 'candidate') => void;
   assignRole: (role: 'candidate' | 'employer') => Promise<void>;
   register: (email: string, password: string, role: string) => Promise<void>;
@@ -116,6 +117,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       else router.push('/candidate');
     } catch (err) {
       console.error(`OAuth login error (${provider}):`, err);
+      throw err;
+    }
+  };
+
+  const loginWithTelegram = async (telegramData: Record<string, any>) => {
+    try {
+      const res = await fetch('/api/auth/telegram', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(telegramData),
+      });
+
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson.error || 'Autentikasi Telegram gagal');
+      }
+
+      const { token, record, isNewUser } = await res.json();
+      pb.authStore.save(token, record);
+      setUser(record as RecordModel);
+
+      if (isNewUser || !record.role) {
+        setNeedsRoleSelection(true);
+        return;
+      }
+
+      if (record.role === 'admin') router.push('/admin');
+      else if (record.role === 'employer') router.push('/employer');
+      else router.push('/candidate');
+    } catch (err) {
+      console.error('Telegram login error:', err);
       throw err;
     }
   };
@@ -225,6 +257,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       needsRoleSelection,
       login,
       loginWithOAuth,
+      loginWithTelegram,
       loginAsDemo,
       assignRole,
       register,

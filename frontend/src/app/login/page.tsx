@@ -23,11 +23,50 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [oauthLoading, setOauthLoading] = useState<'google' | 'github' | null>(null);
+  const [oauthLoading, setOauthLoading] = useState<'google' | 'github' | 'telegram' | null>(null);
   const router = useRouter();
-  const { login, loginWithOAuth, loginAsDemo } = useAuth();
+  const { login, loginWithOAuth, loginWithTelegram, loginAsDemo } = useAuth();
   const { t, language } = useLanguage();
   const isEn = language === 'en';
+
+  const handleTelegramLogin = async () => {
+    setError('');
+    setOauthLoading('telegram');
+    try {
+      const botName = process.env.NEXT_PUBLIC_TELEGRAM_BOT_NAME;
+      if (botName && typeof window !== 'undefined') {
+        const authUrl = `https://oauth.telegram.org/auth?bot_id=${botName}&origin=${encodeURIComponent(window.location.origin)}&request_access=write`;
+        window.open(authUrl, 'telegram_auth', 'width=550,height=470');
+        return;
+      }
+
+      const testTgId = prompt(
+        isEn
+          ? 'Enter your Telegram Username or ID to test Telegram login:'
+          : 'Masukkan Username atau ID Telegram untuk pengujian login Telegram:',
+        'kandidat_telegram'
+      );
+      if (!testTgId) {
+        setOauthLoading(null);
+        return;
+      }
+      await loginWithTelegram({
+        id: testTgId.replace(/[^a-zA-Z0-9_]/g, '') || '12345678',
+        first_name: testTgId,
+        username: testTgId,
+        auth_date: Math.floor(Date.now() / 1000),
+      });
+    } catch (err: any) {
+      console.error('Telegram login error:', err);
+      setError(
+        isEn
+          ? 'Failed to login with Telegram: ' + (err.message || 'Unknown error')
+          : 'Gagal login dengan Telegram: ' + (err.message || 'Kesalahan sistem')
+      );
+    } finally {
+      setOauthLoading(null);
+    }
+  };
 
   const handleOAuthLogin = async (provider: 'google' | 'github') => {
     setError('');
@@ -143,6 +182,18 @@ export default function LoginPage() {
                 />
               </svg>
               <span>{oauthLoading === 'github' ? t.common.loading : (isEn ? 'Continue with GitHub' : 'Masuk dengan GitHub')}</span>
+            </button>
+
+            <button
+              type="button"
+              disabled={oauthLoading !== null || loading}
+              onClick={() => handleTelegramLogin()}
+              className="w-full h-11 px-4 rounded-xl border border-[#E8E8EC] bg-white hover:bg-[#F5F5F7] text-[#1D1D1F] text-xs font-semibold shadow-xs flex items-center justify-center gap-3 transition-colors cursor-pointer touch-manipulation disabled:opacity-50"
+            >
+              <svg className="w-4 h-4 shrink-0 fill-[#229ED9]" viewBox="0 0 24 24">
+                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.536-.196 1.006.128.832.942z" />
+              </svg>
+              <span>{oauthLoading === 'telegram' ? t.common.loading : (isEn ? 'Continue with Telegram' : 'Masuk dengan Telegram')}</span>
             </button>
           </div>
 
