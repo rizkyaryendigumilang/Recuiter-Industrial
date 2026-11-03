@@ -1,21 +1,121 @@
 /// <reference path="../pb_data/types.d.ts" />
 
 // ---------------------------------------------------------------------------
-// 1. Hybrid Payment: generate kode unik 3 digit + set default status pending
-//    untuk setiap konsultasi booking baru.
-//    CATATAN PocketBase 0.40: handler hook HARUS memanggil e.next() agar
-//    rantai eksekusi berlanjut (tanpa itu request dihentikan tanpa efek).
+// 0. User Security & Privilege Escalation Guard (CRITICAL FIX)
+//    Mencegah pendaftaran mandiri atau update profil yang menetapkan role 'admin'
+//    tanpa otorisasi administrator.
 // ---------------------------------------------------------------------------
 onRecordCreateRequest((e) => {
-    if (!e.record.get("unique_code")) {
-        const uniqueCode = Math.floor(Math.random() * 900) + 100; // 100-999
-        e.record.set("unique_code", uniqueCode);
-    }
-    if (!e.record.get("payment_status")) {
-        e.record.set("payment_status", "pending");
+    const role = e.record.get("role");
+    const auth = e.auth || (e.requestInfo && e.requestInfo().auth);
+    const isAdmin = auth && auth.get("role") === "admin";
+
+    // Jika mencoba mendaftar sebagai admin tanpa otorisasi admin yang sah
+    if (role === "admin" && !isAdmin) {
+        e.record.set("role", "candidate");
+    } else if (!role) {
+        e.record.set("role", "candidate");
     }
     e.next();
+}, "users");
+
+onRecordUpdateRequest((e) => {
+    const newRole = e.record.get("role");
+    const auth = e.auth || (e.requestInfo && e.requestInfo().auth);
+    const isAdmin = auth && auth.get("role") === "admin";
+
+    // Mencegah eskalasi role menjadi 'admin' oleh non-admin
+    if (newRole === "admin" && !isAdmin) {
+        const orig = e.record.originalCopy ? e.record.originalCopy() : null;
+        const originalRole = orig ? orig.get("role") : "candidate";
+        e.record.set("role", originalRole);
+    }
+    e.next();
+}, "users");
+
+// ---------------------------------------------------------------------------
+// 1. Hybrid Payment & Consultation IDOR Guard (HIGH FIX)
+//    - Mengunci user_id ke akun yang membuat booking
+//    - Mengunci payment_status agar tidak bisa diset 'paid' oleh non-admin
+//    - Generate kode unik 3 digit dengan pencegahan tabrakan (anti-collision)
+// ---------------------------------------------------------------------------
+onRecordCreateRequest((e) => {
+    const auth = e.auth || (e.requestInfo && e.requestInfo().auth);
+    const isAdmin = auth && auth.get("role") === "admin";
+
+    // Keamanan Finansial: Hanya admin yang berhak membuat booking dengan status 'paid' secara langsung.
+    // Non-admin (kandidat/publik) wajib diinisialisasi ke status 'pending' dan user_id dikunci.
+    if (!isAdmin) {
+        e.record.set("payment_status", "pending");
+        if (auth) {
+            e.record.set("user_id", auth.id);
+        }
+    } else {
+        if (!e.record.get("payment_status")) {
+            e.record.set("payment_status", "pending");
+        }
+    }
+
+    if (!e.record.get("unique_code")) {
+        let uniqueCode = 0;
+        let isUnique = false;
+        let attempts = 0;
+
+        // Cegah tabrakan kode unik transfer 3 digit (100-999) dengan booking lain yang masih pending
+        while (!isUnique && attempts < 15) {
+            attempts++;
+            uniqueCode = Math.floor(Math.random() * 900) + 100;
+            try {
+                const existing = $app.findRecordsByFilter(
+                    "consultation_bookings",
+                    "payment_status = 'pending' && unique_code = " + uniqueCode,
+                    "",
+                    1,
+                    0
+                );
+                if (!existing || existing.length === 0) {
+                    isUnique = true;
+                }
+            } catch (err) {
+                // Fallback jika collection belum siap atau filter gagal
+                isUnique = true;
+            }
+        }
+
+        if (!isUnique) {
+            // Modulo millisecond jika tingkat saturasi kode pending sangat tinggi
+            uniqueCode = 100 + (Date.now() % 900);
+        }
+
+        e.record.set("unique_code", uniqueCode);
+    }
+
+    e.next();
 }, "consultation_bookings");
+
+// ---------------------------------------------------------------------------
+// 1b. Job Application Ownership Guard (MEDIUM FIX)
+//     Mencegah manipulasi candidate_id (IDOR) pada pengiriman lamaran kerja.
+// ---------------------------------------------------------------------------
+onRecordCreateRequest((e) => {
+    const auth = e.auth || (e.requestInfo && e.requestInfo().auth);
+    const isAdmin = auth && auth.get("role") === "admin";
+
+    if (!isAdmin && auth) {
+        const candidateId = e.record.get("candidate_id");
+        if (candidateId) {
+            try {
+                const candidateRecord = $app.findRecordById("candidates", candidateId);
+                if (!candidateRecord || candidateRecord.get("user_id") !== auth.id) {
+                    throw new BadRequestError("Akses ditolak: Anda hanya dapat mengirim lamaran menggunakan profil kandidat Anda sendiri.");
+                }
+            } catch (err) {
+                throw new BadRequestError("Akses ditolak: Profil kandidat tidak valid atau bukan milik Anda.");
+            }
+        }
+    }
+    e.next();
+}, "job_applications");
 
 // ---------------------------------------------------------------------------
 // 2. Smart CV Parser Manufaktur & Industri: ekstrak kompetensi teknis pabrik saat upload CV.
@@ -85,17 +185,50 @@ onRecordUpdateRequest((e) => {
 //    POST /api/submit-test
 // ---------------------------------------------------------------------------
 routerAdd("POST", "/api/submit-test", (e) => {
+    // 1. Validasi Autentikasi User (Wajib Login)
+    const authRecord = e.auth || (e.requestInfo && e.requestInfo().auth);
+    if (!authRecord) {
+        return e.json(401, {
+            error: "Akses ditolak: Autentikasi diperlukan untuk mengirim hasil tes psikometri."
+        });
+    }
+
     const data = e.requestInfo().body;
     const applicationId = data.application_id || "";
     const answers = data.answers || [];
     const psychDetails = data.psychometric_details || null;
 
     let application = null;
+    let candidateRecord = null;
     if (applicationId) {
         try {
             application = $app.findRecordById("job_applications", applicationId);
         } catch (err) {
             application = null;
+        }
+
+        // 2. Validasi User Ownership: Pengguna harus Admin atau Pemilik berkas lamaran
+        if (application) {
+            const isAdmin = authRecord.get("role") === "admin";
+            const appCandidateId = application.get("candidate_id");
+            let isOwner = false;
+
+            if (appCandidateId) {
+                try {
+                    candidateRecord = $app.findRecordById("candidates", appCandidateId);
+                    if (candidateRecord && candidateRecord.get("user_id") === authRecord.id) {
+                        isOwner = true;
+                    }
+                } catch (err) {
+                    // Abaikan err pencarian
+                }
+            }
+
+            if (!isAdmin && !isOwner) {
+                return e.json(403, {
+                    error: "Akses ditolak: Anda tidak memiliki wewenang atas berkas lamaran ini."
+                });
+            }
         }
     }
 
@@ -161,11 +294,24 @@ routerAdd("POST", "/api/submit-test", (e) => {
         const assessmentColl = $app.findCollectionByNameOrId("candidate_assessments");
         if (assessmentColl && psychDetails) {
             const newAssessment = new Record(assessmentColl);
-            if (data.user_id) newAssessment.set("user_id", data.user_id);
-            if (data.candidate_id) newAssessment.set("candidate_id", data.candidate_id);
+            // Kunci user_id ke akun terautentikasi (mencegah manipulasi identitas pengguna lain)
+            newAssessment.set("user_id", authRecord.id);
+
+            if (candidateRecord) {
+                newAssessment.set("candidate_id", candidateRecord.id);
+            } else if (application && application.get("candidate_id")) {
+                newAssessment.set("candidate_id", application.get("candidate_id"));
+            } else if (authRecord.get("role") === "admin" && data.candidate_id) {
+                newAssessment.set("candidate_id", data.candidate_id);
+            }
+
             if (data.job_id) newAssessment.set("job_id", data.job_id);
-            if (data.candidate_name) newAssessment.set("candidate_name", data.candidate_name);
-            if (data.candidate_email) newAssessment.set("candidate_email", data.candidate_email);
+
+            const candidateName = authRecord.get("name") || data.candidate_name || authRecord.get("email") || "Kandidat";
+            const candidateEmail = authRecord.get("email") || data.candidate_email || "";
+            newAssessment.set("candidate_name", candidateName);
+            newAssessment.set("candidate_email", candidateEmail);
+
             newAssessment.set("test_type", psychDetails.test_type || "full_industrial");
             newAssessment.set("total_score", totalScore);
             newAssessment.set("panker", psychDetails.panker || 0);

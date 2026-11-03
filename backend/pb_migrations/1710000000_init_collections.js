@@ -127,7 +127,7 @@ migrate((app) => {
             type: "base",
             listRule: "",
             viewRule: "",
-            createRule: "@request.auth.role = 'admin' || @request.auth.role = 'employer'",
+            createRule: "@request.auth.role = 'admin' || (@request.auth.role = 'employer' && employer_id.user_id = @request.auth.id)",
             updateRule: "@request.auth.role = 'admin' || (@request.auth.role = 'employer' && employer_id.user_id = @request.auth.id)",
             fields: [
                 { name: "employer_id", type: "relation", required: true, collectionId: employersId, maxSelect: 1 },
@@ -153,7 +153,7 @@ migrate((app) => {
             type: "base",
             listRule: "@request.auth.role = 'admin' || candidate_id.user_id = @request.auth.id || job_id.employer_id.user_id = @request.auth.id",
             viewRule: "@request.auth.role = 'admin' || candidate_id.user_id = @request.auth.id || job_id.employer_id.user_id = @request.auth.id",
-            createRule: "@request.auth.role = 'candidate'",
+            createRule: "@request.auth.role = 'admin' || (@request.auth.role = 'candidate' && candidate_id.user_id = @request.auth.id)",
             updateRule: "@request.auth.role = 'admin' || job_id.employer_id.user_id = @request.auth.id",
             fields: [
                 { name: "job_id", type: "relation", required: true, collectionId: jobsId, maxSelect: 1 },
@@ -199,7 +199,7 @@ migrate((app) => {
                 type: "base",
                 listRule: "@request.auth.role = 'admin' || @request.auth.id = user_id",
                 viewRule: "@request.auth.role = 'admin' || @request.auth.id = user_id",
-                createRule: "@request.auth.id != ''",
+                createRule: "@request.auth.role = 'admin' || (@request.auth.id != '' && @request.auth.id = user_id)",
                 updateRule: "@request.auth.role = 'admin'",
                 fields: [
                     { name: "user_id", type: "relation", required: true, collectionId: usersId, maxSelect: 1 },

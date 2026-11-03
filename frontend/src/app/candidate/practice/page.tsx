@@ -24,7 +24,9 @@ import {
   Smartphone,
   ShieldAlert,
   ShieldCheck,
-  Compass
+  Compass,
+  Maximize2,
+  Minimize2
 } from 'lucide-react';
 
 interface ColumnResult {
@@ -41,19 +43,24 @@ interface ColumnResult {
 const KraepelinWorkingBoard = React.memo(function KraepelinWorkingBoard({
   topNum,
   bottomNum,
+  pulseTrigger = 0,
 }: {
   topNum: number;
   bottomNum: number;
+  pulseTrigger?: number;
 }) {
   return (
     <div className="bg-white border border-[#E8E8EC] rounded-2xl shadow-sm p-6 flex flex-col items-center justify-center min-h-[280px] relative overflow-hidden">
       <div className="text-center space-y-4 max-w-xs w-full">
-        <span className="text-[10px] uppercase font-bold text-[#86868B] tracking-wider">
+        <span className="text-[10px] uppercase font-bold text-[#52525B] tracking-wider">
           PENJUMLAHAN SEKARANG:
         </span>
 
-        {/* Big numbers stack */}
-        <div className="flex flex-col items-center justify-center gap-2 p-6 bg-[#FAFAFA] border border-[#E8E8EC] rounded-2xl shadow-sm gpu-layer">
+        {/* Big numbers stack with micro-feedback pulse */}
+        <div 
+          key={pulseTrigger}
+          className="flex flex-col items-center justify-center gap-2 p-6 bg-[#FAFAFA] border border-[#E8E8EC] rounded-2xl shadow-sm gpu-layer transition-transform duration-75 animate-in zoom-in-95"
+        >
           {/* Top Number */}
           <div className="w-16 h-16 rounded-2xl bg-white border border-[#E8E8EC] shadow-sm flex items-center justify-center text-3xl font-black text-[#0A0A0A]">
             {topNum}
@@ -76,25 +83,88 @@ const KraepelinWorkingBoard = React.memo(function KraepelinWorkingBoard({
 });
 
 const KraepelinKeypad = React.memo(function KraepelinKeypad({
+  layout = 'compact',
+  onLayoutChange,
   onSubmitAnswer,
+  isEn = false,
 }: {
+  layout?: 'compact' | 'traditional';
+  onLayoutChange?: (l: 'compact' | 'traditional') => void;
   onSubmitAnswer: (digit: number) => void;
+  isEn?: boolean;
 }) {
   return (
     <div className="bg-white border border-[#E8E8EC] rounded-2xl p-4 shadow-sm">
-      <div className="grid grid-cols-5 gap-2 max-w-md mx-auto">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((digit) => (
+      {onLayoutChange && (
+        <div className="flex items-center justify-between mb-3 px-1">
+          <span className="text-[11px] font-medium text-[#52525B]">
+            {isEn ? 'Keypad layout:' : 'Tata letak keypad:'}
+          </span>
+          <div className="flex items-center gap-1 bg-[#F5F5F7] p-0.5 rounded-lg border border-[#E8E8EC]">
+            <button
+              type="button"
+              onClick={() => onLayoutChange('compact')}
+              className={`px-2.5 py-1 text-[10px] font-semibold rounded-md transition-colors cursor-pointer touch-manipulation ${
+                layout === 'compact'
+                  ? 'bg-white text-[#0A0A0A] shadow-xs'
+                  : 'text-[#52525B] hover:text-[#0A0A0A]'
+              }`}
+            >
+              {isEn ? '5-Col Compact' : '5-Kolom (Compact)'}
+            </button>
+            <button
+              type="button"
+              onClick={() => onLayoutChange('traditional')}
+              className={`px-2.5 py-1 text-[10px] font-semibold rounded-md transition-colors cursor-pointer touch-manipulation ${
+                layout === 'traditional'
+                  ? 'bg-white text-[#0A0A0A] shadow-xs'
+                  : 'text-[#52525B] hover:text-[#0A0A0A]'
+              }`}
+            >
+              {isEn ? '3×4 Calculator' : '3×4 Kalkulator'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {layout === 'traditional' ? (
+        <div className="grid grid-cols-3 gap-2 max-w-xs mx-auto">
+          {[7, 8, 9, 4, 5, 6, 1, 2, 3].map((digit) => (
+            <button
+              key={digit}
+              type="button"
+              onClick={() => onSubmitAnswer(digit)}
+              className="h-14 sm:h-16 rounded-xl bg-[#F5F5F7] hover:bg-indigo-600 hover:text-white active:scale-90 text-[#0A0A0A] font-bold text-xl sm:text-2xl transition-transform duration-75 ease-out border border-[#E8E8EC] shadow-sm flex items-center justify-center select-none gpu-layer will-animate cursor-pointer touch-manipulation"
+            >
+              {digit}
+            </button>
+          ))}
+          <div />
           <button
-            key={digit}
             type="button"
-            onClick={() => onSubmitAnswer(digit)}
+            onClick={() => onSubmitAnswer(0)}
             className="h-14 sm:h-16 rounded-xl bg-[#F5F5F7] hover:bg-indigo-600 hover:text-white active:scale-90 text-[#0A0A0A] font-bold text-xl sm:text-2xl transition-transform duration-75 ease-out border border-[#E8E8EC] shadow-sm flex items-center justify-center select-none gpu-layer will-animate cursor-pointer touch-manipulation"
           >
-            {digit}
+            0
           </button>
-        ))}
-      </div>
-      <p className="text-center text-[10px] text-[#86868B] mt-2">
+          <div />
+        </div>
+      ) : (
+        <div className="grid grid-cols-5 gap-2 max-w-md mx-auto">
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((digit) => (
+            <button
+              key={digit}
+              type="button"
+              onClick={() => onSubmitAnswer(digit)}
+              className="h-14 sm:h-16 rounded-xl bg-[#F5F5F7] hover:bg-indigo-600 hover:text-white active:scale-90 text-[#0A0A0A] font-bold text-xl sm:text-2xl transition-transform duration-75 ease-out border border-[#E8E8EC] shadow-sm flex items-center justify-center select-none gpu-layer will-animate cursor-pointer touch-manipulation"
+            >
+              {digit}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <p className="text-center text-[10px] text-[#52525B] mt-2">
         Tekan tombol angka di atas atau gunakan NumPad keyboard
       </p>
     </div>
@@ -108,6 +178,8 @@ export default function KraepelinPracticePage() {
   // Game Modes
   // quick: 4 cols x 10s, standard: 6 cols x 15s, industrial: 10 cols x 15s
   const [mode, setMode] = useState<'quick' | 'standard' | 'industrial'>('quick');
+  const [keypadLayout, setKeypadLayout] = useState<'compact' | 'traditional'>('compact');
+  const [pulseCount, setPulseCount] = useState(0);
   const [gameState, setGameState] = useState<'idle' | 'playing' | 'column_switch' | 'finished'>('idle');
 
   // Config based on mode
@@ -123,12 +195,14 @@ export default function KraepelinPracticePage() {
   const [results, setResults] = useState<ColumnResult[]>([]);
   const [showSwitchBanner, setShowSwitchBanner] = useState(false);
 
-  // Anti-Cheat Engine Integration
+  // Anti-Cheat Engine Integration & Layar Penuh (Fullscreen Lock)
   const {
     warnings: antiCheatWarnings,
     showWarningModal,
     dismissWarningModal,
     lastViolationReason,
+    isFullscreen,
+    requestFullscreen,
   } = useAntiCheat({
     enabled: gameState === 'playing',
     maxWarnings: 3,
@@ -153,6 +227,9 @@ export default function KraepelinPracticePage() {
 
   // Start the entire test
   const handleStart = () => {
+    // Kunci layar penuh (Fullscreen) otomatis untuk integritas tes psikometri Kraepelin
+    requestFullscreen().catch(() => {});
+
     setResults([]);
     setCurrentColumn(0);
     setTimeLeft(secondsPerColumn);
@@ -289,6 +366,7 @@ export default function KraepelinPracticePage() {
     if (currentIndexInCol + 2 < columnNumbers.length) {
       setCurrentIndexInCol((idx) => idx + 1);
     }
+    setPulseCount((c) => c + 1);
   }, [gameState, columnNumbers, currentIndexInCol]);
 
   // Physical Keyboard Listener
@@ -448,6 +526,50 @@ export default function KraepelinPracticePage() {
                 </div>
               </div>
 
+              {/* Keypad Layout Preference Selector */}
+              <div className="space-y-2">
+                <label className="text-xs font-semibold text-[#0A0A0A]">
+                  {isEn ? 'Preferred On-Screen Keypad Style:' : 'Pilihan Tata Letak Keypad Layar:'}
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setKeypadLayout('compact')}
+                    className={`p-3 rounded-xl border text-left transition-all cursor-pointer touch-manipulation ${
+                      keypadLayout === 'compact'
+                        ? 'border-indigo-600 bg-indigo-50/60 shadow-sm'
+                        : 'border-[#E8E8EC] hover:bg-[#F5F5F7]'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs font-bold text-[#0A0A0A]">{isEn ? '5-Column Compact' : '5-Kolom (Compact)'}</p>
+                      {keypadLayout === 'compact' && <CheckCircle2 className="w-3.5 h-3.5 text-indigo-600" />}
+                    </div>
+                    <p className="text-[11px] text-[#52525B] mt-0.5">
+                      {isEn ? 'Two rows (1-5, 6-0), space-saving' : 'Dua baris (1-5, 6-0), hemat ruang'}
+                    </p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setKeypadLayout('traditional')}
+                    className={`p-3 rounded-xl border text-left transition-all cursor-pointer touch-manipulation ${
+                      keypadLayout === 'traditional'
+                        ? 'border-indigo-600 bg-indigo-50/60 shadow-sm'
+                        : 'border-[#E8E8EC] hover:bg-[#F5F5F7]'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs font-bold text-[#0A0A0A]">{isEn ? '3×4 Calculator Numpad' : '3×4 Numpad (Kalkulator)'}</p>
+                      {keypadLayout === 'traditional' && <CheckCircle2 className="w-3.5 h-3.5 text-indigo-600" />}
+                    </div>
+                    <p className="text-[11px] text-[#52525B] mt-0.5">
+                      {isEn ? 'Standard numeric keypad muscle memory' : 'Sesuai memori motorik kalkulator/ATM'}
+                    </p>
+                  </button>
+                </div>
+              </div>
+
               {/* Instructions Box */}
               <div className="p-4 bg-[#F5F5F7] rounded-xl border border-[#E8E8EC] space-y-2 text-xs text-[#4B5563]">
                 <div className="flex items-center gap-2 font-semibold text-[#0A0A0A]">
@@ -462,7 +584,7 @@ export default function KraepelinPracticePage() {
 
               <Button
                 onClick={handleStart}
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm h-12 rounded-xl shadow-md gap-2"
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm h-12 rounded-xl shadow-md gap-2 touch-manipulation"
               >
                 <Play className="w-4 h-4" />
                 <span>{isEn ? 'Start Kraepelin Simulation' : 'Mulai Simulasi Sekarang'}</span>
@@ -492,12 +614,27 @@ export default function KraepelinPracticePage() {
                 </div>
               </div>
 
-              {/* Countdown badge */}
+              {/* Countdown badge & Fullscreen Lock */}
               <div className="flex items-center gap-2">
-                <Clock className={`w-5 h-5 ${timeLeft <= 3 ? 'text-rose-600 animate-pulse' : 'text-indigo-600'}`} />
-                <span className={`text-xl font-mono font-extrabold ${timeLeft <= 3 ? 'text-rose-600' : 'text-[#0A0A0A]'}`}>
-                  {timeLeft}s
-                </span>
+                <button
+                  type="button"
+                  onClick={() => requestFullscreen().catch(() => {})}
+                  title={isFullscreen ? 'Layar Penuh Terkunci' : 'Aktifkan Layar Penuh'}
+                  className={`hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-semibold border transition-colors touch-manipulation cursor-pointer ${
+                    isFullscreen
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      : 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'
+                  }`}
+                >
+                  <Maximize2 className="w-3 h-3" />
+                  <span>{isFullscreen ? 'Layar Penuh Aktif' : 'Kunci Fullscreen'}</span>
+                </button>
+                <div className="flex items-center gap-1.5 bg-neutral-50 px-2.5 py-1 rounded-xl border border-neutral-200">
+                  <Clock className={`w-4 h-4 ${timeLeft <= 3 ? 'text-rose-600 animate-pulse' : 'text-indigo-600'}`} />
+                  <span className={`text-lg font-mono font-extrabold ${timeLeft <= 3 ? 'text-rose-600' : 'text-[#0A0A0A]'}`}>
+                    {timeLeft}s
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -512,10 +649,16 @@ export default function KraepelinPracticePage() {
             <KraepelinWorkingBoard
               topNum={columnNumbers[currentIndexInCol + 1] ?? 5}
               bottomNum={columnNumbers[currentIndexInCol] ?? 7}
+              pulseTrigger={pulseCount}
             />
 
             {/* Memoized On-Screen Touch Numpad */}
-            <KraepelinKeypad onSubmitAnswer={submitAnswer} />
+            <KraepelinKeypad
+              layout={keypadLayout}
+              onLayoutChange={setKeypadLayout}
+              onSubmitAnswer={submitAnswer}
+              isEn={isEn}
+            />
           </div>
         )}
 
@@ -623,7 +766,7 @@ export default function KraepelinPracticePage() {
                                 <text x={p.x} y={p.y - 10} textAnchor="middle" fontSize="10" fontWeight="bold" fill="#0A0A0A">
                                   {p.val}
                                 </text>
-                                <text x={p.x} y="136" textAnchor="middle" fontSize="9" fill="#86868B">
+                                <text x={p.x} y="136" textAnchor="middle" fontSize="9" fill="#52525B">
                                   K{p.col}
                                 </text>
                               </g>

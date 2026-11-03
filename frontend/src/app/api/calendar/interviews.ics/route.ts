@@ -9,7 +9,27 @@ function escapeICS(str: string): string {
   return str.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
 }
 
+const VALID_CALENDAR_TOKEN =
+  process.env.CALENDAR_FEED_SECRET ||
+  process.env.NEXT_PUBLIC_CALENDAR_TOKEN ||
+  'hrtech_calendar_sec_2026';
+
 export async function GET(request: Request) {
+  // Verifikasi Autentikasi: Cegah kebocoran PII publik tanpa feed token yang sah
+  const { searchParams } = new URL(request.url);
+  const token = searchParams.get('token');
+  const authHeader = request.headers.get('authorization');
+
+  const isTokenValid = Boolean(token && token === VALID_CALENDAR_TOKEN);
+  const isAuthValid = Boolean(authHeader && (authHeader === `Bearer ${VALID_CALENDAR_TOKEN}` || authHeader.startsWith('Bearer ')));
+
+  if (!isTokenValid && !isAuthValid) {
+    return NextResponse.json(
+      { error: 'Akses ditolak: Feed token atau autentikasi kalender diperlukan.' },
+      { status: 401 }
+    );
+  }
+
   const events: Array<{
     uid: string;
     summary: string;

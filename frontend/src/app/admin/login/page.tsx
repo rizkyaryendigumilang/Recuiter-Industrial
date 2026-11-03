@@ -115,18 +115,20 @@ export default function AdminLoginPage() {
             </Button>
           </form>
 
-          {/* 1-Click Fast Pass */}
-          <div className="pt-2 border-t border-[#E8E8EC]">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handle1ClickDemo}
-              className="w-full h-10 rounded-lg border-[#E8E8EC] bg-white hover:bg-[#F5F5F7] text-[#1D1D1F] text-xs font-medium"
-            >
-              <KeyRound className="w-3.5 h-3.5 mr-1.5 text-neutral-500" />
-              {isEn ? 'Auto-fill Demo Credentials' : 'Isi Kredensial Demo Admin'}
-            </Button>
-          </div>
+          {/* 1-Click Fast Pass (Hanya tersedia di mode development/staging) */}
+          {!isProduction && (
+            <div className="pt-2 border-t border-[#E8E8EC]">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handle1ClickDemo}
+                className="w-full h-10 rounded-lg border-[#E8E8EC] bg-white hover:bg-[#F5F5F7] text-[#1D1D1F] text-xs font-medium"
+              >
+                <KeyRound className="w-3.5 h-3.5 mr-1.5 text-neutral-500" />
+                {isEn ? 'Auto-fill Demo Credentials' : 'Isi Kredensial Demo Admin'}
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>

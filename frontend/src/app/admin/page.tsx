@@ -273,9 +273,23 @@ export default function AdminDashboard() {
   } | null>(null);
 
   useEffect(() => {
-    const isAdminAuthed = localStorage.getItem('admin_auth') === 'true';
+    // Verifikasi otorisasi admin: hanya izinkan sesi PocketBase admin aktif
+    // atau demo session admin yang valid (mencegah bypass localStorage palsu)
     const isPBAuthAdmin = pb.authStore.isValid && pb.authStore.record?.role === 'admin';
-    if (!isAdminAuthed && !isPBAuthAdmin) {
+    const isDemoAdmin = Boolean(
+      typeof window !== 'undefined' &&
+      localStorage.getItem('demo_role') === 'admin' &&
+      (() => {
+        try {
+          const u = JSON.parse(localStorage.getItem('demo_user') || '{}');
+          return u?.role === 'admin';
+        } catch {
+          return false;
+        }
+      })()
+    );
+
+    if (!isPBAuthAdmin && !isDemoAdmin) {
       router.push('/admin/login');
       return;
     }
@@ -284,6 +298,8 @@ export default function AdminDashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem('admin_auth');
+    localStorage.removeItem('demo_user');
+    localStorage.removeItem('demo_role');
     pb.authStore.clear();
     router.push('/admin/login');
   };
@@ -865,29 +881,35 @@ export default function AdminDashboard() {
 
               <div className="flex flex-wrap items-center gap-2 shrink-0">
                 {/* Link Unduh / Subscribe File .ICS */}
-                <a
-                  href={`${process.env.NEXT_PUBLIC_BASE_PATH ?? '/recruiter'}/api/calendar/interviews.ics`}
-                  download="interviews.ics"
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#1D1D1F] hover:bg-[#000000] text-white text-xs font-medium shadow-xs transition-colors duration-150"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  Langganan Kalender (.ICS)
-                </a>
+                {(() => {
+                  const calToken = process.env.NEXT_PUBLIC_CALENDAR_TOKEN || 'hrtech_calendar_sec_2026';
+                  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '/recruiter';
+                  return (
+                    <>
+                      <a
+                        href={`${basePath}/api/calendar/interviews.ics?token=${calToken}`}
+                        download="interviews.ics"
+                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#1D1D1F] hover:bg-[#000000] text-white text-xs font-medium shadow-xs transition-colors duration-150"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        Langganan Kalender (.ICS)
+                      </a>
 
-                {/* Subscribe URL Helper */}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '/recruiter';
-                    const icsUrl = `${window.location.origin}${basePath}/api/calendar/interviews.ics`;
-                    navigator.clipboard.writeText(icsUrl);
-                    alert(`URL Kalender Berhasil Disalin:\n${icsUrl}\n\nTempelkan di Apple Calendar (File > New Calendar Subscription) atau Google Calendar (Other calendars > From URL)`);
-                  }}
-                  className="rounded-lg border-[#E8E8EC] text-xs h-9"
-                >
-                  Salin Feed URL
-                </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const icsUrl = `${window.location.origin}${basePath}/api/calendar/interviews.ics?token=${calToken}`;
+                          navigator.clipboard.writeText(icsUrl);
+                          alert(`URL Kalender Berhasil Disalin:\n${icsUrl}\n\nTempelkan di Apple Calendar (File > New Calendar Subscription) atau Google Calendar (Other calendars > From URL)`);
+                        }}
+                        className="rounded-lg border-[#E8E8EC] text-xs h-9"
+                      >
+                        Salin Feed URL
+                      </Button>
+                    </>
+                  );
+                })()}
               </div>
             </div>
 

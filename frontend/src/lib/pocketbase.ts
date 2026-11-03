@@ -1,4 +1,4 @@
-import PocketBase from 'pocketbase';
+import PocketBase, { type RecordModel } from 'pocketbase';
 
 function getPocketBaseUrl(): string {
   if (process.env.NEXT_PUBLIC_PB_URL) {
@@ -14,7 +14,17 @@ export const pb = new PocketBase(getPocketBaseUrl());
 
 export const isAdmin = () => {
   if (pb.authStore.isValid && pb.authStore.record?.role === 'admin') return true;
-  if (typeof window !== 'undefined' && (localStorage.getItem('admin_auth') === 'true' || localStorage.getItem('demo_role') === 'admin')) return true;
+  if (typeof window !== 'undefined') {
+    const demoRole = localStorage.getItem('demo_role');
+    if (demoRole === 'admin') {
+      try {
+        const u = JSON.parse(localStorage.getItem('demo_user') || '{}');
+        return u.role === 'admin';
+      } catch {
+        return false;
+      }
+    }
+  }
   return false;
 };
 

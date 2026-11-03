@@ -12,12 +12,12 @@ export function SiteFooter() {
   }, []);
 
   return (
-    <footer className="border-t border-[#E8E8EC] py-8 text-center text-xs text-[#86868B] bg-white">
+    <footer className="border-t border-[#E8E8EC] py-8 text-center text-xs text-[#52525B] bg-white">
       <div className="container mx-auto px-4 space-y-1">
         <p className="font-medium text-[#1D1D1F]">
           &copy; {year} {t.footer.copyright}
         </p>
-        <p className="text-[11px] text-[#86868B]">
+        <p className="text-[11px] text-[#52525B]">
           {t.footer.tagline}
         </p>
       </div>

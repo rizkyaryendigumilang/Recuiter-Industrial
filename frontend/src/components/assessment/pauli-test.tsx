@@ -75,13 +75,14 @@ export function PauliTest({
   const [columnShiftAlert, setColumnShiftAlert] = useState<string | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Anti-Cheat Engine Integration
+  // Anti-Cheat Engine Integration & Layar Penuh (Fullscreen Lock)
   const {
     warnings,
     showWarningModal,
     dismissWarningModal,
     lastViolationReason,
     isExceeded,
+    requestFullscreen,
   } = useAntiCheat({
     enabled: enableAntiCheat && gameState === 'running',
     maxWarnings: 3,
@@ -108,6 +109,9 @@ export function PauliTest({
 
   // Start test
   const startTest = () => {
+    // Kunci layar penuh (Fullscreen) otomatis saat tes psikometri Pauli dimulai
+    requestFullscreen().catch(() => {});
+
     const cols = generateColumns();
     setColumnNumbers(cols);
     setCurrentColumn(0);

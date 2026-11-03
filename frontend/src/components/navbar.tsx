@@ -74,6 +74,7 @@ function NavContent() {
                     : 'text-[#6B6B6B] hover:text-[#0A0A0A] hover:bg-[#F5F5F7]'
                 }`}
                 title={t.nav.settings}
+                aria-label={t.nav.settings}
               >
                 <Settings className="w-3.5 h-3.5" />
               </Button>
@@ -84,7 +85,7 @@ function NavContent() {
               onClick={logout}
               className="rounded-full text-xs font-medium border-[#E8E8EC] text-[#1D1D1F] hover:bg-[#F5F5F7] h-8 px-3 active:scale-95 transition-transform cursor-pointer"
             >
-              <LogOut className="w-3.5 h-3.5 mr-1 text-[#86868B]" />
+              <LogOut className="w-3.5 h-3.5 mr-1 text-[#52525B]" />
               {t.nav.logout}
             </Button>
           </div>
@@ -125,7 +126,7 @@ function NavContent() {
                 <p className="font-bold text-lg text-[#0A0A0A]">
                   HR<span className="text-[#6366F1]">Tech</span>
                 </p>
-                <p className="text-xs text-[#86868B] mt-0.5">{t.nav.brandSub}</p>
+                <p className="text-xs text-[#52525B] mt-0.5">{t.nav.brandSub}</p>
               </div>
 
               {/* Mobile Language Selector */}
@@ -152,7 +153,7 @@ function NavContent() {
               <div className="border-t border-[#E8E8EC] my-3" />
               {isLoggedIn ? (
                 <div className="space-y-3 px-1">
-                  <p className="text-xs text-[#86868B] truncate px-2 font-mono">{user?.email}</p>
+                  <p className="text-xs text-[#52525B] truncate px-2 font-mono">{user?.email}</p>
                   <Button
                     variant="outline"
                     size="sm"

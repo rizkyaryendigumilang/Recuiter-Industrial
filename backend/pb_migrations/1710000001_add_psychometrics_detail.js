@@ -45,7 +45,7 @@ migrate((app) => {
             type: "base",
             listRule: "@request.auth.role = 'admin' || @request.auth.role = 'employer' || user_id = @request.auth.id",
             viewRule: "@request.auth.role = 'admin' || @request.auth.role = 'employer' || user_id = @request.auth.id",
-            createRule: "@request.auth.id != ''",
+            createRule: "@request.auth.role = 'admin'",
             updateRule: "@request.auth.role = 'admin'",
             deleteRule: "@request.auth.role = 'admin'",
             fields: [

@@ -71,7 +71,7 @@ export function CorporateTimeline() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFFFFF] border border-[#E8E8EC] text-[11px] font-medium tracking-wide text-[#86868B] mb-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFFFFF] border border-[#E8E8EC] text-[11px] font-medium tracking-wide text-[#52525B] mb-3">
               <span className="w-1.5 h-1.5 rounded-full bg-[#6366F1]" />
               {isEn ? 'Hybrid Process Architecture' : 'Arsitektur Proses Hibrida'}
             </div>
@@ -84,7 +84,7 @@ export function CorporateTimeline() {
                 : 'Rangkaian end-to-end terstruktur yang menghubungkan rekrutmen UMKM, simulasi karier, konseling terapan, hingga sinkronisasi kalender iOS/Google.'}
             </p>
           </div>
-          <div className="text-xs text-[#86868B] font-medium hidden md:block">
+          <div className="text-xs text-[#52525B] font-medium hidden md:block">
             {isEn ? '5 Integrated Stages' : '5 Tahapan Terintegrasi'}
           </div>
         </div>
@@ -109,14 +109,14 @@ export function CorporateTimeline() {
                       <div className="w-10 h-10 rounded-xl bg-[#FAFAFA] border border-[#E8E8EC] flex items-center justify-center text-[#1D1D1F] font-mono text-xs font-bold shadow-xs">
                         {item.step}
                       </div>
-                      <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#F5F5F7] text-[#86868B] font-medium border border-[#E8E8EC]">
+                      <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#F5F5F7] text-[#52525B] font-medium border border-[#E8E8EC]">
                         {item.badge}
                       </span>
                     </div>
 
                     <div className="flex items-center gap-2 mb-1.5">
                       <Icon className="w-3.5 h-3.5 text-[#6366F1]" />
-                      <span className="text-[10px] font-mono uppercase tracking-widest text-[#86868B]">
+                      <span className="text-[10px] font-mono uppercase tracking-widest text-[#52525B]">
                         {item.category}
                       </span>
                     </div>
@@ -131,7 +131,7 @@ export function CorporateTimeline() {
 
                   {/* Bottom: Metric Pill */}
                   <div className="pt-4 mt-4 border-t border-[#F5F5F7] flex items-center justify-between text-[11px]">
-                    <span className="text-[#86868B] font-mono">Status</span>
+                    <span className="text-[#52525B] font-mono">Status</span>
                     <span className="font-mono font-medium text-[#1D1D1F] bg-[#F5F5F7] px-2 py-0.5 rounded-md">
                       {item.metric}
                     </span>
