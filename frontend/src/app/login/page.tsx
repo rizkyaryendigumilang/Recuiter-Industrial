@@ -227,6 +227,12 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="rounded-lg border-[#E8E8EC] text-xs h-10 bg-white"
+                autoComplete="email"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                inputMode="email"
+                enterKeyHint="next"
                 required
               />
             </div>
@@ -244,6 +250,8 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="rounded-lg border-[#E8E8EC] text-xs h-10 bg-white"
+                autoComplete="current-password"
+                enterKeyHint="done"
                 required
               />
             </div>

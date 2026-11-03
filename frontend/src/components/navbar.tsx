@@ -188,7 +188,7 @@ function NavContent() {
 
 export function Navbar() {
   return (
-    <header className="sticky top-0 z-50 bg-[#FFFFFF]/85 backdrop-blur-xl border-b border-[#E8E8EC]">
+    <header className="sticky top-0 z-50 bg-[#FFFFFF]/85 backdrop-blur-xl border-b border-[#E8E8EC] pt-[env(safe-area-inset-top,0px)]">
       <div className="container mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 group">
           <span className="w-7 h-7 rounded-lg bg-[#0A0A0A] text-white flex items-center justify-center font-bold text-xs tracking-wider shadow-sm group-hover:bg-[#6366F1] transition-colors">

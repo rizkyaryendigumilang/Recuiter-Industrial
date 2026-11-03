@@ -145,6 +145,20 @@
     -webkit-touch-callout: none;
     touch-action: manipulation;
   }
+  /* Normalize 100vh on mobile to dynamic viewport height */
+  .min-h-screen {
+    min-height: 100dvh;
+  }
+  .h-screen {
+    height: 100dvh;
+  }
+}
+
+/* Suppress sticky hover on mobile touchscreens */
+@media (hover: none) and (pointer: coarse) {
+  *:hover {
+    -webkit-transform: none !important;
+  }
 }
 
 @layer utilities {

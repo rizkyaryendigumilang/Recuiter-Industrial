@@ -31,7 +31,7 @@ export function LanguageSwitcher({ variant = 'dropdown', className = '' }: Langu
         <button
           type="button"
           onClick={() => setLanguage('id')}
-          className={`flex items-center gap-1 px-2.5 py-1 rounded-full font-medium transition-all ${
+          className={`flex items-center gap-1 px-2.5 py-1 rounded-full font-medium transition-all touch-manipulation cursor-pointer ${
             language === 'id'
               ? 'bg-white text-[#0A0A0A] shadow-sm font-semibold'
               : 'text-[#6B6B6B] hover:text-[#0A0A0A]'
@@ -44,7 +44,7 @@ export function LanguageSwitcher({ variant = 'dropdown', className = '' }: Langu
         <button
           type="button"
           onClick={() => setLanguage('en')}
-          className={`flex items-center gap-1 px-2.5 py-1 rounded-full font-medium transition-all ${
+          className={`flex items-center gap-1 px-2.5 py-1 rounded-full font-medium transition-all touch-manipulation cursor-pointer ${
             language === 'en'
               ? 'bg-white text-[#0A0A0A] shadow-sm font-semibold'
               : 'text-[#6B6B6B] hover:text-[#0A0A0A]'
@@ -68,7 +68,7 @@ export function LanguageSwitcher({ variant = 'dropdown', className = '' }: Langu
           <button
             type="button"
             onClick={() => setLanguage('id')}
-            className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl border text-xs font-medium transition-all ${
+            className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border text-xs font-medium transition-all touch-manipulation cursor-pointer ${
               language === 'id'
                 ? 'bg-[#1D1D1F] text-white border-[#1D1D1F] shadow-sm'
                 : 'bg-white text-[#1D1D1F] border-[#E8E8EC] hover:bg-[#F5F5F7]'
@@ -81,7 +81,7 @@ export function LanguageSwitcher({ variant = 'dropdown', className = '' }: Langu
           <button
             type="button"
             onClick={() => setLanguage('en')}
-            className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl border text-xs font-medium transition-all ${
+            className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border text-xs font-medium transition-all touch-manipulation cursor-pointer ${
               language === 'en'
                 ? 'bg-[#1D1D1F] text-white border-[#1D1D1F] shadow-sm'
                 : 'bg-white text-[#1D1D1F] border-[#E8E8EC] hover:bg-[#F5F5F7]'
