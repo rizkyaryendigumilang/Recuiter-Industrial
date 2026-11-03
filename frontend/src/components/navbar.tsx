@@ -117,10 +117,10 @@ function NavContent() {
       <div className="flex items-center gap-2 lg:hidden">
         <LanguageSwitcher variant="pill" />
         <Sheet open={open} onOpenChange={setOpen}>
-          <SheetTrigger className="lg:hidden" render={<Button variant="ghost" size="sm" className="p-2 rounded-full text-[#1D1D1F] hover:bg-[#F5F5F7]" />}>
+          <SheetTrigger className="lg:hidden" render={<Button variant="ghost" size="sm" className="h-10 w-10 min-h-[40px] min-w-[40px] p-2 rounded-full text-[#1D1D1F] hover:bg-[#F5F5F7] touch-manipulation flex items-center justify-center cursor-pointer" />}>
             <Menu className="w-5 h-5" />
           </SheetTrigger>
-          <SheetContent side="right" className="w-80 pt-10 bg-[#FFFFFF] border-l border-[#E8E8EC]">
+          <SheetContent side="right" className="w-80 pt-10 pb-[calc(1.5rem+env(safe-area-inset-bottom,0px))] bg-[#FFFFFF] border-l border-[#E8E8EC] overscroll-contain overflow-y-auto">
             <div className="flex flex-col gap-2">
               <div className="px-3 pb-3 border-b border-[#E8E8EC]">
                 <p className="font-bold text-lg text-[#0A0A0A]">

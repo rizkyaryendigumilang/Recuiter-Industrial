@@ -183,16 +183,16 @@ export default function CandidateResultsPage() {
             </h1>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Link href="/candidate/practice">
-              <Button variant="outline" size="sm" className="rounded-xl text-xs gap-1.5 border-[#E8E8EC] h-9">
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+            <Link href="/candidate/practice" className="w-full sm:w-auto">
+              <Button variant="outline" size="sm" className="w-full sm:w-auto rounded-xl text-xs gap-1.5 border-[#E8E8EC] h-9 touch-manipulation">
                 <Play className="w-3.5 h-3.5" />
                 <span>{isEn ? 'Retake Practice' : 'Ulangi Tryout Kraepelin'}</span>
               </Button>
             </Link>
             <Button
               onClick={handlePrint}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold h-9 px-4 gap-2 shadow-sm"
+              className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold h-9 px-4 gap-2 shadow-sm touch-manipulation"
             >
               <Printer className="w-3.5 h-3.5" />
               <span>{isEn ? 'Print / Download PDF' : 'Cetak / Unduh Psikogram PDF'}</span>

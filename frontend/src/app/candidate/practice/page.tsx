@@ -134,7 +134,7 @@ const KraepelinKeypad = React.memo(function KraepelinKeypad({
               key={digit}
               type="button"
               onClick={() => onSubmitAnswer(digit)}
-              className="h-14 sm:h-16 rounded-xl bg-[#F5F5F7] hover:bg-indigo-600 hover:text-white active:scale-90 text-[#0A0A0A] font-bold text-xl sm:text-2xl transition-transform duration-75 ease-out border border-[#E8E8EC] shadow-sm flex items-center justify-center select-none gpu-layer will-animate cursor-pointer touch-manipulation"
+              className="h-14 sm:h-16 rounded-xl bg-[#F5F5F7] [@media(hover:hover)]:hover:bg-indigo-600 [@media(hover:hover)]:hover:text-white active:bg-indigo-600 active:text-white active:scale-95 text-[#0A0A0A] font-bold text-xl sm:text-2xl transition-all duration-75 ease-out border border-[#E8E8EC] shadow-sm flex items-center justify-center select-none gpu-layer will-animate cursor-pointer touch-manipulation"
             >
               {digit}
             </button>
@@ -143,7 +143,7 @@ const KraepelinKeypad = React.memo(function KraepelinKeypad({
           <button
             type="button"
             onClick={() => onSubmitAnswer(0)}
-            className="h-14 sm:h-16 rounded-xl bg-[#F5F5F7] hover:bg-indigo-600 hover:text-white active:scale-90 text-[#0A0A0A] font-bold text-xl sm:text-2xl transition-transform duration-75 ease-out border border-[#E8E8EC] shadow-sm flex items-center justify-center select-none gpu-layer will-animate cursor-pointer touch-manipulation"
+            className="h-14 sm:h-16 rounded-xl bg-[#F5F5F7] [@media(hover:hover)]:hover:bg-indigo-600 [@media(hover:hover)]:hover:text-white active:bg-indigo-600 active:text-white active:scale-95 text-[#0A0A0A] font-bold text-xl sm:text-2xl transition-all duration-75 ease-out border border-[#E8E8EC] shadow-sm flex items-center justify-center select-none gpu-layer will-animate cursor-pointer touch-manipulation"
           >
             0
           </button>
@@ -156,7 +156,7 @@ const KraepelinKeypad = React.memo(function KraepelinKeypad({
               key={digit}
               type="button"
               onClick={() => onSubmitAnswer(digit)}
-              className="h-14 sm:h-16 rounded-xl bg-[#F5F5F7] hover:bg-indigo-600 hover:text-white active:scale-90 text-[#0A0A0A] font-bold text-xl sm:text-2xl transition-transform duration-75 ease-out border border-[#E8E8EC] shadow-sm flex items-center justify-center select-none gpu-layer will-animate cursor-pointer touch-manipulation"
+              className="h-14 sm:h-16 rounded-xl bg-[#F5F5F7] [@media(hover:hover)]:hover:bg-indigo-600 [@media(hover:hover)]:hover:text-white active:bg-indigo-600 active:text-white active:scale-95 text-[#0A0A0A] font-bold text-xl sm:text-2xl transition-all duration-75 ease-out border border-[#E8E8EC] shadow-sm flex items-center justify-center select-none gpu-layer will-animate cursor-pointer touch-manipulation"
             >
               {digit}
             </button>

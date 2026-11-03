@@ -119,7 +119,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-8rem)] px-4 py-8">
+    <div className="flex flex-col items-center justify-center min-h-[calc(100dvh-8rem)] min-h-[calc(100vh-8rem)] px-4 py-8">
       <div className="w-full max-w-md mb-4 flex items-center justify-between">
         <Link
           href="/"

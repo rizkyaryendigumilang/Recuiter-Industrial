@@ -108,7 +108,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] flex flex-col justify-center py-12 px-4 sm:px-6">
+    <div className="min-h-screen min-h-dvh bg-[#FAFAFA] flex flex-col justify-center py-12 px-4 sm:px-6">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         {/* Top bar with back link & language switcher */}
         <div className="flex items-center justify-between mb-6">
