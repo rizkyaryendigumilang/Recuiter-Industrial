@@ -42,7 +42,7 @@ function loadEnv() {
 
 loadEnv();
 
-const PB_URL = process.env.PB_URL || process.argv[2] || 'http://127.0.0.1:8090';
+const PB_URL = process.env.PB_URL || process.argv[2] || process.env.PB_INTERNAL_URL || 'http://127.0.0.1:8093';
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@hrtech.id';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin@hrtech123';
 

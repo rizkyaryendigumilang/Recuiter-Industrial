@@ -307,8 +307,17 @@ jobs:
           echo "🚀 Menghubungi VPS $VPS_HOST untuk update kode web & build..."
           ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=15 -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "bash -s" << 'EOF'
             set -e
+
+            # Pastikan NVM, Node.js, npm, dan PM2 tersedia di PATH non-interaktif
+            export NVM_DIR="$HOME/.nvm"
+            if [ -s "$NVM_DIR/nvm.sh" ]; then
+              \. "$NVM_DIR/nvm.sh"
+            fi
+            export PATH="$PATH:$HOME/.nvm/versions/node/$(ls $HOME/.nvm/versions/node 2>/dev/null | tail -n 1)/bin:/usr/local/bin:/usr/bin:$HOME/.npm-global/bin:$HOME/.local/bin"
+            source ~/.profile 2>/dev/null || true
+
             TARGET_DIR=""
-            for dir in "/home/ubuntu/platform-repos/Recuiter-Industrial" "/home/ubuntu/Recuiter-Industrial" "/home/ubuntu/recruiter-industrial" "/var/www/recruiter"; do
+            for dir in "/home/ubuntu/platform-repos/Recuiter-Industrial" "/home/ubuntu/platform-repos/recruiter-industrial" "/home/ubuntu/Recuiter-Industrial" "/home/ubuntu/recruiter-industrial" "/var/www/recruiter"; do
               if [ -d "$dir" ]; then
                 TARGET_DIR="$dir"
                 break
@@ -333,20 +342,19 @@ jobs:
                 cd ..
               fi
 
-              # Jalankan PocketBase migration & OAuth jika ada
+              # Jalankan PocketBase migration & OAuth jika ada (coba port 8093 lalu 8090)
               if [ -f "backend/configure-oauth.mjs" ]; then
-                echo "⚙️ Memperbarui konfigurasi OAuth PocketBase (Port 8093)..."
-                node backend/configure-oauth.mjs http://127.0.0.1:8093 || true
+                echo "⚙️ Memperbarui konfigurasi OAuth PocketBase..."
+                node backend/configure-oauth.mjs http://127.0.0.1:8093 || node backend/configure-oauth.mjs http://127.0.0.1:8090 || true
               fi
 
               # Restart service jika menggunakan PM2 atau systemd
+              echo "🔄 Me-restart service web..."
               if command -v pm2 &>/dev/null; then
                 pm2 reload all || pm2 restart all || true
               fi
-              if systemctl is-active --quiet recruiter-industrial-frontend 2>/dev/null; then
-                sudo systemctl restart recruiter-industrial-frontend || true
-              elif systemctl is-active --quiet recruiter 2>/dev/null; then
-                sudo systemctl restart recruiter || true
+              if command -v systemctl &>/dev/null; then
+                sudo systemctl restart recruiter-industrial-frontend 2>/dev/null || sudo systemctl restart recruiter 2>/dev/null || true
               fi
 
               echo "🎉 Aplikasi web di VPS berhasil di-update ke versi terbaru!"
