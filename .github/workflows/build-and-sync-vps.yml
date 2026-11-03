@@ -334,21 +334,23 @@ jobs:
                 cd frontend
                 echo "📦 Memperbarui dependencies & build Next.js..."
                 npm install --prefer-offline || npm install
-                npm run build
+                NODE_OPTIONS="--max-old-space-size=1536" npm run build
                 cd ..
               fi
 
-              # Jalankan PocketBase migration jika ada
+              # Jalankan PocketBase migration & OAuth jika ada
               if [ -f "backend/configure-oauth.mjs" ]; then
-                echo "⚙️ Memperbarui konfigurasi OAuth PocketBase..."
-                node backend/configure-oauth.mjs http://127.0.0.1:8090 || true
+                echo "⚙️ Memperbarui konfigurasi OAuth PocketBase (Port 8093)..."
+                node backend/configure-oauth.mjs http://127.0.0.1:8093 || true
               fi
 
               # Restart service jika menggunakan PM2 atau systemd
               if command -v pm2 &>/dev/null; then
                 pm2 reload all || pm2 restart all || true
               fi
-              if systemctl is-active --quiet recruiter 2>/dev/null; then
+              if systemctl is-active --quiet recruiter-industrial-frontend 2>/dev/null; then
+                sudo systemctl restart recruiter-industrial-frontend || true
+              elif systemctl is-active --quiet recruiter 2>/dev/null; then
                 sudo systemctl restart recruiter || true
               fi
 
