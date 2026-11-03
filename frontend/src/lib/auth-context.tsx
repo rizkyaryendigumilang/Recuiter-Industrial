@@ -18,8 +18,11 @@ interface AuthContextType {
   user: RecordModel | DemoUser | null;
   isLoggedIn: boolean;
   role: string | null;
+  needsRoleSelection: boolean;
   login: (email: string, password: string) => Promise<void>;
+  loginWithOAuth: (provider: 'google' | 'github') => Promise<void>;
   loginAsDemo: (role: 'admin' | 'employer' | 'candidate') => void;
+  assignRole: (role: 'candidate' | 'employer') => Promise<void>;
   register: (email: string, password: string, role: string) => Promise<void>;
   updateUser: (data: Record<string, any>) => Promise<void>;
   logout: () => void;
@@ -29,6 +32,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<RecordModel | DemoUser | null>(null);
+  const [needsRoleSelection, setNeedsRoleSelection] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -87,6 +91,56 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
       throw err;
+    }
+  };
+
+  const loginWithOAuth = async (provider: 'google' | 'github') => {
+    try {
+      const authData = await pb.collection('users').authWithOAuth2({ provider });
+      const record = authData.record as RecordModel;
+      setUser(record);
+
+      const existingRole = record.role;
+      if (!existingRole) {
+        // User baru mendaftar via Google / GitHub -> Munculkan dialog pemilihan peran
+        setNeedsRoleSelection(true);
+        return;
+      }
+
+      if (typeof window !== 'undefined' && existingRole === 'admin') {
+        localStorage.setItem('admin_auth', 'true');
+      }
+
+      if (existingRole === 'admin') router.push('/admin');
+      else if (existingRole === 'employer') router.push('/employer');
+      else router.push('/candidate');
+    } catch (err) {
+      console.error(`OAuth login error (${provider}):`, err);
+      throw err;
+    }
+  };
+
+  const assignRole = async (chosenRole: 'candidate' | 'employer') => {
+    try {
+      if (pb.authStore.isValid && pb.authStore.record?.id) {
+        const updated = await pb.collection('users').update(pb.authStore.record.id, {
+          role: chosenRole,
+        });
+        setUser(updated as RecordModel);
+      } else if (user?.id) {
+        await updateUser({ role: chosenRole });
+      }
+      setNeedsRoleSelection(false);
+      if (chosenRole === 'employer') router.push('/employer');
+      else router.push('/candidate');
+    } catch (err) {
+      console.warn('Error saving chosen OAuth role:', err);
+      if (user) {
+        setUser((prev: any) => ({ ...prev, role: chosenRole }));
+      }
+      setNeedsRoleSelection(false);
+      if (chosenRole === 'employer') router.push('/employer');
+      else router.push('/candidate');
     }
   };
 
@@ -154,6 +208,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem('demo_role');
       localStorage.removeItem('admin_auth');
     }
+    setNeedsRoleSelection(false);
     setUser(null);
     router.push('/');
   };
@@ -167,8 +222,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user,
       isLoggedIn,
       role: currentRole,
+      needsRoleSelection,
       login,
+      loginWithOAuth,
       loginAsDemo,
+      assignRole,
       register,
       updateUser,
       logout,
