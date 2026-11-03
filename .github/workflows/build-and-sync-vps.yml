@@ -235,7 +235,7 @@ jobs:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USERNAME: ${{ secrets.VPS_USERNAME }}
           VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
-          VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
+          VPS_PORT: ${{ secrets.VPS_SSH_PORT || secrets.VPS_PORT || '2222' }}
           VPS_TARGET_DIR: ${{ secrets.VPS_TARGET_DIR || '/var/www/downloads' }}
         run: |
           if [ -z "$VPS_HOST" ] || [ -z "$VPS_SSH_KEY" ] || [ -z "$VPS_USERNAME" ]; then
@@ -291,7 +291,7 @@ jobs:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USERNAME: ${{ secrets.VPS_USERNAME || 'ubuntu' }}
           VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
-          VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
+          VPS_PORT: ${{ secrets.VPS_SSH_PORT || secrets.VPS_PORT || '2222' }}
           VPS_PROJECT_DIR: ${{ secrets.VPS_PROJECT_DIR || '/home/ubuntu/platform-repos/Recuiter-Industrial' }}
         run: |
           if [ -z "$VPS_HOST" ] || [ -z "$VPS_SSH_KEY" ]; then
