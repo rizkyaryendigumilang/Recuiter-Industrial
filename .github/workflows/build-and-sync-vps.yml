@@ -280,3 +280,82 @@ jobs:
           # Clean up private key
           rm -f ~/.ssh/id_rsa
           echo "🎉 VPS synchronization completed successfully."
+
+  # =========================================================================
+  # JOB 5: Auto-Deploy Web Application to VPS
+  # =========================================================================
+  deploy-web:
+    name: Deploy Web Application to VPS
+    runs-on: ubuntu-latest
+    needs: validate-web
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Deploy to VPS via Secure SSH
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USERNAME: ${{ secrets.VPS_USERNAME || 'ubuntu' }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
+          VPS_PROJECT_DIR: ${{ secrets.VPS_PROJECT_DIR || '/home/ubuntu/platform-repos/Recuiter-Industrial' }}
+        run: |
+          if [ -z "$VPS_HOST" ] || [ -z "$VPS_SSH_KEY" ]; then
+            echo "::warning title=Auto-Deploy Skipped::GitHub Secrets (VPS_HOST, VPS_SSH_KEY) belum dikonfigurasi di GitHub Repository Secrets. Melewati deploy otomatis web ke VPS."
+            exit 0
+          fi
+
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          echo "$VPS_SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p "$VPS_PORT" -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+          echo "🚀 Menghubungi VPS $VPS_HOST untuk update kode web & build..."
+          ssh -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "bash -s" << 'EOF'
+            set -e
+            TARGET_DIR=""
+            for dir in "/home/ubuntu/platform-repos/Recuiter-Industrial" "/home/ubuntu/Recuiter-Industrial" "/home/ubuntu/recruiter-industrial" "/var/www/recruiter"; do
+              if [ -d "$dir" ]; then
+                TARGET_DIR="$dir"
+                break
+              fi
+            done
+
+            if [ -z "$TARGET_DIR" ]; then
+              TARGET_DIR=$(find /home/ubuntu -maxdepth 3 -name ".git" -exec dirname {} \; 2>/dev/null | grep -i "recruiter" | head -n 1 || true)
+            fi
+
+            if [ -n "$TARGET_DIR" ] && [ -d "$TARGET_DIR" ]; then
+              echo "📂 Direktori project ditemukan di: $TARGET_DIR"
+              cd "$TARGET_DIR"
+              echo "📥 Menjalankan git pull origin main..."
+              git pull origin main
+
+              if [ -d "frontend" ]; then
+                cd frontend
+                echo "📦 Memperbarui dependencies & build Next.js..."
+                npm install --prefer-offline || npm install
+                npm run build
+                cd ..
+              fi
+
+              # Jalankan PocketBase migration jika ada
+              if [ -f "backend/configure-oauth.mjs" ]; then
+                echo "⚙️ Memperbarui konfigurasi OAuth PocketBase..."
+                node backend/configure-oauth.mjs http://127.0.0.1:8090 || true
+              fi
+
+              # Restart service jika menggunakan PM2 atau systemd
+              if command -v pm2 &>/dev/null; then
+                pm2 reload all || pm2 restart all || true
+              fi
+              if systemctl is-active --quiet recruiter 2>/dev/null; then
+                sudo systemctl restart recruiter || true
+              fi
+
+              echo "🎉 Aplikasi web di VPS berhasil di-update ke versi terbaru!"
+            else
+              echo "⚠️ Direktori project belum ditemukan di lokasi umum VPS. Silakan cek letak folder project Anda."
+            fi
+          EOF
+
+          rm -f ~/.ssh/id_rsa
