@@ -247,35 +247,31 @@ jobs:
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
 
-          # Load private key safely without carriage returns
-          echo "$VPS_SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+          # Load private key safely with newline
+          printf '%s\n' "$VPS_SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-          # Secure host key verification using ssh-keyscan
-          ssh-keyscan -p "$VPS_PORT" -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null
-          chmod 644 ~/.ssh/known_hosts
-
           echo "📂 Ensuring remote target directory exists: $VPS_TARGET_DIR"
-          ssh -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "mkdir -p $VPS_TARGET_DIR"
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=15 -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "mkdir -p $VPS_TARGET_DIR"
 
           # Upload Android APK if present using atomic write (.tmp -> mv)
           if [ -f "./sync-artifacts/app-latest.apk" ]; then
             echo "📤 Uploading app-latest.apk atomically..."
-            scp -P "$VPS_PORT" -i ~/.ssh/id_rsa ./sync-artifacts/app-latest.apk "$VPS_USERNAME@$VPS_HOST:$VPS_TARGET_DIR/app-latest.apk.tmp"
-            ssh -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "mv $VPS_TARGET_DIR/app-latest.apk.tmp $VPS_TARGET_DIR/app-latest.apk"
+            scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P "$VPS_PORT" -i ~/.ssh/id_rsa ./sync-artifacts/app-latest.apk "$VPS_USERNAME@$VPS_HOST:$VPS_TARGET_DIR/app-latest.apk.tmp"
+            ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "mv $VPS_TARGET_DIR/app-latest.apk.tmp $VPS_TARGET_DIR/app-latest.apk"
             echo "✅ app-latest.apk synchronized to VPS."
           fi
 
           # Upload iOS IPA if present using atomic write (.tmp -> mv)
           if [ -f "./sync-artifacts/app-latest.ipa" ]; then
             echo "📤 Uploading app-latest.ipa atomically..."
-            scp -P "$VPS_PORT" -i ~/.ssh/id_rsa ./sync-artifacts/app-latest.ipa "$VPS_USERNAME@$VPS_HOST:$VPS_TARGET_DIR/app-latest.ipa.tmp"
-            ssh -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "mv $VPS_TARGET_DIR/app-latest.ipa.tmp $VPS_TARGET_DIR/app-latest.ipa"
+            scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P "$VPS_PORT" -i ~/.ssh/id_rsa ./sync-artifacts/app-latest.ipa "$VPS_USERNAME@$VPS_HOST:$VPS_TARGET_DIR/app-latest.ipa.tmp"
+            ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "mv $VPS_TARGET_DIR/app-latest.ipa.tmp $VPS_TARGET_DIR/app-latest.ipa"
             echo "✅ app-latest.ipa synchronized to VPS."
           fi
 
           echo "🔍 Post-sync verification on VPS:"
-          ssh -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "ls -lh $VPS_TARGET_DIR/app-latest.* 2>/dev/null || true"
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "ls -lh $VPS_TARGET_DIR/app-latest.* 2>/dev/null || true"
 
           # Clean up private key
           rm -f ~/.ssh/id_rsa
@@ -305,12 +301,11 @@ jobs:
 
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
-          echo "$VPS_SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+          printf '%s\n' "$VPS_SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -p "$VPS_PORT" -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null
 
           echo "🚀 Menghubungi VPS $VPS_HOST untuk update kode web & build..."
-          ssh -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "bash -s" << 'EOF'
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=15 -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "bash -s" << 'EOF'
             set -e
             TARGET_DIR=""
             for dir in "/home/ubuntu/platform-repos/Recuiter-Industrial" "/home/ubuntu/Recuiter-Industrial" "/home/ubuntu/recruiter-industrial" "/var/www/recruiter"; do
