@@ -22,6 +22,7 @@ function NavContent() {
     { href: '/services', label: t.nav.services },
     { href: '/candidate/practice', label: t.nav.practice, icon: Activity },
     { href: '/help', label: t.nav.help, icon: HelpCircle },
+    { href: '/showcase', label: 'Showcase & IG Kit' },
     ...(isLoggedIn && role === 'candidate'
       ? [
           { href: '/candidate', label: t.nav.candidatePortal, icon: User },

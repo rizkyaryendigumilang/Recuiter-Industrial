@@ -45,3 +45,9 @@ Thumbs.db
 # Database & Backups
 backend/pb_data/
 backend/backups/
+
+# Remotion & Media Render Outputs
+frontend/public/showcase/videos/
+frontend/public/showcase/clips-*/
+frontend/public/showcase/concat-projects/
+frontend/public/showcase/instagram-*/

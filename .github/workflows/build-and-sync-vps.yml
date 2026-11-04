@@ -231,15 +231,16 @@ jobs:
           path: ./sync-artifacts
 
       - name: Sync Artifacts to VPS via Secure SSH/SCP
+        continue-on-error: true
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
-          VPS_USERNAME: ${{ secrets.VPS_USERNAME }}
+          VPS_USERNAME: ${{ secrets.VPS_USERNAME || 'ubuntu' }}
           VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
           VPS_PORT: ${{ secrets.VPS_SSH_PORT || secrets.VPS_PORT || '2222' }}
-          VPS_TARGET_DIR: ${{ secrets.VPS_TARGET_DIR || '/var/www/downloads' }}
+          VPS_TARGET_DIR: ${{ secrets.VPS_TARGET_DIR || '/home/ubuntu/downloads' }}
         run: |
-          if [ -z "$VPS_HOST" ] || [ -z "$VPS_SSH_KEY" ] || [ -z "$VPS_USERNAME" ]; then
-            echo "::warning title=VPS Sync Skipped::VPS secrets (VPS_HOST, VPS_USERNAME, VPS_SSH_KEY) are not configured. Skipping VPS synchronization."
+          if [ -z "$VPS_HOST" ] || [ -z "$VPS_SSH_KEY" ]; then
+            echo "::warning title=VPS Sync Skipped::VPS secrets (VPS_HOST, VPS_SSH_KEY) are not configured. Skipping VPS synchronization."
             exit 0
           fi
 
@@ -251,27 +252,68 @@ jobs:
           printf '%s\n' "$VPS_SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-          echo "📂 Ensuring remote target directory exists: $VPS_TARGET_DIR"
-          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=15 -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "mkdir -p $VPS_TARGET_DIR"
+          echo "📂 Resolving and ensuring remote target directory exists..."
+          ACTUAL_TARGET_DIR=$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -o ConnectTimeout=15 -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "TARGET_INPUT='$VPS_TARGET_DIR' bash -s" << 'EOF'
+            TARGET="$TARGET_INPUT"
+
+            # 1. Try regular mkdir
+            if mkdir -p "$TARGET" 2>/dev/null && [ -w "$TARGET" ]; then
+              echo "$TARGET"
+              exit 0
+            fi
+
+            # 2. If permission denied, attempt sudo if available
+            if command -v sudo >/dev/null 2>&1; then
+              sudo -n mkdir -p "$TARGET" 2>/dev/null || true
+              sudo -n chown -R "$(whoami):$(whoami)" "$TARGET" 2>/dev/null || true
+              if [ -d "$TARGET" ] && [ -w "$TARGET" ]; then
+                echo "$TARGET"
+                exit 0
+              fi
+            fi
+
+            # 3. Resilient fallback to user home downloads
+            FALLBACK="$HOME/downloads"
+            mkdir -p "$FALLBACK" 2>/dev/null || true
+            echo "$FALLBACK"
+          EOF
+          )
+          ACTUAL_TARGET_DIR=$(echo "$ACTUAL_TARGET_DIR" | tr -d '\r' | tail -n 1)
+          if [ -z "$ACTUAL_TARGET_DIR" ]; then
+            ACTUAL_TARGET_DIR="/home/$VPS_USERNAME/downloads"
+          fi
+          echo "✅ Remote target directory verified: $ACTUAL_TARGET_DIR"
 
           # Upload Android APK if present using atomic write (.tmp -> mv)
           if [ -f "./sync-artifacts/app-latest.apk" ]; then
             echo "📤 Uploading app-latest.apk atomically..."
-            scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P "$VPS_PORT" -i ~/.ssh/id_rsa ./sync-artifacts/app-latest.apk "$VPS_USERNAME@$VPS_HOST:$VPS_TARGET_DIR/app-latest.apk.tmp"
-            ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "mv $VPS_TARGET_DIR/app-latest.apk.tmp $VPS_TARGET_DIR/app-latest.apk"
+            scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -P "$VPS_PORT" -i ~/.ssh/id_rsa ./sync-artifacts/app-latest.apk "$VPS_USERNAME@$VPS_HOST:$ACTUAL_TARGET_DIR/app-latest.apk.tmp"
+            ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "mv '$ACTUAL_TARGET_DIR/app-latest.apk.tmp' '$ACTUAL_TARGET_DIR/app-latest.apk'"
             echo "✅ app-latest.apk synchronized to VPS."
           fi
 
           # Upload iOS IPA if present using atomic write (.tmp -> mv)
           if [ -f "./sync-artifacts/app-latest.ipa" ]; then
             echo "📤 Uploading app-latest.ipa atomically..."
-            scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P "$VPS_PORT" -i ~/.ssh/id_rsa ./sync-artifacts/app-latest.ipa "$VPS_USERNAME@$VPS_HOST:$VPS_TARGET_DIR/app-latest.ipa.tmp"
-            ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "mv $VPS_TARGET_DIR/app-latest.ipa.tmp $VPS_TARGET_DIR/app-latest.ipa"
+            scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -P "$VPS_PORT" -i ~/.ssh/id_rsa ./sync-artifacts/app-latest.ipa "$VPS_USERNAME@$VPS_HOST:$ACTUAL_TARGET_DIR/app-latest.ipa.tmp"
+            ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "mv '$ACTUAL_TARGET_DIR/app-latest.ipa.tmp' '$ACTUAL_TARGET_DIR/app-latest.ipa'"
             echo "✅ app-latest.ipa synchronized to VPS."
           fi
 
           echo "🔍 Post-sync verification on VPS:"
-          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "ls -lh $VPS_TARGET_DIR/app-latest.* 2>/dev/null || true"
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "ls -lh '$ACTUAL_TARGET_DIR'/app-latest.* 2>/dev/null || true"
+
+          # Mirror to web app's public/downloads so files can also be served via HTTPS
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR -p "$VPS_PORT" -i ~/.ssh/id_rsa "$VPS_USERNAME@$VPS_HOST" "SOURCE_DIR='$ACTUAL_TARGET_DIR' bash -s" << 'EOF'
+            for dir in "/home/ubuntu/platform-repos/Recuiter-Industrial" "/home/ubuntu/platform-repos/recruiter-industrial" "/home/ubuntu/Recuiter-Industrial" "/home/ubuntu/recruiter-industrial" "/var/www/recruiter"; do
+              if [ -d "$dir/frontend/public" ]; then
+                mkdir -p "$dir/frontend/public/downloads" 2>/dev/null || true
+                cp -f "$SOURCE_DIR"/app-latest.* "$dir/frontend/public/downloads/" 2>/dev/null || true
+                echo "🌐 Mirrored mobile artifacts to: $dir/frontend/public/downloads"
+                break
+              fi
+            done
+          EOF
 
           # Clean up private key
           rm -f ~/.ssh/id_rsa

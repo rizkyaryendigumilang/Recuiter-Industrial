@@ -51,20 +51,21 @@ export default function CandidatePortal() {
   }, [isLoggedIn]);
 
   async function loadCandidateData() {
-    if (!pb.authStore.record?.id) return;
     setLoading(true);
     try {
       // 1. Ambil record candidate
       let candRecord: RecordModel | null = null;
-      try {
-        const found = await pb.collection('candidates').getFirstListItem(`user_id = "${pb.authStore.record.id}"`);
-        candRecord = found;
-        setCandidate(found);
-        if (found.parsed_skills && Array.isArray(found.parsed_skills)) {
-          setSkills(found.parsed_skills as string[]);
+      if (pb.authStore.record?.id) {
+        try {
+          const found = await pb.collection('candidates').getFirstListItem(`user_id = "${pb.authStore.record.id}"`);
+          candRecord = found;
+          setCandidate(found);
+          if (found.parsed_skills && Array.isArray(found.parsed_skills)) {
+            setSkills(found.parsed_skills as string[]);
+          }
+        } catch {
+          candRecord = null;
         }
-      } catch {
-        candRecord = null;
       }
 
       // Restore from localStorage if offline/demo
@@ -76,6 +77,12 @@ export default function CandidatePortal() {
             if (Array.isArray(parsed) && parsed.length > 0) {
               setSkills(parsed);
             }
+          } catch {}
+        }
+        const savedComp = localStorage.getItem('candidate_competencies');
+        if (savedComp) {
+          try {
+            setCompetencyResult(JSON.parse(savedComp));
           } catch {}
         }
       }
@@ -99,12 +106,14 @@ export default function CandidatePortal() {
       }
 
       // 3. Ambil rekomendasi lowongan pekerjaan
-      const jobs = await pb.collection('job_postings').getFullList({
-        filter: 'status = "open"',
-        expand: 'employer_id',
-        sort: '-created',
-      });
-      setRecommendedJobs(jobs.slice(0, 4));
+      try {
+        const jobs = await pb.collection('job_postings').getFullList({
+          filter: 'status = "open"',
+          expand: 'employer_id',
+          sort: '-created',
+        });
+        setRecommendedJobs(jobs.slice(0, 4));
+      } catch {}
     } catch (err) {
       console.error('Error load candidate data:', err);
     } finally {
