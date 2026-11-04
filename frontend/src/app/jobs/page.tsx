@@ -167,7 +167,7 @@ export default function JobsPage() {
         <div className="text-center sm:text-left space-y-2 border-b border-[#E8E8EC] pb-4">
           <Badge className="bg-indigo-50 text-indigo-700 border-indigo-200 text-xs py-1 px-3">
             <Briefcase className="w-3.5 h-3.5 mr-1" />
-            BURSA LOWONGAN KERJA INDUSTRI 2026
+            {isEn ? 'INDUSTRIAL JOB BOARD 2026' : 'BURSA LOWONGAN KERJA INDUSTRI 2026'}
           </Badge>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0A0A0A] tracking-tight">
             {isEn ? 'Industrial & Manufacturing Careers' : 'Papan Lowongan Kerja Manufaktur'}
@@ -189,6 +189,7 @@ export default function JobsPage() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder={isEn ? 'Search position, skills, company...' : 'Cari posisi (Operator, QC, Teknisi), nama PT...'}
+                aria-label={isEn ? 'Search job position or company' : 'Cari posisi lowongan atau nama perusahaan'}
                 className="pl-9 rounded-xl text-xs border-[#E8E8EC] focus:border-indigo-600 h-10"
               />
             </div>
@@ -198,12 +199,13 @@ export default function JobsPage() {
               <select
                 value={selectedLocation}
                 onChange={(e) => setSelectedLocation(e.target.value)}
+                aria-label={isEn ? 'Filter by industrial zone' : 'Filter kawasan industri'}
                 className="w-full h-10 px-3 rounded-xl text-xs border border-[#E8E8EC] bg-white text-[#0A0A0A] focus:border-indigo-600 focus:outline-none"
               >
-                <option value="all">Semua Kawasan Industri</option>
+                <option value="all">{isEn ? 'All Industrial Zones' : 'Semua Kawasan Industri'}</option>
                 <option value="cikarang">Cikarang (MM2100, Jababeka, GIIC)</option>
                 <option value="karawang">Karawang (KIIC, Suryacipta)</option>
-                <option value="lainnya">Banten & Kota Lainnya</option>
+                <option value="lainnya">{isEn ? 'Banten & Other Cities' : 'Banten & Kota Lainnya'}</option>
               </select>
             </div>
 
@@ -212,11 +214,12 @@ export default function JobsPage() {
               <select
                 value={selectedType}
                 onChange={(e) => setSelectedType(e.target.value)}
+                aria-label={isEn ? 'Filter by employment type' : 'Filter tipe kontrak kerja'}
                 className="w-full h-10 px-3 rounded-xl text-xs border border-[#E8E8EC] bg-white text-[#0A0A0A] focus:border-indigo-600 focus:outline-none"
               >
-                <option value="all">Semua Tipe Kontrak</option>
-                <option value="kontrak">Kontrak Pabrik</option>
-                <option value="fulltime">Karyawan Tetap (Full-time)</option>
+                <option value="all">{isEn ? 'All Contract Types' : 'Semua Tipe Kontrak'}</option>
+                <option value="kontrak">{isEn ? 'Factory Contract' : 'Kontrak Pabrik'}</option>
+                <option value="fulltime">{isEn ? 'Permanent (Full-time)' : 'Karyawan Tetap (Full-time)'}</option>
               </select>
             </div>
           </div>
@@ -225,9 +228,15 @@ export default function JobsPage() {
         {/* Jobs List Grid */}
         <div className="space-y-4">
           <div className="flex items-center justify-between text-xs text-[#6B6B6B]">
-            <span>Menampilkan <strong>{filteredJobs.length}</strong> lowongan kerja aktif</span>
+            <span>
+              {isEn ? (
+                <>Showing <strong>{filteredJobs.length}</strong> active openings</>
+              ) : (
+                <>Menampilkan <strong>{filteredJobs.length}</strong> lowongan kerja aktif</>
+              )}
+            </span>
             <Link href="/candidate/practice" className="text-indigo-600 hover:underline font-semibold flex items-center gap-1">
-              <span>Latihan tes Kraepelin sebelum melamar ➔</span>
+              <span>{isEn ? 'Practice Kraepelin test before applying ➔' : 'Latihan tes Kraepelin sebelum melamar ➔'}</span>
             </Link>
           </div>
 
@@ -243,7 +252,7 @@ export default function JobsPage() {
                       <div className="flex items-center gap-1.5 flex-wrap">
                         {job.is_featured && (
                           <Badge className="bg-amber-100 text-amber-800 border-amber-200 text-[10px] font-bold">
-                            ★ REKOMENDASI PABRIK
+                            {isEn ? '★ FEATURED FACTORY' : '★ REKOMENDASI PABRIK'}
                           </Badge>
                         )}
                         <Badge variant="outline" className="text-[10px] bg-[#F5F5F7] text-[#4B5563]">
@@ -273,7 +282,7 @@ export default function JobsPage() {
                     </div>
                     <div className="flex items-center gap-1.5 truncate font-semibold text-[#0A0A0A]">
                       <DollarSign className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
-                      <span className="truncate">{job.salary_range || 'Sesuai UMK'}</span>
+                      <span className="truncate">{job.salary_range || (isEn ? 'Standard Wage' : 'Sesuai UMK')}</span>
                     </div>
                   </div>
 
@@ -290,13 +299,13 @@ export default function JobsPage() {
                   <div className="flex items-center gap-2 pt-2 border-t border-[#F5F5F7]">
                     <Link href={`/jobs/${job.id}`} className="flex-1">
                       <Button variant="outline" size="sm" className="w-full text-xs font-semibold rounded-xl border-[#E8E8EC] h-9">
-                        Detail Posisi
+                        {isEn ? 'Position Details' : 'Detail Posisi'}
                       </Button>
                     </Link>
 
                     <Link href={`/apply/${job.id}`} className="flex-1">
                       <Button size="sm" className="w-full text-xs font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white h-9 gap-1 shadow-sm">
-                        <span>Lamar Sekarang</span>
+                        <span>{isEn ? 'Apply Now' : 'Lamar Sekarang'}</span>
                         <ArrowRight className="w-3.5 h-3.5" />
                       </Button>
                     </Link>

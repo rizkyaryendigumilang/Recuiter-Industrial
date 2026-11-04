@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { CheckCircle2 } from 'lucide-react';
 import type { RecordModel } from 'pocketbase';
 
 export default function ApplyJobPage() {
@@ -100,7 +101,9 @@ function ApplyJobContent() {
       <div className="container mx-auto px-4 py-16 max-w-2xl text-center">
         <Card>
           <CardContent className="py-12">
-            <div className="text-5xl mb-4 text-emerald-600">&#10003;</div>
+            <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4 shadow-xs">
+              <CheckCircle2 className="w-9 h-9" />
+            </div>
             <h1 className="text-2xl font-bold mb-2">
               {isEn ? 'Application Submitted!' : 'Lamaran Terkirim!'}
             </h1>

@@ -122,15 +122,14 @@
     @apply border-border outline-ring/50;
     -webkit-tap-highlight-color: transparent;
   }
-  html, body {
-    overscroll-behavior-y: none;
-  }
   body {
     @apply bg-background text-foreground;
   }
   html {
     @apply font-sans;
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
   /* Prevent iOS Safari 16px auto-zoom while preserving desktop typography */
   @media (pointer: coarse) {

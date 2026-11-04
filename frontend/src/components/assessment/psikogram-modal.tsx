@@ -124,10 +124,10 @@ export function PsikogramModal({ isOpen, onClose, data }: PsikogramModalProps) {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl border border-neutral-200 overflow-hidden print:shadow-none print:border-none print:max-w-none print:rounded-none animate-in zoom-in-95 duration-200 ease-out gpu-layer will-animate"
+        className="relative w-full max-w-4xl max-h-[calc(100dvh-2rem)] flex flex-col my-auto bg-white rounded-3xl shadow-2xl border border-neutral-200 overflow-hidden print:max-h-none print:shadow-none print:border-none print:max-w-none print:rounded-none animate-in zoom-in-95 duration-200 ease-out gpu-layer will-animate"
       >
         {/* Top Control Bar (Hidden on Print) */}
-        <div className="flex items-center justify-between px-6 py-4 bg-neutral-50 border-b border-neutral-200 print:hidden">
+        <div className="flex-shrink-0 flex items-center justify-between px-6 py-4 bg-neutral-50 border-b border-neutral-200 print:hidden">
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold uppercase tracking-wider text-neutral-600">
               {t.psikogram.headerTitle}
@@ -155,7 +155,7 @@ export function PsikogramModal({ isOpen, onClose, data }: PsikogramModalProps) {
         </div>
 
         {/* 1-PAGE PRINTABLE PSIKOGRAM SHEET */}
-        <div className="p-8 sm:p-10 print:p-6 print:m-0 space-y-6 text-[#1D1D1F] bg-white font-sans">
+        <div className="p-8 sm:p-10 print:p-6 print:m-0 space-y-6 text-[#1D1D1F] bg-white font-sans overflow-y-auto flex-1 overscroll-contain">
           {/* Header Report */}
           <div className="flex items-start justify-between border-b-2 border-neutral-900 pb-5">
             <div>

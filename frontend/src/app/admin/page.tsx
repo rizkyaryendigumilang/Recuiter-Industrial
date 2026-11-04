@@ -598,45 +598,45 @@ export default function AdminDashboard() {
 
         {/* Genesis-style Tab bar */}
         <Tabs defaultValue="administration">
-          <TabsList className="mb-8 bg-[#FFFFFF] border border-[#E8E8EC] p-1 rounded-full shadow-sm flex flex-wrap h-auto gap-1">
+          <TabsList className="mb-8 bg-[#FFFFFF] border border-[#E8E8EC] p-1.5 rounded-2xl sm:rounded-full shadow-sm flex overflow-x-auto flex-nowrap sm:flex-wrap h-auto gap-1 touch-pan-x overscroll-x-contain pb-2 sm:pb-1.5">
             <TabsTrigger
               value="administration"
-              className="rounded-full text-xs font-medium data-[state=active]:bg-[#1D1D1F] data-[state=active]:text-white px-4 py-2"
+              className="shrink-0 whitespace-nowrap rounded-full text-xs font-medium data-[state=active]:bg-[#1D1D1F] data-[state=active]:text-white px-4 py-2"
             >
               <Layers className="w-3.5 h-3.5 mr-1.5" />
               {t.adminPortal.tabServices} ({services.length})
             </TabsTrigger>
             <TabsTrigger
               value="calendar"
-              className="rounded-full text-xs font-medium data-[state=active]:bg-[#1D1D1F] data-[state=active]:text-white px-4 py-2"
+              className="shrink-0 whitespace-nowrap rounded-full text-xs font-medium data-[state=active]:bg-[#1D1D1F] data-[state=active]:text-white px-4 py-2"
             >
               <CalendarCheck className="w-3.5 h-3.5 mr-1.5" />
               {t.adminPortal.tabCalendar}
             </TabsTrigger>
             <TabsTrigger
               value="payments"
-              className="rounded-full text-xs font-medium data-[state=active]:bg-[#1D1D1F] data-[state=active]:text-white px-4 py-2"
+              className="shrink-0 whitespace-nowrap rounded-full text-xs font-medium data-[state=active]:bg-[#1D1D1F] data-[state=active]:text-white px-4 py-2"
             >
               <CreditCard className="w-3.5 h-3.5 mr-1.5" />
               {t.adminPortal.tabPayments} ({bookings.length})
             </TabsTrigger>
             <TabsTrigger
               value="jobs"
-              className="rounded-full text-xs font-medium data-[state=active]:bg-[#1D1D1F] data-[state=active]:text-white px-4 py-2"
+              className="shrink-0 whitespace-nowrap rounded-full text-xs font-medium data-[state=active]:bg-[#1D1D1F] data-[state=active]:text-white px-4 py-2"
             >
               <Briefcase className="w-3.5 h-3.5 mr-1.5" />
               {t.adminPortal.tabJobs} ({jobs.length})
             </TabsTrigger>
             <TabsTrigger
               value="questions"
-              className="rounded-full text-xs font-medium data-[state=active]:bg-[#1D1D1F] data-[state=active]:text-white px-4 py-2"
+              className="shrink-0 whitespace-nowrap rounded-full text-xs font-medium data-[state=active]:bg-[#1D1D1F] data-[state=active]:text-white px-4 py-2"
             >
               <HelpCircle className="w-3.5 h-3.5 mr-1.5" />
               {t.adminPortal.tabQuestions} ({questions.length})
             </TabsTrigger>
             <TabsTrigger
               value="applications"
-              className="rounded-full text-xs font-medium data-[state=active]:bg-[#1D1D1F] data-[state=active]:text-white px-4 py-2"
+              className="shrink-0 whitespace-nowrap rounded-full text-xs font-medium data-[state=active]:bg-[#1D1D1F] data-[state=active]:text-white px-4 py-2"
             >
               <Users className="w-3.5 h-3.5 mr-1.5" />
               {t.adminPortal.tabApplications} ({displayApplications.length})

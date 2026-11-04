@@ -191,17 +191,17 @@ export default function CandidatePortal() {
         </div>
 
         {/* Candidate Sub-Navigation Hub */}
-        <div className="flex flex-wrap items-center gap-2 mb-8 p-1.5 bg-[#F5F5F7] rounded-xl border border-[#E8E8EC]">
-          <a href="#resume" className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white text-[#0A0A0A] shadow-xs">
+        <div className="flex overflow-x-auto flex-nowrap sm:flex-wrap items-center gap-2 mb-8 p-1.5 bg-[#F5F5F7] rounded-xl border border-[#E8E8EC] touch-pan-x overscroll-x-contain pb-2 sm:pb-1.5">
+          <a href="#resume" className="shrink-0 whitespace-nowrap px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white text-[#0A0A0A] shadow-xs">
             {isEn ? 'Resume & Skills' : 'Resume & Kompetensi'}
           </a>
-          <a href="#applications" className="px-3.5 py-1.5 rounded-lg text-xs font-medium text-[#6B6B6B] hover:text-[#0A0A0A]">
+          <a href="#applications" className="shrink-0 whitespace-nowrap px-3.5 py-1.5 rounded-lg text-xs font-medium text-[#6B6B6B] hover:text-[#0A0A0A]">
             {isEn ? 'My Applications' : 'Lamaran Saya'} ({applications.length})
           </a>
-          <Link href="/candidate/results" className="px-3.5 py-1.5 rounded-lg text-xs font-medium text-[#1D1D1F] bg-white border border-[#E8E8EC] hover:bg-neutral-50 flex items-center gap-1.5 shadow-xs">
+          <Link href="/candidate/results" className="shrink-0 whitespace-nowrap px-3.5 py-1.5 rounded-lg text-xs font-medium text-[#1D1D1F] bg-white border border-[#E8E8EC] hover:bg-neutral-50 flex items-center gap-1.5 shadow-xs">
             <span>{isEn ? 'Psychogram Results' : 'Hasil Tes & Psikogram'}</span>
           </Link>
-          <Link href="/candidate/practice" className="px-3.5 py-1.5 rounded-lg text-xs font-medium text-[#6B6B6B] hover:text-[#0A0A0A] flex items-center gap-1">
+          <Link href="/candidate/practice" className="shrink-0 whitespace-nowrap px-3.5 py-1.5 rounded-lg text-xs font-medium text-[#6B6B6B] hover:text-[#0A0A0A] flex items-center gap-1">
             <span>{isEn ? 'Kraepelin Tryout' : 'Simulasi Kraepelin'}</span>
           </Link>
         </div>

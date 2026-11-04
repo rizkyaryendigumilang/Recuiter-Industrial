@@ -95,7 +95,7 @@ export function CorporateTimeline() {
           <div className="hidden lg:block absolute top-10 left-8 right-8 h-px bg-[#E8E8EC] -z-0" />
 
           {/* Cards Track */}
-          <div className="flex lg:grid lg:grid-cols-5 gap-4 overflow-x-auto pb-4 pt-2 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x">
+          <div className="flex lg:grid lg:grid-cols-5 gap-4 overflow-x-auto pb-4 pt-2 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x touch-pan-y overscroll-x-contain">
             {milestones.map((item) => {
               const Icon = item.icon;
               return (

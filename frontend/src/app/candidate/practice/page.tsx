@@ -44,16 +44,18 @@ const KraepelinWorkingBoard = React.memo(function KraepelinWorkingBoard({
   topNum,
   bottomNum,
   pulseTrigger = 0,
+  isEn = false,
 }: {
   topNum: number;
   bottomNum: number;
   pulseTrigger?: number;
+  isEn?: boolean;
 }) {
   return (
     <div className="bg-white border border-[#E8E8EC] rounded-2xl shadow-sm p-6 flex flex-col items-center justify-center min-h-[280px] relative overflow-hidden">
       <div className="text-center space-y-4 max-w-xs w-full">
         <span className="text-[10px] uppercase font-bold text-[#52525B] tracking-wider">
-          PENJUMLAHAN SEKARANG:
+          {isEn ? 'CURRENT ADDITION:' : 'PENJUMLAHAN SEKARANG:'}
         </span>
 
         {/* Big numbers stack with micro-feedback pulse */}
@@ -75,7 +77,11 @@ const KraepelinWorkingBoard = React.memo(function KraepelinWorkingBoard({
         </div>
 
         <p className="text-xs text-[#52525B] font-medium">
-          Ketik <strong>angka satuan</strong> hasil penjumlahan di bawah:
+          {isEn ? (
+            <>Type the <strong>unit digit (ones)</strong> of the sum below:</>
+          ) : (
+            <>Ketik <strong>angka satuan</strong> hasil penjumlahan di bawah:</>
+          )}
         </p>
       </div>
     </div>
@@ -165,7 +171,7 @@ const KraepelinKeypad = React.memo(function KraepelinKeypad({
       )}
 
       <p className="text-center text-[10px] text-[#52525B] mt-2">
-        Tekan tombol angka di atas atau gunakan NumPad keyboard
+        {isEn ? 'Tap numbers above or use your physical NumPad' : 'Tekan tombol angka di atas atau gunakan NumPad keyboard'}
       </p>
     </div>
   );
@@ -619,15 +625,15 @@ export default function KraepelinPracticePage() {
                 <button
                   type="button"
                   onClick={() => requestFullscreen().catch(() => {})}
-                  title={isFullscreen ? 'Layar Penuh Terkunci' : 'Aktifkan Layar Penuh'}
-                  className={`hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-semibold border transition-colors touch-manipulation cursor-pointer ${
+                  title={isFullscreen ? (isEn ? 'Fullscreen Active' : 'Layar Penuh Terkunci') : (isEn ? 'Lock Fullscreen' : 'Aktifkan Layar Penuh')}
+                  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-semibold border transition-colors touch-manipulation cursor-pointer ${
                     isFullscreen
                       ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                       : 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'
                   }`}
                 >
                   <Maximize2 className="w-3 h-3" />
-                  <span>{isFullscreen ? 'Layar Penuh Aktif' : 'Kunci Fullscreen'}</span>
+                  <span>{isFullscreen ? (isEn ? 'Fullscreen' : 'Layar Penuh') : (isEn ? 'Lock Screen' : 'Kunci Layar')}</span>
                 </button>
                 <div className="flex items-center gap-1.5 bg-neutral-50 px-2.5 py-1 rounded-xl border border-neutral-200">
                   <Clock className={`w-4 h-4 ${timeLeft <= 3 ? 'text-rose-600 animate-pulse' : 'text-indigo-600'}`} />
@@ -650,6 +656,7 @@ export default function KraepelinPracticePage() {
               topNum={columnNumbers[currentIndexInCol + 1] ?? 5}
               bottomNum={columnNumbers[currentIndexInCol] ?? 7}
               pulseTrigger={pulseCount}
+              isEn={isEn}
             />
 
             {/* Memoized On-Screen Touch Numpad */}
@@ -672,13 +679,15 @@ export default function KraepelinPracticePage() {
               <CardHeader className="text-center space-y-2">
                 <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 text-xs mx-auto py-1 px-3">
                   <Award className="w-3.5 h-3.5 mr-1" />
-                  SIMULASI SELESAI
+                  {isEn ? 'SIMULATION FINISHED' : 'SIMULASI SELESAI'}
                 </Badge>
                 <CardTitle className="text-2xl sm:text-3xl font-extrabold text-[#0A0A0A]">
-                  Laporan Hasil Evaluasi Tryout Kraepelin
+                  {isEn ? 'Kraepelin Evaluation & Stamina Report' : 'Laporan Hasil Evaluasi Tryout Kraepelin'}
                 </CardTitle>
                 <CardDescription className="text-xs text-[#6B6B6B]">
-                  Performa kecepatan, ketelitian, dan kestabilan stamina kerja Anda telah dihitung otomatis.
+                  {isEn
+                    ? 'Your speed, accuracy, and working endurance stamina have been automatically computed.'
+                    : 'Performa kecepatan, ketelitian, dan kestabilan stamina kerja Anda telah dihitung otomatis.'}
                 </CardDescription>
               </CardHeader>
 
@@ -686,27 +695,31 @@ export default function KraepelinPracticePage() {
                 {/* 4 Score Badges */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
                   <div className="p-3.5 bg-[#FAFAFA] border border-[#E8E8EC] rounded-xl">
-                    <p className="text-[10px] uppercase font-semibold text-[#6B6B6B]">Total Terjawab</p>
+                    <p className="text-[10px] uppercase font-semibold text-[#6B6B6B]">{isEn ? 'Total Answered' : 'Total Terjawab'}</p>
                     <p className="text-2xl font-black text-[#0A0A0A] mt-1">{totalAttempted}</p>
-                    <p className="text-[10px] text-indigo-600 mt-0.5">{totalCorrect} Benar / {totalWrong} Salah</p>
+                    <p className="text-[10px] text-indigo-600 mt-0.5">
+                      {totalCorrect} {isEn ? 'Correct' : 'Benar'} / {totalWrong} {isEn ? 'Wrong' : 'Salah'}
+                    </p>
                   </div>
 
                   <div className="p-3.5 bg-[#FAFAFA] border border-[#E8E8EC] rounded-xl">
-                    <p className="text-[10px] uppercase font-semibold text-[#6B6B6B]">Kecepatan Kerja</p>
+                    <p className="text-[10px] uppercase font-semibold text-[#6B6B6B]">{isEn ? 'Work Speed' : 'Kecepatan Kerja'}</p>
                     <p className="text-2xl font-black text-indigo-600 mt-1">{speedPerMin}</p>
-                    <p className="text-[10px] text-[#6B6B6B] mt-0.5">Angka / Menit</p>
+                    <p className="text-[10px] text-[#6B6B6B] mt-0.5">{isEn ? 'Digits / Min' : 'Angka / Menit'}</p>
                   </div>
 
                   <div className="p-3.5 bg-[#FAFAFA] border border-[#E8E8EC] rounded-xl">
-                    <p className="text-[10px] uppercase font-semibold text-[#6B6B6B]">Tingkat Ketelitian</p>
+                    <p className="text-[10px] uppercase font-semibold text-[#6B6B6B]">{isEn ? 'Accuracy Rate' : 'Tingkat Ketelitian'}</p>
                     <p className="text-2xl font-black text-emerald-600 mt-1">{accuracyPercent}%</p>
-                    <p className="text-[10px] text-[#6B6B6B] mt-0.5">{accuracyPercent >= 90 ? 'Sangat Teliti' : 'Cukup Baik'}</p>
+                    <p className="text-[10px] text-[#6B6B6B] mt-0.5">
+                      {accuracyPercent >= 90 ? (isEn ? 'Highly Accurate' : 'Sangat Teliti') : (isEn ? 'Sufficient' : 'Cukup Baik')}
+                    </p>
                   </div>
 
                   <div className="p-3.5 bg-[#FAFAFA] border border-[#E8E8EC] rounded-xl">
-                    <p className="text-[10px] uppercase font-semibold text-[#6B6B6B]">Stabilitas Stamina</p>
+                    <p className="text-[10px] uppercase font-semibold text-[#6B6B6B]">{isEn ? 'Stamina Stability' : 'Stabilitas Stamina'}</p>
                     <p className="text-2xl font-black text-amber-600 mt-1">{stabilityScore}%</p>
-                    <p className="text-[10px] text-[#6B6B6B] mt-0.5">Konsistensi Ritme</p>
+                    <p className="text-[10px] text-[#6B6B6B] mt-0.5">{isEn ? 'Rhythm Consistency' : 'Konsistensi Ritme'}</p>
                   </div>
                 </div>
 
@@ -716,10 +729,12 @@ export default function KraepelinPracticePage() {
                     <div>
                       <h4 className="text-xs font-bold uppercase tracking-wider text-[#0A0A0A] flex items-center gap-1.5">
                         <TrendingUp className="w-4 h-4 text-indigo-600" />
-                        <span>Grafik Fluktuasi Stamina Per Kolom (Ritme Kerja)</span>
+                        <span>{isEn ? 'Stamina Fluctuation Graph (Work Rhythm)' : 'Grafik Fluktuasi Stamina Per Kolom (Ritme Kerja)'}</span>
                       </h4>
                       <p className="text-[11px] text-[#6B6B6B]">
-                        Menunjukkan apakah kecepatan kerja Anda meningkat, konsisten, atau menurun seiring waktu.
+                        {isEn
+                          ? 'Shows whether your pace accelerates, remains consistent, or declines under cognitive load.'
+                          : 'Menunjukkan apakah kecepatan kerja Anda meningkat, konsisten, atau menurun seiring waktu.'}
                       </p>
                     </div>
                   </div>
@@ -783,10 +798,15 @@ export default function KraepelinPracticePage() {
                   <CheckCircle2 className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
                   <div className="text-xs space-y-1">
                     <p className="font-bold text-[#0A0A0A]">
-                      Rekomendasi Profil Seleksi: <span className="text-emerald-700">Sangat Disarankan (Recommended)</span>
+                      {isEn ? 'Selection Profile Recommendation: ' : 'Rekomendasi Profil Seleksi: '}
+                      <span className="text-emerald-700">
+                        {isEn ? 'Recommended Candidate' : 'Sangat Disarankan (Recommended)'}
+                      </span>
                     </p>
                     <p className="text-[#4B5563] leading-relaxed">
-                      Ketelitian {accuracyPercent}% dan kestabilan ritme {stabilityScore}% memenuhi standar seleksi operator lini perakitan, teknisi pemeliharaan, dan staff QC industri manufaktur.
+                      {isEn
+                        ? `Accuracy rate of ${accuracyPercent}% and stamina stability of ${stabilityScore}% meet the benchmark for precision assembly, QC inspection, and manufacturing operations.`
+                        : `Ketelitian ${accuracyPercent}% dan kestabilan ritme ${stabilityScore}% memenuhi standar seleksi operator lini perakitan, teknisi pemeliharaan, dan staff QC industri manufaktur.`}
                     </p>
                   </div>
                 </div>
@@ -799,19 +819,19 @@ export default function KraepelinPracticePage() {
                     className="flex-1 border-[#E8E8EC] hover:bg-[#F5F5F7] text-xs font-semibold h-11 rounded-xl gap-2"
                   >
                     <RotateCcw className="w-4 h-4" />
-                    <span>Ulangi Simulasi (Try Again)</span>
+                    <span>{isEn ? 'Retake Practice' : 'Ulangi Simulasi (Try Again)'}</span>
                   </Button>
 
                   <Link href="/candidate/results" className="flex-1">
                     <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold h-11 rounded-xl gap-2 shadow-sm">
                       <Award className="w-4 h-4" />
-                      <span>Lihat Evaluasi Psikogram Lengkap</span>
+                      <span>{isEn ? 'View Full Psychogram' : 'Lihat Evaluasi Psikogram Lengkap'}</span>
                     </Button>
                   </Link>
 
                   <Link href="/jobs" className="flex-1">
                     <Button variant="secondary" className="w-full text-xs font-semibold h-11 rounded-xl gap-2">
-                      <span>Lamar Lowongan</span>
+                      <span>{isEn ? 'Apply for Jobs' : 'Lamar Lowongan'}</span>
                       <ArrowRight className="w-4 h-4" />
                     </Button>
                   </Link>

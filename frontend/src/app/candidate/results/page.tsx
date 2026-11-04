@@ -145,10 +145,10 @@ export default function CandidateResultsPage() {
     setIsRealData(hasLoadedReal);
   }, [user]);
 
-  // Radar Chart Math helper (Center: 150, 150, Radius: 100)
-  const cx = 150;
-  const cy = 150;
-  const r = 100;
+  // Radar Chart Math helper (Center: 160, 135, Radius: 85 - Perfectly calibrated for mobile & desktop)
+  const cx = 160;
+  const cy = 135;
+  const r = 85;
   // Angles: D = top (-90 deg), I = right (0 deg), S = bottom (90 deg), C = left (180 deg)
   const getCoords = (val: number, angleDeg: number) => {
     const rad = (angleDeg * Math.PI) / 180;
@@ -206,7 +206,12 @@ export default function CandidateResultsPage() {
             <div className="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200 flex items-center justify-between">
               <div className="flex items-center gap-2 text-xs text-emerald-800">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                <span><strong>Data Hasil Riil Terverifikasi:</strong> Psikogram ini membaca kalkulasi riil dari sesi ujian & simulasi Kraepelin terbaru Anda.</span>
+                <span>
+                  <strong>{isEn ? 'Verified Real Results: ' : 'Data Hasil Riil Terverifikasi: '}</strong>
+                  {isEn
+                    ? 'This psychogram reflects real psychometric calculations from your latest test and Kraepelin session.'
+                    : 'Psikogram ini membaca kalkulasi riil dari sesi ujian & simulasi Kraepelin terbaru Anda.'}
+                </span>
               </div>
               <Badge className="bg-emerald-600 text-white text-[10px]">Live Verified</Badge>
             </div>
@@ -214,11 +219,16 @@ export default function CandidateResultsPage() {
             <div className="p-3.5 rounded-2xl bg-indigo-50/70 border border-indigo-200 flex items-center justify-between">
               <div className="flex items-center gap-2 text-xs text-indigo-900">
                 <Sparkles className="w-4 h-4 text-indigo-600" />
-                <span><strong>Sampel Profil Terkalibrasi:</strong> Kerjakan tes pada lowongan atau coba simulasi Kraepelin untuk memuat skor personal Anda.</span>
+                <span>
+                  <strong>{isEn ? 'Calibrated Sample Profile: ' : 'Sampel Profil Terkalibrasi: '}</strong>
+                  {isEn
+                    ? 'Take a test or practice the Kraepelin simulation to load your personalized test scores.'
+                    : 'Kerjakan tes pada lowongan atau coba simulasi Kraepelin untuk memuat skor personal Anda.'}
+                </span>
               </div>
               <Link href="/candidate/practice">
                 <Button size="sm" variant="outline" className="text-xs h-7 border-indigo-300 text-indigo-700 hover:bg-indigo-100">
-                  Mulai Tes
+                  {isEn ? 'Start Test' : 'Mulai Tes'}
                 </Button>
               </Link>
             </div>
@@ -303,28 +313,28 @@ export default function CandidateResultsPage() {
 
               {/* SVG Radar Visual */}
               <div className="flex items-center justify-center py-2">
-                <svg width="280" height="260" viewBox="0 0 300 300" className="overflow-visible">
+                <svg viewBox="0 0 320 270" className="w-full max-w-[280px] h-auto overflow-visible">
                   {/* Concentric Guide Circles */}
-                  <circle cx={cx} cy={cy} r="25" fill="none" stroke="#E8E8EC" strokeDasharray="2 2" />
-                  <circle cx={cx} cy={cy} r="50" fill="none" stroke="#E8E8EC" strokeDasharray="2 2" />
-                  <circle cx={cx} cy={cy} r="75" fill="none" stroke="#E8E8EC" strokeDasharray="2 2" />
-                  <circle cx={cx} cy={cy} r="100" fill="none" stroke="#D1D5DB" strokeWidth="1.5" />
+                  <circle cx={cx} cy={cy} r="21" fill="none" stroke="#E8E8EC" strokeDasharray="2 2" />
+                  <circle cx={cx} cy={cy} r="42" fill="none" stroke="#E8E8EC" strokeDasharray="2 2" />
+                  <circle cx={cx} cy={cy} r="63" fill="none" stroke="#E8E8EC" strokeDasharray="2 2" />
+                  <circle cx={cx} cy={cy} r="85" fill="none" stroke="#D1D5DB" strokeWidth="1.5" />
 
                   {/* Axes */}
-                  <line x1={cx} y1={cy - 100} x2={cx} y2={cy + 100} stroke="#E8E8EC" />
-                  <line x1={cx - 100} y1={cy} x2={cx + 100} y2={cy} stroke="#E8E8EC" />
+                  <line x1={cx} y1={cy - 85} x2={cx} y2={cy + 85} stroke="#E8E8EC" />
+                  <line x1={cx - 85} y1={cy} x2={cx + 85} y2={cy} stroke="#E8E8EC" />
 
                   {/* Axis Labels */}
-                  <text x={cx} y={cy - 108} textAnchor="middle" fontSize="11" fontWeight="bold" fill="#DC2626">
+                  <text x={cx} y={cy - 92} textAnchor="middle" fontSize="10" fontWeight="bold" fill="#DC2626">
                     D (Dominance) {discScores.D}%
                   </text>
-                  <text x={cx + 110} y={cy + 4} textAnchor="start" fontSize="11" fontWeight="bold" fill="#D97706">
+                  <text x={cx + 94} y={cy + 4} textAnchor="start" fontSize="10" fontWeight="bold" fill="#D97706">
                     I (Influence) {discScores.I}%
                   </text>
-                  <text x={cx} y={cy + 120} textAnchor="middle" fontSize="11" fontWeight="bold" fill="#2563EB">
+                  <text x={cx} y={cy + 104} textAnchor="middle" fontSize="10" fontWeight="bold" fill="#2563EB">
                     S (Steadiness) {discScores.S}%
                   </text>
-                  <text x={cx - 110} y={cy + 4} textAnchor="end" fontSize="11" fontWeight="bold" fill="#059669">
+                  <text x={cx - 94} y={cy + 4} textAnchor="end" fontSize="10" fontWeight="bold" fill="#059669">
                     C (Compliance) {discScores.C}%
                   </text>
 

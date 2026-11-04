@@ -101,10 +101,10 @@ export function CandidateNotificationModal({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-neutral-200 overflow-hidden text-neutral-900 animate-in zoom-in-95 duration-200 ease-out gpu-layer will-animate"
+        className="relative w-full max-w-lg max-h-[calc(100dvh-2rem)] flex flex-col my-auto bg-white rounded-3xl shadow-2xl border border-neutral-200 overflow-hidden text-neutral-900 animate-in zoom-in-95 duration-200 ease-out gpu-layer will-animate"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-neutral-100">
+        <div className="flex-shrink-0 flex items-center justify-between px-6 py-5 border-b border-neutral-100">
           <div className="flex items-center gap-2">
             <span className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-xs">
               <Send className="w-4 h-4" />
@@ -126,7 +126,7 @@ export function CandidateNotificationModal({
           </button>
         </div>
 
-        <div className="p-6 space-y-6 text-xs">
+        <div className="p-6 space-y-6 text-xs overflow-y-auto flex-1 overscroll-contain">
           {/* Target Profile Card */}
           <div className="p-4 rounded-2xl bg-neutral-50 border border-neutral-200 flex flex-col gap-1">
             <div className="flex items-center justify-between">

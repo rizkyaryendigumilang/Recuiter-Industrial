@@ -90,7 +90,7 @@ export function PwaInstallPrompt() {
   return (
     <>
       {/* Floating PWA Install Banner */}
-      <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:w-96 z-50 animate-in fade-in slide-in-from-bottom-5 duration-300">
+      <div className="fixed bottom-[max(1rem,env(safe-area-inset-bottom,16px))] left-4 right-4 sm:left-auto sm:right-6 sm:w-96 z-50 animate-in fade-in slide-in-from-bottom-5 duration-300">
         <div className="bg-card border border-border shadow-xl rounded-2xl p-4 flex items-center justify-between gap-3 bg-white/95 backdrop-blur">
           <div className="flex items-center gap-3 min-w-0">
             <div className="relative w-12 h-12 flex-shrink-0 rounded-xl overflow-hidden shadow-sm border border-border/40">
