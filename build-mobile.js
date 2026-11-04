@@ -46,16 +46,17 @@ const indexHtmlContent = `<!DOCTYPE html>
   <link rel="icon" href="./favicon.png" />
   <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
   <link rel="manifest" href="./manifest.json" />
-  <meta name="theme-color" content="#4F46E5" />
+  <meta name="theme-color" content="#0D1117" />
   <style>
     :root {
-      --primary: #4F46E5;
-      --primary-hover: #4338CA;
-      --bg: #F8FAFC;
+      --primary: #0D1117;
+      --primary-hover: #21262D;
+      --accent: #D97706;
+      --bg: #F6F8FA;
       --card-bg: #FFFFFF;
-      --text: #0F172A;
-      --muted: #64748B;
-      --border: #E2E8F0;
+      --text: #0D1117;
+      --muted: #57606A;
+      --border: #D0D7DE;
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
@@ -110,12 +111,13 @@ const indexHtmlContent = `<!DOCTYPE html>
       padding: 16px 20px;
     }
     .hero {
-      background: linear-gradient(135deg, #4F46E5 0%, #3B82F6 100%);
+      background: #0D1117;
       color: #FFFFFF;
-      border-radius: 18px;
+      border: 1px solid #30363D;
+      border-radius: 14px;
       padding: 22px 20px;
       margin-bottom: 20px;
-      box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.3);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
     .hero h1 {
       font-size: 20px;
@@ -135,8 +137,8 @@ const indexHtmlContent = `<!DOCTYPE html>
       justify-content: center;
       gap: 6px;
       width: 100%;
-      background: #FFFFFF;
-      color: #4F46E5;
+      background: #D97706;
+      color: #FFFFFF;
       border: none;
       font-size: 13px;
       font-weight: 700;
@@ -331,8 +333,8 @@ const indexHtmlContent = `<!DOCTYPE html>
       box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
     .key-btn:active {
-      background: #EEF2FF;
-      border-color: #4F46E5;
+      background: #FEF3C7;
+      border-color: #D97706;
       transform: scale(0.95);
     }
   </style>
@@ -414,7 +416,7 @@ const indexHtmlContent = `<!DOCTYPE html>
     <div class="modal-sheet">
       <div style="display:flex; justify-content:space-between; align-items:center;">
         <h3 style="font-size:15px; font-weight:700;">Simulasi Kraepelin Native</h3>
-        <span class="pill-badge" id="timerBadge" style="background:#EEF2FF; color:#4F46E5; font-weight:700;">30s</span>
+        <span class="pill-badge" id="timerBadge" style="background:#FEF3C7; color:#D97706; font-weight:700;">30s</span>
       </div>
 
       <div class="kraepelin-display">

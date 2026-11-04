@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { RoleSelectionDialog } from '@/components/auth/role-selection-dialog';
+import { triggerTelegramAuth } from '@/lib/social-auth';
 import { ChevronLeft } from 'lucide-react';
 
 export default function RegisterPage() {
@@ -31,36 +32,10 @@ export default function RegisterPage() {
     setError('');
     setOauthLoading('telegram');
     try {
-      const botName = process.env.NEXT_PUBLIC_TELEGRAM_BOT_NAME;
-      if (botName && typeof window !== 'undefined') {
-        const authUrl = `https://oauth.telegram.org/auth?bot_id=${botName}&origin=${encodeURIComponent(window.location.origin)}&request_access=write`;
-        window.open(authUrl, 'telegram_auth', 'width=550,height=470');
-        return;
-      }
-
-      const testTgId = prompt(
-        isEn
-          ? 'Enter your Telegram Username or ID to test Telegram registration:'
-          : 'Masukkan Username atau ID Telegram untuk mendaftar:',
-        'pendaftar_telegram'
-      );
-      if (!testTgId) {
-        setOauthLoading(null);
-        return;
-      }
-      await loginWithTelegram({
-        id: testTgId.replace(/[^a-zA-Z0-9_]/g, '') || '87654321',
-        first_name: testTgId,
-        username: testTgId,
-        auth_date: Math.floor(Date.now() / 1000),
-      });
+      await triggerTelegramAuth(loginWithTelegram, isEn);
     } catch (err: any) {
       console.error('Telegram registration error:', err);
-      setError(
-        isEn
-          ? 'Failed to register with Telegram: ' + (err.message || 'Unknown error')
-          : 'Gagal mendaftar dengan Telegram: ' + (err.message || 'Kesalahan sistem')
-      );
+      setError(isEn ? 'Failed to register with Telegram: ' + (err.message || 'Error') : 'Gagal mendaftar dengan Telegram: ' + (err.message || 'Kesalahan'));
     } finally {
       setOauthLoading(null);
     }

@@ -43,8 +43,17 @@ id_rsa*
 Thumbs.db
 
 # Database & Backups
-backend/pb_data/
+backend/**/pb_data/
 backend/backups/
+*.db
+*.db-wal
+*.db-shm
+*.exe
+
+# Scratch & Temporary Media
+scratch/
+mobile-app-icons.zip
+app-icons-export/
 
 # Remotion & Media Render Outputs
 frontend/public/showcase/videos/

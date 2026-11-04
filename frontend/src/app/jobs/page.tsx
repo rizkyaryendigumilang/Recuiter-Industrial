@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { FALLBACK_INDUSTRIAL_JOBS } from '@/lib/mock-data';
 import type { RecordModel } from 'pocketbase';
 import { 
   Briefcase, 
@@ -33,88 +34,7 @@ export default function JobsPage() {
   const [selectedType, setSelectedType] = useState('all');
 
   // Fallback demo jobs for industrial recruitment
-  const demoJobs: RecordModel[] = [
-    {
-      id: 'job-ind-01',
-      title: 'Operator Produksi & Assembly Line',
-      company_name: 'PT Astra Otoparts Tbk',
-      location: 'Kawasan Industri KIIC, Karawang',
-      job_type: 'Kontrak (Full-time)',
-      salary_range: 'Rp 5.600.000 - Rp 6.800.000',
-      description: 'Penempatan di lini perakitan presisi komponen otomotif. Bersedia bekerja 3 shift.',
-      requirements: ['SMK Teknik Mesin / Otomotif / Listrik', 'Ketelitian tinggi tes Kraepelin', 'Usia 18 - 24 tahun'],
-      status: 'open',
-      is_featured: true,
-      created: '2026-10-14T00:00:00.000Z',
-      updated: '2026-10-14T00:00:00.000Z',
-      collectionId: 'job_postings',
-      collectionName: 'job_postings',
-    },
-    {
-      id: 'job-ind-02',
-      title: 'Staff Quality Assurance (QA / QC Inspector)',
-      company_name: 'PT Denso Indonesia',
-      location: 'Kawasan Industri MM2100, Cikarang Barat',
-      job_type: 'Kontrak 1 Tahun',
-      salary_range: 'Rp 6.200.000 - Rp 7.500.000',
-      description: 'Melakukan inspeksi visual dan pengukuran alat ukur presisi (Caliper, Micrometer).',
-      requirements: ['D3 / S1 Teknik Mesin / Industri', 'Paham ISO 9001 & Kaizen', 'DISC Compliance tinggi'],
-      status: 'open',
-      is_featured: true,
-      created: '2026-10-14T00:00:00.000Z',
-      updated: '2026-10-14T00:00:00.000Z',
-      collectionId: 'job_postings',
-      collectionName: 'job_postings',
-    },
-    {
-      id: 'job-ind-03',
-      title: 'Teknisi Maintenance & PLC Automation',
-      company_name: 'PT Unilever Manufacturing Indonesia',
-      location: 'Kawasan Industri Jababeka V, Cikarang',
-      job_type: 'Full-time Tetap',
-      salary_range: 'Rp 7.800.000 - Rp 9.500.000',
-      description: 'Pemeliharaan preventif mesin industri conveyor, sistem hidrolik, dan pemrograman PLC.',
-      requirements: ['D3 / S1 Teknik Elektro / Mekatronika', 'Pengalaman PLC Omron / Siemens', 'Sertifikat K3 Listrik'],
-      status: 'open',
-      is_featured: false,
-      created: '2026-10-14T00:00:00.000Z',
-      updated: '2026-10-14T00:00:00.000Z',
-      collectionId: 'job_postings',
-      collectionName: 'job_postings',
-    },
-    {
-      id: 'job-ind-04',
-      title: 'Staff Logistik & Pergudangan (Warehouse)',
-      company_name: 'PT Mayora Indah Tbk',
-      location: 'Kawasan Industri Cikande, Banten',
-      job_type: 'Kontrak Pabrik',
-      salary_range: 'Rp 5.200.000 - Rp 6.100.000',
-      description: 'Pengendalian stok masuk dan keluar bahan baku produksi serta koordinasi forklift.',
-      requirements: ['SMA / SMK Sederajat', 'Menguasai SAP / WMS dasar', 'Surat Izin Operasi (SIO) Forklift nilai plus'],
-      status: 'open',
-      is_featured: false,
-      created: '2026-10-14T00:00:00.000Z',
-      updated: '2026-10-14T00:00:00.000Z',
-      collectionId: 'job_postings',
-      collectionName: 'job_postings',
-    },
-    {
-      id: 'job-ind-05',
-      title: 'Foreman / Leader Shift Produksi',
-      company_name: 'PT Yamaha Motor Manufacturing',
-      location: 'Pulo Gadung / Karawang Timur',
-      job_type: 'Full-time',
-      salary_range: 'Rp 8.500.000 - Rp 11.000.000',
-      description: 'Memimpin regu kerja shift 25 operator, mengontrol target harian OEE dan kedisiplinan 5S.',
-      requirements: ['Pengalaman minimal 3 tahun Leader Produksi', 'DISC Dominance & Leadership teruji'],
-      status: 'open',
-      is_featured: true,
-      created: '2026-10-14T00:00:00.000Z',
-      updated: '2026-10-14T00:00:00.000Z',
-      collectionId: 'job_postings',
-      collectionName: 'job_postings',
-    }
-  ];
+  const demoJobs = FALLBACK_INDUSTRIAL_JOBS;
 
   useEffect(() => {
     async function loadJobs() {

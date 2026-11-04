@@ -12,9 +12,16 @@ function escapeICS(str: string): string {
 const VALID_CALENDAR_TOKEN =
   process.env.CALENDAR_FEED_SECRET ||
   process.env.NEXT_PUBLIC_CALENDAR_TOKEN ||
-  'hrtech_calendar_sec_2026';
+  (process.env.NODE_ENV !== 'production' ? 'dev_calendar_secret_local' : '');
 
 export async function GET(request: Request) {
+  if (!VALID_CALENDAR_TOKEN) {
+    return NextResponse.json(
+      { error: 'Server misconfiguration: CALENDAR_FEED_SECRET is not configured.' },
+      { status: 500 }
+    );
+  }
+
   // Verifikasi Autentikasi: Cegah kebocoran PII publik tanpa feed token yang sah
   const { searchParams } = new URL(request.url);
   const token = searchParams.get('token');

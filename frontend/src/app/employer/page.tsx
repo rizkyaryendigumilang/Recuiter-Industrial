@@ -52,77 +52,7 @@ const CandidateNotificationModal = dynamic(
 );
 
 
-// Sample fallback applications for employer testing
-const SAMPLE_APPLICATIONS = [
-  {
-    id: 'app-sample-1',
-    candidate_id: 'cand-01',
-    job_id: 'job-01',
-    match_score: 94,
-    test_score: 88,
-    status: 'interview',
-    created: '2026-10-12',
-    candidate_name: 'Rizky Pratama, S.T.',
-    candidate_email: 'rizky.pratama@gmail.com',
-    candidate_phone: '081234567890',
-    expand: {
-      job_id: {
-        title: 'Teknisi Maintenance Mesin PLC & CNC',
-      },
-    },
-  },
-  {
-    id: 'app-sample-2',
-    candidate_id: 'cand-02',
-    job_id: 'job-02',
-    match_score: 82,
-    test_score: 85,
-    status: 'testing',
-    created: '2026-10-13',
-    candidate_name: 'Anisa Rahmawati, S.Psi',
-    candidate_email: 'anisa.rahmawati@gmail.com',
-    candidate_phone: '081987654321',
-    expand: {
-      job_id: {
-        title: 'Staff HR & Industrial Relations',
-      },
-    },
-  },
-  {
-    id: 'app-sample-3',
-    candidate_id: 'cand-03',
-    job_id: 'job-01',
-    match_score: 96,
-    test_score: 92,
-    status: 'hired',
-    created: '2026-10-14',
-    candidate_name: 'Bayu Wicaksono (Ahli K3 Umum)',
-    candidate_email: 'bayu.wicaksono@gmail.com',
-    candidate_phone: '081345678901',
-    expand: {
-      job_id: {
-        title: 'Officer K3 & Lingkungan Pabrik (HSE)',
-      },
-    },
-  },
-  {
-    id: 'app-sample-4',
-    candidate_id: 'cand-04',
-    job_id: 'job-01',
-    match_score: 74,
-    test_score: 72,
-    status: 'applied',
-    created: '2026-10-14',
-    candidate_name: 'Hendro Prasetyo (SIO Forklift)',
-    candidate_email: 'hendro.prasetyo@gmail.com',
-    candidate_phone: '081289012345',
-    expand: {
-      job_id: {
-        title: 'Operator Forklift Gudang Raw Material',
-      },
-    },
-  },
-];
+import { SAMPLE_APPLICATIONS } from '@/lib/mock-data';
 
 export default function EmployerDashboard() {
   const router = useRouter();

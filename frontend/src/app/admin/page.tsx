@@ -34,6 +34,7 @@ import {
 } from 'lucide-react';
 import type { PsikogramData } from '@/components/assessment/psikogram-modal';
 import { useLanguage } from '@/lib/language-context';
+import { DUMMY_SCHEDULES, SAMPLE_APPLICATIONS } from '@/lib/mock-data';
 
 // Dynamic lazy import to dramatically reduce initial JavaScript bundle size
 const PsikogramModal = dynamic(
@@ -107,112 +108,6 @@ const emptyQuestion: QuestionForm = {
   optC: '', weightC: 2,
   optD: '', weightD: 0,
 };
-
-// Data Dummy Representatif (Karakteristik Lengkap Sistem)
-const DUMMY_SCHEDULES: ScheduleItem[] = [
-  {
-    id: 'sch-01',
-    type: 'interview',
-    title: 'Wawancara Tahap 2: Senior Frontend Engineer',
-    personName: 'Rizky Pratama, S.Kom',
-    personEmail: 'rizky.pratama@gmail.com',
-    date: 'Besok, 13 Okt 2026',
-    time: '10:00 - 10:45 WIB',
-    platform: 'Google Meet (meet.google.com/hrtech-rzp)',
-    status: 'Terkonfirmasi',
-    scoreInfo: 'OCR Match: 94% | Skor Psikotes: 88/100',
-  },
-  {
-    id: 'sch-02',
-    type: 'consultation',
-    title: 'Konseling: Decision-Making & Life-Path Coaching',
-    personName: 'Anisa Rahmawati, S.Psi',
-    personEmail: 'anisa.rahmawati@gmail.com',
-    date: 'Lusa, 14 Okt 2026',
-    time: '14:00 - 15:00 WIB',
-    platform: 'Sesi Privat via WhatsApp Video',
-    status: 'Lunas Terverifikasi',
-    scoreInfo: 'Topik: Transisi Karier & Negosiasi Kontrak Kerja',
-  },
-  {
-    id: 'sch-03',
-    type: 'interview',
-    title: 'Wawancara Kompetensi: HR Generalist UMKM',
-    personName: 'Bayu Wicaksono',
-    personEmail: 'bayu.wicaksono@gmail.com',
-    date: '15 Okt 2026',
-    time: '16:00 - 16:45 WIB',
-    platform: 'Virtual Room HRTech',
-    status: 'Terkonfirmasi',
-    scoreInfo: 'OCR Match: 88% | Skor Psikotes: 92/100',
-  },
-  {
-    id: 'sch-04',
-    type: 'consultation',
-    title: 'Klinik Karier: Career Offer & Contract Review',
-    personName: 'Dian Permatasari',
-    personEmail: 'dian.permatasari@gmail.com',
-    date: '16 Okt 2026',
-    time: '11:00 - 12:00 WIB',
-    platform: 'WhatsApp Handover Call',
-    status: 'Lunas Terverifikasi',
-    scoreInfo: 'Topik: Bedah Klausul Non-Compete & Remunerasi',
-  },
-];
-
-const SAMPLE_APPLICATIONS = [
-  {
-    id: 'app-sample-1',
-    candidate_id: 'cand-01',
-    job_id: 'job-01',
-    match_score: 94,
-    test_score: 88,
-    status: 'interview',
-    created: '2026-10-12',
-    candidate_name: 'Rizky Pratama, S.Kom',
-    candidate_email: 'rizky.pratama@gmail.com',
-    candidate_phone: '081234567890',
-    expand: {
-      job_id: {
-        title: 'Senior Frontend Engineer',
-      },
-    },
-  },
-  {
-    id: 'app-sample-2',
-    candidate_id: 'cand-02',
-    job_id: 'job-02',
-    match_score: 82,
-    test_score: 85,
-    status: 'testing',
-    created: '2026-10-13',
-    candidate_name: 'Anisa Rahmawati, S.Psi',
-    candidate_email: 'anisa.rahmawati@gmail.com',
-    candidate_phone: '081987654321',
-    expand: {
-      job_id: {
-        title: 'People Operations & HR Generalist',
-      },
-    },
-  },
-  {
-    id: 'app-sample-3',
-    candidate_id: 'cand-03',
-    job_id: 'job-03',
-    match_score: 89,
-    test_score: 92,
-    status: 'hired',
-    created: '2026-10-14',
-    candidate_name: 'Bayu Wicaksono, M.M.',
-    candidate_email: 'bayu.wicaksono@gmail.com',
-    candidate_phone: '081345678901',
-    expand: {
-      job_id: {
-        title: 'Operations & Process Lead',
-      },
-    },
-  },
-];
 
 const CATEGORY_PRESETS = [
   'Pilar A: Layanan B2B & HR Retainer',
