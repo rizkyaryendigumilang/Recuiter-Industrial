@@ -69,7 +69,7 @@ export const SHOWCASE_SLIDES: ShowcaseSlideData[] = [
       'Hemat waktu koreksi manual: skor kecepatan hitung, ketelitian, dan grafik fokus terhitung otomatis begitu ujian selesai',
       'Aman dipakai di area pabrik yang sinyalnya kurang stabil berkat penyimpanan cadangan lokal di perangkat',
     ],
-    accentColor: '#6366F1',
+    accentColor: '#D97706',
     theme: 'dark',
   },
   {
@@ -109,7 +109,7 @@ export const SHOWCASE_SLIDES: ShowcaseSlideData[] = [
       'Menyediakan bagan alur rekrutmen 5 langkah agar pelamar baru memahami urutan tahapan tes sebelum mendaftar',
       'Mendukung penggantian bahasa Indonesia dan Inggris sekali klik untuk perusahaan penanaman modal asing (PMA)',
     ],
-    accentColor: '#6366F1',
+    accentColor: '#D97706',
     theme: 'light',
   },
   {
@@ -149,7 +149,7 @@ export const SHOWCASE_SLIDES: ShowcaseSlideData[] = [
       'Dilengkapi label keahlian pabrik spesifik: PLC Siemens S7, CNC Milling 3-Axis, ISO 9001:2015, Ahli K3 Umum, dan SIO Forklift',
       'Menyediakan tombol pintas ke ruang latihan tes koran agar pelamar bisa melakukan pemanasan sebelum mengirim lamaran',
     ],
-    accentColor: '#4F46E5',
+    accentColor: '#D97706',
     theme: 'dark',
   },
   {
@@ -229,7 +229,7 @@ export const SHOWCASE_SLIDES: ShowcaseSlideData[] = [
       'Dilengkapi kolom unggah foto bukti pembayaran langsung beserta indikator status verifikasi secara langsung (real-time)',
       'Tersedia tombol kirim konfirmasi cepat ke WhatsApp Admin dengan teks pesan yang sudah terisi otomatis beserta nomor pesanan',
     ],
-    accentColor: '#6366F1',
+    accentColor: '#D97706',
     theme: 'dark',
   },
   {
@@ -269,7 +269,7 @@ export const SHOWCASE_SLIDES: ShowcaseSlideData[] = [
       'Tersedia 2 pilihan susunan tombol di layar HP: Mode 5-Kolom (hemat ruang layar) dan Mode 3x4 ala kalkulator standar',
       'Dilengkapi pengawas kecurangan otomatis yang mengunci layar penuh dan memberi peringatan jika peserta berpindah aplikasi',
     ],
-    accentColor: '#4F46E5',
+    accentColor: '#D97706',
     theme: 'light',
   },
   {
@@ -349,7 +349,7 @@ export const SHOWCASE_SLIDES: ShowcaseSlideData[] = [
       'Menampilkan grafik garis naik-turun kecepatan hitung per kolom untuk mendeteksi apakah pelamar mudah lelah saat shift panjang',
       'Dilengkapi tabel pembanding otomatis terhadap standar nilai minimum Operator Produksi, Staf QC, dan Teknisi Mesin',
     ],
-    accentColor: '#6366F1',
+    accentColor: '#D97706',
     theme: 'light',
   },
   {
@@ -389,7 +389,7 @@ export const SHOWCASE_SLIDES: ShowcaseSlideData[] = [
       'Setiap kartu pelamar menampilkan rangkuman skor CV + skor psikotes serta tombol buka lembar psikogram tanpa pindah halaman',
       'Dilengkapi pembuat pesan panggilan wawancara otomatis ke WhatsApp, Email, dan file pengingat Google/Apple Calendar (.ICS)',
     ],
-    accentColor: '#4F46E5',
+    accentColor: '#D97706',
     theme: 'dark',
   },
   {
@@ -469,7 +469,7 @@ export const SHOWCASE_SLIDES: ShowcaseSlideData[] = [
       'Halaman login menyediakan 3 tombol Akses Demo 1-Klik (Admin, Perusahaan/HRD, dan Pelamar) untuk memudahkan uji coba pembeli',
       'Paket penjualan mencakup kode sumber penuh (Full Source Code) yang siap dipasang di server sendiri maupun dibangun menjadi APK Android & iOS',
     ],
-    accentColor: '#6366F1',
+    accentColor: '#D97706',
     theme: 'dark',
   },
 ];

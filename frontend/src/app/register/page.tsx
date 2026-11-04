@@ -310,7 +310,7 @@ export default function RegisterPage() {
 
           <p className="text-center text-xs text-[#52525B] mt-6 pt-4 border-t border-[#E8E8EC]">
             {t.auth.hasAccount}{' '}
-            <Link href="/login" className="text-[#6366F1] font-semibold hover:underline">
+            <Link href="/login" className="text-amber-800 hover:text-amber-900 font-semibold underline underline-offset-2 font-mono">
               {t.auth.loginLink}
             </Link>
           </p>

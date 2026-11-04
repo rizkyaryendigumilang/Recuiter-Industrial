@@ -10,7 +10,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   ShieldAlert,
   CheckCircle2,
-  ArrowRight,
   Clock,
   AlertTriangle,
   Sparkles,
@@ -554,7 +553,7 @@ export function PsychTestContent() {
                     <Button
                       onClick={() => submitPersonalityTest(false)}
                       disabled={Object.keys(answers).length < questions.length || isSyncing}
-                      className="w-full sm:w-auto h-11 px-8 rounded-full bg-[#6366F1] hover:bg-[#4F46E5] text-white text-xs font-semibold shadow-sm transition-all disabled:opacity-40"
+                      className="w-full sm:w-auto h-11 px-8 rounded-xl bg-[#0D1117] hover:bg-[#21262D] text-white text-xs font-semibold shadow-sm transition-all disabled:opacity-40"
                     >
                       {isSyncing ? 'Menyinkronkan Hasil...' : 'Kumpulkan & Sinkronkan Hasil Tes'}
                     </Button>
@@ -586,8 +585,8 @@ export function PsychTestContent() {
                 {/* Radar Chart Display */}
                 <div className="p-6 rounded-2xl bg-[#FAFAFA] border border-[#E8E8EC] flex flex-col items-center">
                   <div className="w-full mb-4">
-                    <h4 className="font-bold text-sm text-[#0A0A0A] flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-[#6366F1]" />
+                    <h4 className="font-bold text-sm text-[#0A0A0A] flex items-center gap-2 font-mono">
+                      <Sparkles className="w-4 h-4 text-amber-600" />
                       Grafik Jaring Laba-Laba (Radar Chart) Profil Kompetensi
                     </h4>
                     <p className="text-xs text-neutral-500">
@@ -606,7 +605,7 @@ export function PsychTestContent() {
                     <div key={d.key} className="p-4 rounded-xl bg-white border border-[#E8E8EC]">
                       <div className="flex justify-between items-center mb-1">
                         <span className="text-xs font-bold text-neutral-800">{d.label}</span>
-                        <span className="text-xs font-mono font-bold text-[#6366F1]">{d.score}%</span>
+                        <span className="text-xs font-mono font-bold text-amber-800">{d.score}%</span>
                       </div>
                       <p className="text-[11px] text-neutral-500 leading-snug">{d.description}</p>
                     </div>

@@ -211,7 +211,7 @@ export default function RemotionShowcasePage() {
               href={`${BASE_PATH}/showcase/videos/recruiter-industrial-overview-4x5.mp4`}
               download="recruiter-industrial-instagram-4x5.mp4"
             >
-              <Button className="bg-[#4F46E5] hover:bg-[#4338CA] text-white rounded-lg text-xs font-semibold h-10 px-4 gap-2 cursor-pointer">
+              <Button className="bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold h-10 px-4 gap-2 cursor-pointer font-mono">
                 <Download className="w-4 h-4" />
                 <span>Unduh Video IG Feed 4:5 (.MP4)</span>
               </Button>
@@ -259,7 +259,7 @@ export default function RemotionShowcasePage() {
             <Button
               type="button"
               onClick={() => setIsEditMode(true)}
-              className="bg-[#4F46E5] hover:bg-[#4338CA] text-white rounded-lg text-xs font-semibold h-9 px-4 gap-2 cursor-pointer"
+              className="bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold h-9 px-4 gap-2 cursor-pointer font-mono"
             >
               <Edit3 className="w-3.5 h-3.5" />
               <span>Buka Panel Edit Manual di Web</span>
@@ -285,7 +285,7 @@ export default function RemotionShowcasePage() {
                   type="button"
                   size="sm"
                   onClick={handleDuplicateOrAddSlide}
-                  className="bg-[#4F46E5] hover:bg-[#4338CA] text-white rounded-lg text-xs font-semibold h-9 px-3 gap-1.5 cursor-pointer"
+                  className="bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold h-9 px-3 gap-1.5 cursor-pointer font-mono"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Tambah / Duplikat Slide Ini</span>
@@ -482,7 +482,7 @@ export default function RemotionShowcasePage() {
                     onClick={() => setAspectRatio(r.id)}
                     className={`px-2.5 py-1 rounded text-[11px] font-semibold transition-colors cursor-pointer ${
                       aspectRatio === r.id
-                        ? 'bg-[#4F46E5] text-white'
+                        ? 'bg-amber-600 text-white'
                         : 'text-zinc-400 hover:text-white'
                     }`}
                   >
@@ -750,7 +750,7 @@ export default function RemotionShowcasePage() {
             <div className="flex items-center gap-2">
               <Button
                 onClick={() => setIsWebZoomed(!isWebZoomed)}
-                className="bg-[#4F46E5] hover:bg-[#4338CA] text-white rounded-lg text-xs font-semibold h-9 px-4 gap-2 cursor-pointer"
+                className="bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold h-9 px-4 gap-2 cursor-pointer font-mono"
               >
                 {isWebZoomed ? (
                   <>
@@ -836,7 +836,7 @@ export default function RemotionShowcasePage() {
                   onClick={() => setAspectRatio(r.id)}
                   className={`px-3 py-1.5 rounded text-xs font-semibold transition-colors cursor-pointer ${
                     aspectRatio === r.id
-                      ? 'bg-[#4F46E5] text-white'
+                      ? 'bg-amber-600 text-white'
                       : 'text-zinc-400 hover:text-white'
                   }`}
                 >
@@ -949,7 +949,7 @@ export default function RemotionShowcasePage() {
 
             <Button
               onClick={handleCopyCaption}
-              className="bg-[#4F46E5] hover:bg-[#4338CA] text-white rounded-lg text-xs font-semibold h-10 px-5 gap-2 cursor-pointer"
+              className="bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold h-10 px-5 gap-2 cursor-pointer font-mono"
             >
               {copiedCaption ? (
                 <>

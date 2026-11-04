@@ -111,11 +111,11 @@ export function LanguageSwitcher({ variant = 'dropdown', className = '' }: Langu
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-[#FFFFFF] hover:bg-[#F5F5F7] border border-[#E8E8EC] text-[#1D1D1F] transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6366F1]/20"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-[#FFFFFF] hover:bg-[#F5F5F7] border border-[#E8E8EC] text-[#1D1D1F] transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-500/20"
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
-        <Globe className="w-3.5 h-3.5 text-[#6366F1]" />
+        <Globe className="w-3.5 h-3.5 text-[#0D1117]" />
         <span className="font-semibold">{language === 'id' ? 'ID' : 'EN'}</span>
         <span className="text-[10px] text-[#86868B] hidden sm:inline">
           {language === 'id' ? '🇮🇩' : '🇬🇧'}
@@ -147,7 +147,7 @@ export function LanguageSwitcher({ variant = 'dropdown', className = '' }: Langu
                 <p className="text-[10px] text-[#86868B] font-mono">ID / Default</p>
               </div>
             </div>
-            {language === 'id' && <Check className="w-4 h-4 text-[#6366F1]" />}
+            {language === 'id' && <Check className="w-4 h-4 text-emerald-600" />}
           </button>
 
           <button
@@ -169,7 +169,7 @@ export function LanguageSwitcher({ variant = 'dropdown', className = '' }: Langu
                 <p className="text-[10px] text-[#86868B] font-mono">EN / Global</p>
               </div>
             </div>
-            {language === 'en' && <Check className="w-4 h-4 text-[#6366F1]" />}
+            {language === 'en' && <Check className="w-4 h-4 text-emerald-600" />}
           </button>
         </div>
       )}

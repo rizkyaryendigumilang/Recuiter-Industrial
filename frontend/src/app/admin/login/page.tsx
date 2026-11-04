@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { LanguageSwitcher } from '@/components/language-switcher';
-import { ShieldCheck, ArrowRight, ChevronLeft, KeyRound } from 'lucide-react';
+import { ShieldCheck, ChevronLeft, KeyRound } from 'lucide-react';
 
 export default function AdminLoginPage() {
   const isProduction = process.env.NODE_ENV === 'production';
@@ -56,8 +56,8 @@ export default function AdminLoginPage() {
         </div>
 
         <div className="text-center mb-6">
-          <div className="w-10 h-10 rounded-2xl bg-[#0A0A0A] text-white flex items-center justify-center font-bold text-sm mx-auto shadow-sm mb-3">
-            <ShieldCheck className="w-5 h-5 text-[#6366F1]" />
+          <div className="w-10 h-10 rounded-2xl bg-[#0D1117] text-white flex items-center justify-center font-bold text-sm mx-auto shadow-sm mb-3">
+            <ShieldCheck className="w-5 h-5 text-amber-500" />
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-[#0A0A0A]">
             {t.auth.adminLoginTitle}
@@ -108,10 +108,9 @@ export default function AdminLoginPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-10 rounded-lg bg-[#1D1D1F] hover:bg-[#000000] text-white font-medium text-xs transition-colors duration-150"
+              className="w-full h-10 rounded-lg bg-[#0D1117] hover:bg-[#21262D] text-white font-medium text-xs transition-colors duration-150"
             >
               {loading ? t.common.loading : t.auth.adminLoginBtn}
-              <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
             </Button>
           </form>
 

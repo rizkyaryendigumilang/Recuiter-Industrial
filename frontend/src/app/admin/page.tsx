@@ -582,7 +582,7 @@ export default function AdminDashboard() {
               disabled={seeding}
               className="rounded-full border-[#E8E8EC] bg-white hover:bg-[#F5F5F7] text-xs h-9 text-[#1D1D1F]"
             >
-              <Database className="w-3.5 h-3.5 mr-1.5 text-[#6366F1]" />
+              <Database className="w-3.5 h-3.5 mr-1.5 text-amber-600" />
               {seeding ? (isEn ? 'Loading...' : 'Memuat...') : t.adminPortal.loadDummyBtn}
             </Button>
             <Button
@@ -652,7 +652,7 @@ export default function AdminDashboard() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-[#E8E8EC]">
                 <div>
                   <h2 className="text-lg font-bold text-[#0A0A0A] flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-[#6366F1]" />
+                    <Sparkles className="w-4 h-4 text-amber-600" />
                     {editingServiceId ? 'Edit Layanan Eksisting' : 'Posting & Tambah Layanan Baru'}
                   </h2>
                   <p className="text-xs text-[#6B6B6B] mt-0.5">
@@ -685,7 +685,7 @@ export default function AdminDashboard() {
                       id="svc-preset"
                       value={serviceForm.category}
                       onChange={(e) => setServiceForm({ ...serviceForm, category: e.target.value })}
-                      className="w-full bg-[#FFFFFF] border border-[#E8E8EC] rounded-xl px-3.5 py-2 text-xs text-[#1D1D1F] focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
+                      className="w-full bg-[#FFFFFF] border border-[#E8E8EC] rounded-xl px-3.5 py-2 text-xs text-[#1D1D1F] focus:outline-none focus:ring-2 focus:ring-amber-500"
                     >
                       {CATEGORY_PRESETS.map((p) => (
                         <option key={p} value={p}>{p}</option>
@@ -749,7 +749,7 @@ export default function AdminDashboard() {
                       id="svc-status"
                       value={serviceForm.is_active ? 'active' : 'inactive'}
                       onChange={(e) => setServiceForm({ ...serviceForm, is_active: e.target.value === 'active' })}
-                      className="w-full bg-[#FFFFFF] border border-[#E8E8EC] rounded-xl px-3.5 py-2 text-xs text-[#1D1D1F] focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
+                      className="w-full bg-[#FFFFFF] border border-[#E8E8EC] rounded-xl px-3.5 py-2 text-xs text-[#1D1D1F] focus:outline-none focus:ring-2 focus:ring-amber-500"
                     >
                       <option value="active">Aktif (Langsung Terlihat oleh Publik)</option>
                       <option value="inactive">Nonaktif (Draf / Tersembunyi)</option>
@@ -768,7 +768,7 @@ export default function AdminDashboard() {
                     onChange={(e) => setServiceForm({ ...serviceForm, description: e.target.value })}
                     rows={3}
                     placeholder="Jelaskan ruang lingkup sesi, siapa target pesertanya, durasi konsultasi, dan hasil yang diperoleh..."
-                    className="w-full bg-[#FFFFFF] border border-[#E8E8EC] rounded-xl p-3 text-xs text-[#1D1D1F] focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
+                    className="w-full bg-[#FFFFFF] border border-[#E8E8EC] rounded-xl p-3 text-xs text-[#1D1D1F] focus:outline-none focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
 
@@ -780,7 +780,7 @@ export default function AdminDashboard() {
                   <Button
                     type="submit"
                     disabled={saving}
-                    className="rounded-full bg-[#6366F1] hover:bg-[#4F46E5] text-white text-xs font-medium px-6 h-10 shadow-sm"
+                    className="rounded-xl bg-[#0D1117] hover:bg-[#21262D] text-white text-xs font-semibold px-6 h-10 shadow-sm"
                   >
                     {saving ? 'Menyimpan...' : editingServiceId ? 'Simpan Perubahan Publik' : 'Posting & Publikasikan'}
                   </Button>
@@ -842,7 +842,7 @@ export default function AdminDashboard() {
                           size="sm"
                           variant="outline"
                           onClick={() => handleEditService(svc)}
-                          className="rounded-full text-xs h-8 border-[#E8E8EC] text-[#6366F1]"
+                          className="rounded-lg text-xs h-8 border-[#E8E8EC] text-[#0D1117] hover:bg-[#F6F8FA]"
                         >
                           <Edit2 className="w-3 h-3 mr-1" />
                           Edit
@@ -871,7 +871,7 @@ export default function AdminDashboard() {
             <div className="bg-[#FFFFFF] border border-[#E8E8EC] rounded-2xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)] flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
                 <h2 className="text-lg font-bold text-[#0A0A0A] flex items-center gap-2">
-                  <CalendarIcon className="w-4 h-4 text-[#6366F1]" />
+                  <CalendarIcon className="w-4 h-4 text-amber-600" />
                   Kalender Wawancara &amp; Konseling Terjadwal
                 </h2>
                 <p className="text-xs text-[#6B6B6B] mt-0.5">
@@ -992,7 +992,7 @@ export default function AdminDashboard() {
                       <Clock className="w-3.5 h-3.5" />
                       {item.time}
                     </span>
-                    <span className="font-medium text-[#6366F1] flex items-center gap-1">
+                    <span className="font-medium text-amber-700 flex items-center gap-1 font-mono">
                       <Video className="w-3.5 h-3.5" />
                       {item.platform.split(' ')[0]}
                     </span>
@@ -1150,7 +1150,7 @@ export default function AdminDashboard() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-[#E8E8EC]">
                 <div>
                   <h2 className="text-base font-bold text-[#0A0A0A] flex items-center gap-2">
-                    <Users className="w-4 h-4 text-[#6366F1]" />
+                    <Users className="w-4 h-4 text-amber-600" />
                     Daftar Pelamar, Evaluasi Psikogram &amp; Notifikasi
                   </h2>
                   <p className="text-xs text-[#6B6B6B] mt-0.5">
@@ -1236,7 +1236,7 @@ export default function AdminDashboard() {
                             value={app.status || 'applied'}
                             onChange={(e) => updateCandidateStatus(app, e.target.value)}
                             aria-label="Ubah Status Kandidat"
-                            className="bg-[#FAFAFA] border border-[#E8E8EC] rounded-xl px-2.5 py-1.5 text-xs text-[#1D1D1F] focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
+                            className="bg-[#FAFAFA] border border-[#E8E8EC] rounded-xl px-2.5 py-1.5 text-xs text-[#1D1D1F] focus:outline-none focus:ring-2 focus:ring-amber-500"
                           >
                             <option value="applied">Applied</option>
                             <option value="testing">Testing</option>
@@ -1252,7 +1252,7 @@ export default function AdminDashboard() {
                             onClick={() => openPsikogram(app)}
                             className="rounded-full border-[#E8E8EC] text-xs h-8 bg-white hover:bg-[#F5F5F7] text-[#1D1D1F]"
                           >
-                            <FileText className="w-3.5 h-3.5 mr-1.5 text-[#6366F1]" />
+                            <FileText className="w-3.5 h-3.5 mr-1.5 text-[#0D1117]" />
                             {t.employerPortal.downloadPsikogramBtn}
                           </Button>
 

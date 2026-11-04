@@ -4,7 +4,7 @@ import React from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { useLanguage } from '@/lib/language-context';
 import { Button } from '@/components/ui/button';
-import { User, Briefcase, Sparkles, ArrowRight } from 'lucide-react';
+import { User, Briefcase, Sparkles, ChevronRight } from 'lucide-react';
 
 export function RoleSelectionDialog() {
   const { needsRoleSelection, assignRole } = useAuth();
@@ -52,7 +52,7 @@ export function RoleSelectionDialog() {
                 </p>
               </div>
             </div>
-            <ArrowRight className="w-4 h-4 text-[#57606A] group-hover:text-[#0D1117] transition-colors shrink-0 ml-2" />
+            <ChevronRight className="w-4 h-4 text-[#86868B] group-hover:text-[#0D1117] group-hover:translate-x-0.5 transition-transform shrink-0 ml-2" />
           </button>
 
           {/* Employer Card */}
@@ -76,7 +76,7 @@ export function RoleSelectionDialog() {
                 </p>
               </div>
             </div>
-            <ArrowRight className="w-4 h-4 text-[#57606A] group-hover:text-[#0D1117] transition-colors shrink-0 ml-2" />
+            <ChevronRight className="w-4 h-4 text-[#86868B] group-hover:text-[#0D1117] group-hover:translate-x-0.5 transition-transform shrink-0 ml-2" />
           </button>
         </div>
       </div>

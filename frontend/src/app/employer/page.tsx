@@ -689,7 +689,7 @@ export default function EmployerDashboard() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-[#E8E8EC]">
                 <div>
                   <h2 className="text-base font-bold text-[#0A0A0A] flex items-center gap-2">
-                    <Users className="w-4 h-4 text-[#6366F1]" />
+                    <Users className="w-4 h-4 text-amber-600" />
                     {isEn ? 'Recruitment Pipeline & ATS Tracking' : 'Pipeline Rekrutmen & Pemantauan ATS'}
                   </h2>
                   <p className="text-xs text-[#6B6B6B] mt-0.5">
@@ -949,7 +949,7 @@ export default function EmployerDashboard() {
                               <select
                                 value={app.status || 'applied'}
                                 onChange={(e) => updateCandidateStatus(app, e.target.value)}
-                                className="border border-[#E8E8EC] rounded-xl pl-3 pr-7 py-1 text-xs bg-white font-medium focus:ring-2 focus:ring-[#6366F1] focus:outline-none appearance-none cursor-pointer shadow-sm hover:border-neutral-300 transition-colors"
+                                className="border border-[#E8E8EC] rounded-xl pl-3 pr-7 py-1 text-xs bg-white font-medium focus:ring-2 focus:ring-amber-500 focus:outline-none appearance-none cursor-pointer shadow-sm hover:border-neutral-300 transition-colors"
                               >
                                 <option value="applied">1. Screening (Applied)</option>
                                 <option value="testing">2. Testing (Psikotes)</option>
@@ -983,7 +983,7 @@ export default function EmployerDashboard() {
                             onClick={() => openPsikogram(app)}
                             className="rounded-full text-xs h-8 border-[#E8E8EC] bg-white hover:bg-neutral-100 flex items-center gap-1.5 text-neutral-800"
                           >
-                            <FileText className="w-3.5 h-3.5 text-[#6366F1]" />
+                            <FileText className="w-3.5 h-3.5 text-[#0D1117]" />
                             {t.employerPortal.downloadPsikogramBtn}
                           </Button>
 
@@ -1077,7 +1077,7 @@ export default function EmployerDashboard() {
                     onChange={(e) => setJobDesc(e.target.value)}
                     rows={4}
                     placeholder="Tuliskan tugas utama, kualifikasi pendidikan, dan lingkungan kerja..."
-                    className="w-full rounded-xl border border-[#E8E8EC] p-3 text-xs focus:ring-1 focus:ring-[#6366F1] bg-white outline-none"
+                    className="w-full rounded-xl border border-[#E8E8EC] p-3 text-xs focus:ring-1 focus:ring-amber-500 bg-white outline-none"
                     required
                   />
                 </div>

@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { useState, Suspense } from 'react';
-import { Menu, LogOut, User, Briefcase, ShieldCheck, ArrowRight, Settings, Activity, HelpCircle, Award } from 'lucide-react';
+import { Menu, LogOut, User, Briefcase, ShieldCheck, Settings, Activity, HelpCircle, Award } from 'lucide-react';
 
 function NavContent() {
   const { isLoggedIn, role, logout, user } = useAuth();

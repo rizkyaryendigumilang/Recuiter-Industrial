@@ -331,8 +331,8 @@ export function PauliTest({
 
           <defs>
             <linearGradient id="pauliGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#6366F1" />
-              <stop offset="100%" stopColor="#6366F1" stopOpacity="0" />
+              <stop offset="0%" stopColor="#D97706" />
+              <stop offset="100%" stopColor="#D97706" stopOpacity="0" />
             </linearGradient>
           </defs>
 
@@ -340,7 +340,7 @@ export function PauliTest({
           <path
             d={pathData}
             fill="none"
-            stroke="#6366F1"
+            stroke="#D97706"
             strokeWidth="3"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -354,7 +354,7 @@ export function PauliTest({
                 cy={p.y}
                 r="4.5"
                 fill="#FFFFFF"
-                stroke="#6366F1"
+                stroke="#D97706"
                 strokeWidth="2.5"
               />
               <text
@@ -512,7 +512,7 @@ export function PauliTest({
                   idx < currentColumn
                     ? 'bg-emerald-500'
                     : idx === currentColumn
-                    ? 'bg-[#6366F1]'
+                    ? 'bg-amber-500'
                     : 'bg-neutral-200'
                 }`}
               />
@@ -655,7 +655,7 @@ export function PauliTest({
                   {finalResult.jankerGrade}
                 </Badge>
               </div>
-              <p className="text-xl font-mono font-extrabold text-[#6366F1]">
+              <p className="text-xl font-mono font-extrabold text-amber-700">
                 {finalResult.stabilityScore}%
               </p>
               <p className="text-[10px] text-neutral-500 mt-1">
@@ -668,8 +668,8 @@ export function PauliTest({
           <div className="p-6 rounded-2xl bg-[#FFFFFF] border border-[#E8E8EC] shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h4 className="font-bold text-sm text-[#0A0A0A] flex items-center gap-1.5">
-                  <TrendingUp className="w-4 h-4 text-[#6366F1]" />
+                <h4 className="font-bold text-sm text-[#0A0A0A] flex items-center gap-1.5 font-mono">
+                  <TrendingUp className="w-4 h-4 text-amber-600" />
                   {t.assessment.fluctuationGraphTitle}
                 </h4>
                 <p className="text-xs text-[#6B6B6B] mt-0.5">

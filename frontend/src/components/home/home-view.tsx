@@ -8,7 +8,6 @@ import { CorporateTimeline } from '@/components/corporate-timeline';
 import { useLanguage } from '@/lib/language-context';
 import {
   Briefcase,
-  ArrowRight,
   Building2,
   CheckCircle2,
   Search,

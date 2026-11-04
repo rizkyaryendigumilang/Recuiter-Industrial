@@ -238,7 +238,7 @@ export default function CandidatePortal() {
 
               <div className="border-2 border-dashed border-neutral-200 hover:border-neutral-400 rounded-2xl p-8 text-center flex flex-col items-center gap-3 bg-neutral-50/50 transition-colors">
                 <div className="w-12 h-12 rounded-full bg-white border border-neutral-200 flex items-center justify-center text-neutral-700 shadow-sm">
-                  <UploadCloud className="w-6 h-6 text-[#6366F1]" />
+                  <UploadCloud className="w-6 h-6 text-amber-600" />
                 </div>
                 <input
                   type="file"
@@ -262,7 +262,7 @@ export default function CandidatePortal() {
             <Button
               onClick={handleUpload}
               disabled={!file || isUploading}
-              className="mt-6 w-full rounded-full bg-[#1D1D1F] hover:bg-black text-white font-semibold text-xs h-10 shadow-sm"
+              className="mt-6 w-full rounded-xl bg-[#0D1117] hover:bg-[#21262D] text-white font-semibold text-xs h-10 shadow-sm"
             >
               {isUploading
                 ? (isEn ? "Extracting Industrial Keywords..." : "Memindai Kompetensi Manufaktur & K3...")
@@ -275,7 +275,7 @@ export default function CandidatePortal() {
             <div>
               <div className="flex items-center justify-between mb-1">
                 <h2 className="text-base font-bold text-neutral-900 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-[#6366F1]" />
+                  <Sparkles className="w-4 h-4 text-amber-600" />
                   {isEn ? 'Industrial Competency Profile' : 'Profil Kompetensi Industri'}
                 </h2>
                 {skills.length > 0 && (

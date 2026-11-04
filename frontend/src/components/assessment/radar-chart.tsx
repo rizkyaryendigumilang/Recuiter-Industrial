@@ -19,7 +19,7 @@ interface RadarChartProps {
 export function RadarChart({
   dimensions,
   size = 320,
-  color = '#6366F1',
+  color = '#D97706',
   title,
 }: RadarChartProps) {
   const center = size / 2;
@@ -146,7 +146,7 @@ export function RadarChart({
                 x={labelCoord.x}
                 y={labelCoord.y + 13}
                 textAnchor={textAnchor}
-                className="text-[10px] font-mono font-bold fill-[#6366F1]"
+                className="text-[10px] font-mono font-bold fill-amber-700"
                 alignmentBaseline="central"
               >
                 {Math.round(d.score)}%

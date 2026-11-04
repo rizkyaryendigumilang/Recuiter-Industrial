@@ -144,12 +144,12 @@ export function CandidateNotificationModal({
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="font-bold text-xs text-neutral-800 flex items-center gap-1.5">
-                <Mail className="w-3.5 h-3.5 text-[#6366F1]" />
+                <Mail className="w-3.5 h-3.5 text-amber-600" />
                 {t.notification.emailLabel}
               </span>
               <button
                 onClick={copyEmailText}
-                className="text-[11px] text-[#6366F1] hover:underline flex items-center gap-1 font-semibold"
+                className="text-[11px] text-amber-800 hover:text-amber-900 underline underline-offset-2 flex items-center gap-1 font-semibold font-mono"
               >
                 {copiedEmail ? (
                   <>

@@ -97,14 +97,14 @@ export function PsikogramModal({ isOpen, onClose, data }: PsikogramModalProps) {
         <path
           d={pathData}
           fill="none"
-          stroke="#6366F1"
+          stroke="#D97706"
           strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
         {points.map((p, i) => (
           <g key={`p-mini-${i}`}>
-            <circle cx={p.x} cy={p.y} r="3.5" fill="#FFFFFF" stroke="#6366F1" strokeWidth="2" />
+            <circle cx={p.x} cy={p.y} r="3.5" fill="#FFFFFF" stroke="#D97706" strokeWidth="2" />
             <text x={p.x} y={p.y - 7} textAnchor="middle" className="text-[9px] font-mono font-bold fill-neutral-700">
               {p.val}
             </text>
@@ -160,11 +160,11 @@ export function PsikogramModal({ isOpen, onClose, data }: PsikogramModalProps) {
           <div className="flex items-start justify-between border-b-2 border-neutral-900 pb-5">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="w-7 h-7 rounded-lg bg-neutral-900 text-white flex items-center justify-center font-bold text-xs">
-                  HR
+                <span className="w-7 h-7 rounded-lg bg-[#0D1117] text-white flex items-center justify-center font-bold text-xs font-mono">
+                  RI
                 </span>
                 <span className="font-bold text-lg tracking-tight text-neutral-900">
-                  Tech<span className="text-[#6366F1]">.</span> Assessment Center
+                  Recruiter Industrial<span className="text-amber-600">.</span> Assessment Center
                 </span>
               </div>
               <h1 className="text-xl font-bold tracking-tight text-[#0A0A0A] mt-1">
@@ -235,7 +235,7 @@ export function PsikogramModal({ isOpen, onClose, data }: PsikogramModalProps) {
             </div>
             <div className="p-3 bg-white border border-neutral-200 rounded-xl">
               <span className="text-[10px] font-semibold uppercase text-neutral-400 block">{t.psikogram.stabilityLabel}</span>
-              <span className="text-xl font-bold font-mono text-[#6366F1]">{data.pauliStability}%</span>
+              <span className="text-xl font-bold font-mono text-amber-700">{data.pauliStability}%</span>
             </div>
           </div>
 
@@ -244,8 +244,8 @@ export function PsikogramModal({ isOpen, onClose, data }: PsikogramModalProps) {
             {/* Left Box: Radar Chart Kepribadian */}
             <div className="p-5 bg-white border border-neutral-200 rounded-2xl flex flex-col items-center justify-between">
               <div className="w-full text-left mb-2">
-                <h4 className="text-xs font-bold text-neutral-900 uppercase tracking-wider flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-[#6366F1]" />
+                <h4 className="text-xs font-bold text-neutral-900 uppercase tracking-wider flex items-center gap-1.5 font-mono">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-600" />
                   {t.psikogram.personalitySection}
                 </h4>
                 <p className="text-[10px] text-neutral-500">
@@ -261,8 +261,8 @@ export function PsikogramModal({ isOpen, onClose, data }: PsikogramModalProps) {
             {/* Right Box: Fluktuasi Kerja Pauli */}
             <div className="p-5 bg-white border border-neutral-200 rounded-2xl flex flex-col justify-between">
               <div>
-                <h4 className="text-xs font-bold text-neutral-900 uppercase tracking-wider flex items-center gap-1.5 mb-1">
-                  <TrendingUp className="w-3.5 h-3.5 text-[#6366F1]" />
+                <h4 className="text-xs font-bold text-neutral-900 uppercase tracking-wider flex items-center gap-1.5 mb-1 font-mono">
+                  <TrendingUp className="w-3.5 h-3.5 text-amber-600" />
                   {t.psikogram.pauliSection}
                 </h4>
                 <p className="text-[10px] text-neutral-500 mb-3">

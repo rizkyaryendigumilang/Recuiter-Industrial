@@ -14,7 +14,7 @@ import {
   ShieldCheck,
   Briefcase,
   User,
-  ArrowRight,
+  ChevronRight,
   ChevronLeft,
 } from 'lucide-react';
 
@@ -124,8 +124,8 @@ export default function LoginPage() {
 
         {/* Brand Header */}
         <div className="text-center mb-6">
-          <div className="w-10 h-10 rounded-2xl bg-[#0A0A0A] text-white flex items-center justify-center font-bold text-sm mx-auto shadow-sm mb-3">
-            HR
+          <div className="w-10 h-10 rounded-2xl bg-[#0D1117] text-white flex items-center justify-center font-bold text-xs font-mono mx-auto shadow-sm mb-3">
+            RI
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-[#0A0A0A]">
             {t.auth.loginTitle}
@@ -259,10 +259,9 @@ export default function LoginPage() {
             <Button
               type="submit"
               disabled={loading || oauthLoading !== null}
-              className="w-full h-10 rounded-lg bg-[#1D1D1F] hover:bg-[#000000] text-white font-medium text-xs transition-colors duration-150 mt-2 touch-manipulation"
+              className="w-full h-10 rounded-lg bg-[#0D1117] hover:bg-[#21262D] text-white font-medium text-xs transition-colors duration-150 mt-2 touch-manipulation font-semibold"
             >
               {loading ? t.common.loading : t.auth.loginBtn}
-              <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
             </Button>
           </form>
 
@@ -287,18 +286,18 @@ export default function LoginPage() {
             >
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-neutral-100 text-neutral-800 flex items-center justify-center shrink-0">
-                  <ShieldCheck className="w-4 h-4" />
+                  <ShieldCheck className="w-4 h-4 text-amber-600" />
                 </div>
                 <div>
                   <p className="text-xs font-bold text-[#0A0A0A] group-hover:text-black transition-colors">
                     {isEn ? 'Log in as Administrator' : 'Login sebagai Administrator'}
                   </p>
                   <p className="text-[10px] text-[#52525B]">
-                    admin@hrtech.id &bull; {isEn ? 'Access Admin Controls & Calendar' : 'Akses Menu Administrasi & Kalender'}
+                    admin@hrtech.id / {isEn ? 'Access Admin Controls & Calendar' : 'Akses Menu Administrasi & Kalender'}
                   </p>
                 </div>
               </div>
-              <ArrowRight className="w-3.5 h-3.5 text-[#52525B] group-hover:translate-x-0.5 transition-transform" />
+              <ChevronRight className="w-4 h-4 text-[#86868B] group-hover:translate-x-0.5 transition-transform" />
             </button>
 
             <button
@@ -308,18 +307,18 @@ export default function LoginPage() {
             >
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-neutral-100 text-neutral-800 flex items-center justify-center shrink-0">
-                  <Briefcase className="w-4 h-4" />
+                  <Briefcase className="w-4 h-4 text-[#0D1117]" />
                 </div>
                 <div>
                   <p className="text-xs font-bold text-[#0A0A0A] group-hover:text-black transition-colors">
                     {isEn ? 'Log in as Employer (SME)' : 'Login sebagai Employer (UMKM)'}
                   </p>
                   <p className="text-[10px] text-[#52525B]">
-                    employer@demo.com &bull; {isEn ? 'Post jobs & review applicants' : 'Pasang lowongan & pantau pelamar'}
+                    employer@demo.com / {isEn ? 'Post jobs & review applicants' : 'Pasang lowongan & pantau pelamar'}
                   </p>
                 </div>
               </div>
-              <ArrowRight className="w-3.5 h-3.5 text-[#52525B] group-hover:translate-x-0.5 transition-transform" />
+              <ChevronRight className="w-4 h-4 text-[#86868B] group-hover:translate-x-0.5 transition-transform" />
             </button>
 
             <button
@@ -329,25 +328,25 @@ export default function LoginPage() {
             >
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-neutral-100 text-neutral-800 flex items-center justify-center shrink-0">
-                  <User className="w-4 h-4" />
+                  <User className="w-4 h-4 text-[#0D1117]" />
                 </div>
                 <div>
                   <p className="text-xs font-bold text-[#0A0A0A] group-hover:text-black transition-colors">
                     {isEn ? 'Log in as Job Seeker' : 'Login sebagai Kandidat Pelamar'}
                   </p>
                   <p className="text-[10px] text-[#52525B]">
-                    kandidat@demo.com &bull; {isEn ? 'Upload CV, OCR match, & assessments' : 'Unggah CV, OCR matching, & tes psikotes'}
+                    kandidat@demo.com / {isEn ? 'Upload CV, OCR match, & assessments' : 'Unggah CV, OCR matching, & tes psikotes'}
                   </p>
                 </div>
               </div>
-              <ArrowRight className="w-3.5 h-3.5 text-[#52525B] group-hover:translate-x-0.5 transition-transform" />
+              <ChevronRight className="w-4 h-4 text-[#86868B] group-hover:translate-x-0.5 transition-transform" />
             </button>
           </div>
 
           {/* Footer Register Link */}
           <p className="text-center text-xs text-[#52525B] mt-6 pt-4 border-t border-[#E8E8EC]">
             {t.auth.noAccount}{' '}
-            <Link href="/register" className="text-[#6366F1] font-semibold hover:underline">
+            <Link href="/register" className="text-amber-800 hover:text-amber-900 font-semibold underline underline-offset-2 font-mono">
               {t.auth.registerLink}
             </Link>
           </p>

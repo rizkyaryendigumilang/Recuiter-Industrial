@@ -308,7 +308,7 @@ export const WebBrowserFrame: React.FC<{
   originY,
   focusLabel,
   focusOpacity = 0,
-  accentColor = '#6366F1',
+  accentColor = '#D97706',
   style,
 }) => {
   const headerHeight = Math.max(26, Math.round(height * 0.068));
@@ -931,7 +931,7 @@ export const FullVideoOverviewComposition: React.FC<VideoOverviewProps> = ({
           left: 0,
           width: width * progress,
           height: 5,
-          background: '#4F46E5',
+          background: '#D97706',
           zIndex: 100,
         }}
       />
