@@ -72,7 +72,7 @@ export function CorporateTimeline() {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFFFFF] border border-[#E8E8EC] text-[11px] font-medium tracking-wide text-[#52525B] mb-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#6366F1]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
               {isEn ? 'Hybrid Process Architecture' : 'Arsitektur Proses Hibrida'}
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] text-[#0A0A0A]">
@@ -101,21 +101,21 @@ export function CorporateTimeline() {
               return (
                 <div
                   key={item.step}
-                  className="min-w-[270px] lg:min-w-0 flex-1 snap-start relative bg-[#FFFFFF] border border-[#E8E8EC] rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between"
+                  className="min-w-[270px] lg:min-w-0 flex-1 snap-start relative bg-[#FFFFFF] border border-[#E8E8EC] rounded-xl p-5 shadow-xs hover:border-[#D0D7DE] transition-all duration-150 flex flex-col justify-between"
                 >
                   {/* Top: Milestone Node & Indicator */}
                   <div>
                     <div className="flex items-center justify-between mb-4">
-                      <div className="w-10 h-10 rounded-xl bg-[#FAFAFA] border border-[#E8E8EC] flex items-center justify-center text-[#1D1D1F] font-mono text-xs font-bold shadow-xs">
+                      <div className="w-10 h-10 rounded-lg bg-[#FAFAFA] border border-[#E8E8EC] flex items-center justify-center text-[#1D1D1F] font-mono text-xs font-bold shadow-xs">
                         {item.step}
                       </div>
-                      <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#F5F5F7] text-[#52525B] font-medium border border-[#E8E8EC]">
+                      <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#F5F5F7] text-[#52525B] font-medium border border-[#E8E8EC]">
                         {item.badge}
                       </span>
                     </div>
 
                     <div className="flex items-center gap-2 mb-1.5">
-                      <Icon className="w-3.5 h-3.5 text-[#6366F1]" />
+                      <Icon className="w-3.5 h-3.5 text-amber-600" />
                       <span className="text-[10px] font-mono uppercase tracking-widest text-[#52525B]">
                         {item.category}
                       </span>

@@ -104,10 +104,9 @@ function NavContent() {
             <Link href="/register">
               <Button
                 size="sm"
-                className="rounded-full text-xs font-medium bg-[#6366F1] hover:bg-[#4F46E5] text-white shadow-sm h-8 px-4 transition-all"
+                className="rounded-full text-xs font-medium bg-[#0D1117] hover:bg-[#21262D] text-white shadow-xs h-8 px-4 transition-all"
               >
                 {t.nav.register}
-                <ArrowRight className="w-3 h-3 ml-1" />
               </Button>
             </Link>
           </div>
@@ -124,8 +123,8 @@ function NavContent() {
           <SheetContent side="right" className="w-80 pt-10 pb-[calc(1.5rem+env(safe-area-inset-bottom,0px))] bg-[#FFFFFF] border-l border-[#E8E8EC] overscroll-contain overflow-y-auto">
             <div className="flex flex-col gap-2">
               <div className="px-3 pb-3 border-b border-[#E8E8EC]">
-                <p className="font-bold text-lg text-[#0A0A0A]">
-                  HR<span className="text-[#6366F1]">Tech</span>
+                <p className="font-bold text-lg text-[#0A0A0A] flex items-center gap-1.5">
+                  Recruiter <span className="text-amber-600 font-mono text-sm font-semibold">Industrial</span>
                 </p>
                 <p className="text-xs text-[#52525B] mt-0.5">{t.nav.brandSub}</p>
               </div>
@@ -173,7 +172,7 @@ function NavContent() {
                     </Button>
                   </Link>
                   <Link href="/register" onClick={() => setOpen(false)}>
-                    <Button size="sm" className="w-full rounded-full bg-[#6366F1] hover:bg-[#4F46E5] text-white text-xs font-medium">
+                    <Button size="sm" className="w-full rounded-full bg-[#0D1117] hover:bg-[#21262D] text-white text-xs font-medium">
                       {t.nav.register}
                     </Button>
                   </Link>
@@ -192,11 +191,11 @@ export function Navbar() {
     <header className="sticky top-0 z-50 bg-[#FFFFFF]/85 backdrop-blur-xl border-b border-[#E8E8EC] pt-[env(safe-area-inset-top,0px)]">
       <div className="container mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 group">
-          <span className="w-7 h-7 rounded-lg bg-[#0A0A0A] text-white flex items-center justify-center font-bold text-xs tracking-wider shadow-sm group-hover:bg-[#6366F1] transition-colors">
-            HR
+          <span className="w-7 h-7 rounded-md bg-[#0D1117] text-white flex items-center justify-center font-bold text-xs tracking-wider shadow-xs group-hover:bg-amber-600 transition-colors">
+            RI
           </span>
           <span className="font-bold text-base tracking-tight text-[#0A0A0A]">
-            Tech<span className="inline-block w-1.5 h-1.5 rounded-full bg-[#6366F1] ml-0.5 align-baseline"></span>
+            Recruiter <span className="font-mono text-xs text-amber-600 font-semibold px-1.5 py-0.5 rounded bg-amber-50 border border-amber-200">IND</span>
           </span>
         </Link>
         <Suspense fallback={<div className="h-7 w-20 bg-[#F5F5F7] rounded-full animate-pulse" />}>

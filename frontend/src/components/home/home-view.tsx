@@ -95,6 +95,30 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
   const [selectedPillar, setSelectedPillar] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Mini interactive Kraepelin simulator in Hero (21st.dev style tactile widget)
+  const [heroNumA, setHeroNumA] = useState(7);
+  const [heroNumB, setHeroNumB] = useState(8);
+  const [heroFeedback, setHeroFeedback] = useState<'idle' | 'correct' | 'wrong'>('idle');
+  const [heroScore, setHeroScore] = useState(14);
+  const [heroPanker, setHeroPanker] = useState(48.5);
+
+  const handleHeroSubmit = (digit: number) => {
+    const expected = (heroNumA + heroNumB) % 10;
+    if (digit === expected) {
+      setHeroFeedback('correct');
+      setHeroScore((prev) => prev + 1);
+      setHeroPanker((prev) => Math.min(65, +(prev + 0.6).toFixed(1)));
+      setTimeout(() => {
+        setHeroNumA(Math.floor(Math.random() * 9) + 1);
+        setHeroNumB(Math.floor(Math.random() * 9) + 1);
+        setHeroFeedback('idle');
+      }, 350);
+    } else {
+      setHeroFeedback('wrong');
+      setTimeout(() => setHeroFeedback('idle'), 500);
+    }
+  };
+
   useEffect(() => {
     async function load() {
       try {
@@ -126,80 +150,181 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-[#1D1D1F] flex flex-col font-sans">
-      {/* 1. HERO SECTION (Apple x Genesis: Quiet Confidence, Deep Ink, Spacious Canvas) */}
-      <section className="relative pt-20 pb-24 md:pt-28 md:pb-32 bg-[#FFFFFF] border-b border-[#E8E8EC]">
-        <div className="container mx-auto px-4 sm:px-6 max-w-4xl text-center">
-          {/* Eyebrow Label */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F5F5F7] border border-[#E8E8EC] text-[11px] font-medium tracking-wide text-[#52525B] mb-8">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#6366F1]" />
-            {t.hero.badge}
-          </div>
+      {/* 1. HERO SECTION (Tactile Industrial Precision & Interactive Psychometric Console) */}
+      <section className="relative pt-12 pb-16 md:pt-16 md:pb-24 bg-[#FFFFFF] border-b border-[#E1E4E8]">
+        <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            {/* Left: Confident Technical Grounding */}
+            <div className="lg:col-span-7 text-left">
+              {/* Contextual Technical Badge */}
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#F6F8FA] border border-[#E1E4E8] text-xs font-mono text-[#52525B] mb-5">
+                <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                <span>{isEn ? 'Industrial Manufacturing • HIMPSI & K3 Standard' : 'Pabrik & Manufaktur Presisi • Standar HIMPSI & Kemnaker'}</span>
+              </div>
 
-          {/* Headline (Editorial Apple-Restrained Typography) */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold tracking-[-0.03em] text-[#0A0A0A] leading-[1.08] mb-6">
-            {t.hero.titlePrimary}{' '}
-            <span className="text-[#6366F1]">{t.hero.titleHighlight}</span>.
-          </h1>
+              {/* Headline - Editorial, solid, without split-color words */}
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-[#0D1117] leading-[1.12] mb-5">
+                {isEn 
+                  ? 'Factory Operator Recruitment and Industrial Psychometric Calibration.'
+                  : 'Standar Rekrutmen Operator Pabrik dan Kalibrasi Psikometri Industri.'}
+              </h1>
 
-          {/* Subtitle */}
-          <p className="text-base sm:text-lg text-[#6B6B6B] max-w-2xl mx-auto leading-relaxed mb-10">
-            {t.hero.subtitle}
-          </p>
-
-          {/* Quiet, Confident CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link href="#jobs" className="w-full sm:w-auto">
-              <Button
-                size="lg"
-                className="w-full sm:w-auto h-11 px-7 rounded-lg bg-[#1D1D1F] hover:bg-[#000000] text-white text-xs font-medium shadow-sm transition-colors duration-150 touch-manipulation"
-              >
-                {t.hero.exploreJobs}
-                <ArrowRight className="w-3.5 h-3.5 ml-2" />
-              </Button>
-            </Link>
-            <Link href="#services" className="w-full sm:w-auto">
-              <Button
-                variant="outline"
-                size="lg"
-                className="w-full sm:w-auto h-11 px-7 rounded-lg border-[#E8E8EC] bg-white hover:bg-[#F5F5F7] text-[#1D1D1F] text-xs font-medium transition-colors duration-150 touch-manipulation"
-              >
-                {t.hero.bookConsultation}
-              </Button>
-            </Link>
-            <Link href="/login" className="w-full sm:w-auto">
-              <Button
-                variant="outline"
-                size="lg"
-                className="w-full sm:w-auto h-11 px-6 rounded-lg border-[#E8E8EC] bg-[#F5F5F7] hover:bg-neutral-200 text-[#1D1D1F] text-xs font-medium transition-colors duration-150 touch-manipulation"
-              >
-                {t.nav.loginDemo} &rarr;
-              </Button>
-            </Link>
-          </div>
-
-          {/* Key Metrics */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-20 pt-10 border-t border-[#E8E8EC] text-left">
-            <div>
-              <p className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0A0A0A]">
-                {t.hero.statMatchRateVal}
+              {/* Subtitle */}
+              <p className="text-sm sm:text-base text-[#57606A] max-w-xl leading-relaxed mb-8">
+                {isEn
+                  ? 'Precision technical workforce screening: automated Kraepelin/Pauli test engine calibrated to HIMPSI norms, Kemnaker K3 license verification, and 3-shift mental load mitigation.'
+                  : 'Ekosistem seleksi teknis pabrik: auto-scoring tes Kraepelin/Pauli terkalibrasi norma HIMPSI, verifikasi lisensi K3 Kemnaker, audit 7 QC Tools, dan mitigasi kelelahan kerja 3-shift.'}
               </p>
-              <p className="text-xs text-[#52525B] mt-1">{t.hero.statMatchRate}</p>
+
+              {/* Direct CTAs without trailing arrow spam */}
+              <div className="flex flex-wrap items-center gap-3 mb-10">
+                <Link href="#jobs">
+                  <Button
+                    size="lg"
+                    className="h-11 px-6 rounded-lg bg-[#0D1117] hover:bg-[#24292F] text-white text-xs font-medium shadow-xs transition-colors duration-150 touch-manipulation cursor-pointer"
+                  >
+                    {isEn ? 'Explore Factory Vacancies' : 'Jelajahi Lowongan Pabrik'}
+                  </Button>
+                </Link>
+                <Link href="/candidate/practice">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="h-11 px-6 rounded-lg border-[#D0D7DE] bg-white hover:bg-[#F6F8FA] text-[#0D1117] text-xs font-medium transition-colors duration-150 touch-manipulation cursor-pointer"
+                  >
+                    {isEn ? 'Practice Kraepelin Test' : 'Simulasi Uji Kraepelin'}
+                  </Button>
+                </Link>
+                <Link href="#services">
+                  <Button
+                    variant="ghost"
+                    size="lg"
+                    className="h-11 px-5 rounded-lg text-[#57606A] hover:text-[#0D1117] hover:bg-[#F6F8FA] text-xs font-medium transition-colors duration-150 touch-manipulation cursor-pointer"
+                  >
+                    {isEn ? 'B2B Plant Retainer' : 'Konsultasi Plant B2B'}
+                  </Button>
+                </Link>
+              </div>
+
+              {/* Industrial Corridors & Cluster Indicators */}
+              <div className="pt-6 border-t border-[#E1E4E8]">
+                <p className="text-[11px] font-mono text-[#57606A] uppercase tracking-wider mb-2">
+                  {isEn ? 'Integrated Manufacturing Corridors' : 'Klaster Industri Terintegrasi'}
+                </p>
+                <div className="flex flex-wrap gap-2 text-xs font-mono text-[#24292F]">
+                  <span className="px-2.5 py-1 rounded bg-[#F6F8FA] border border-[#E1E4E8]">Cikarang (MM2100 &amp; GIIC)</span>
+                  <span className="px-2.5 py-1 rounded bg-[#F6F8FA] border border-[#E1E4E8]">Karawang (KIIC &amp; Surya Cipta)</span>
+                  <span className="px-2.5 py-1 rounded bg-[#F6F8FA] border border-[#E1E4E8]">K3 PP 50/2012 Certified</span>
+                </div>
+              </div>
             </div>
-            <div>
-              <p className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0A0A0A]">
-                {t.hero.statPillarsVal}
-              </p>
-              <p className="text-xs text-[#52525B] mt-1">{t.hero.statPillars}</p>
-            </div>
-            <div>
-              <p className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0A0A0A]">
-                {t.hero.statPsikogramVal}
-              </p>
-              <p className="text-xs text-[#52525B] mt-1">{t.hero.statPsikogram}</p>
-            </div>
-            <div>
-              <p className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0A0A0A]">Sync .ICS</p>
-              <p className="text-xs text-[#52525B] mt-1">Apple &amp; Google Calendar</p>
+
+            {/* Right: Tactile Kraepelin Instrument Console (21st.dev inspired) */}
+            <div className="lg:col-span-5">
+              <div className="bg-[#FFFFFF] border border-[#D0D7DE] rounded-xl shadow-xs p-5 relative overflow-hidden">
+                {/* Console Bar */}
+                <div className="flex items-center justify-between pb-3.5 border-b border-[#E1E4E8] mb-4">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-[11px] font-mono font-semibold text-[#0D1117] uppercase tracking-wider">
+                      {isEn ? 'Psychometric Console' : 'Konsol Psikometri HIMPSI'}
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">
+                    CALIBRATED 2026
+                  </span>
+                </div>
+
+                {/* Tactile Addition Stage */}
+                <div className="bg-[#F6F8FA] border border-[#E1E4E8] rounded-lg p-4 mb-4">
+                  <div className="flex items-center justify-between text-[11px] font-mono text-[#57606A] mb-3">
+                    <span>{isEn ? 'RAPID SUM CHECK' : 'PENJUMLAHAN CEPAT'}</span>
+                    <span className="text-emerald-700 font-bold">Kolom #{heroScore}</span>
+                  </div>
+
+                  <div className="flex items-center justify-center gap-3 py-2">
+                    {/* Top Digit */}
+                    <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-lg bg-white border border-[#D0D7DE] shadow-xs flex items-center justify-center text-2xl font-mono font-bold text-[#0D1117]">
+                      {heroNumA}
+                    </div>
+
+                    <span className="text-xl font-bold text-amber-600">+</span>
+
+                    {/* Bottom Digit */}
+                    <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-lg bg-white border border-[#D0D7DE] shadow-xs flex items-center justify-center text-2xl font-mono font-bold text-[#0D1117]">
+                      {heroNumB}
+                    </div>
+
+                    <span className="text-xl font-bold text-[#57606A]">=</span>
+
+                    {/* Feedback Target */}
+                    <div className={`w-13 h-13 sm:w-14 sm:h-14 rounded-lg border flex items-center justify-center text-xl font-mono font-bold transition-all duration-150 ${
+                      heroFeedback === 'correct'
+                        ? 'bg-emerald-50 border-emerald-500 text-emerald-700 scale-105'
+                        : heroFeedback === 'wrong'
+                        ? 'bg-red-50 border-red-500 text-red-700'
+                        : 'bg-white border-dashed border-[#8C959F] text-[#57606A]'
+                    }`}>
+                      {heroFeedback === 'correct' ? (heroNumA + heroNumB) % 10 : '?'}
+                    </div>
+                  </div>
+
+                  <p className="text-center text-[11px] text-[#57606A] mt-2">
+                    {heroFeedback === 'correct' ? (
+                      <span className="text-emerald-600 font-mono font-semibold">✓ Akurat! Kecepatan meningkat</span>
+                    ) : heroFeedback === 'wrong' ? (
+                      <span className="text-red-600 font-mono font-semibold">✗ Angka satuan salah, coba lagi</span>
+                    ) : (
+                      <span>{isEn ? 'Tap unit digit below (ex: 7+8=15 -> tap 5)' : 'Pilih angka satuan di bawah (cth: 7+8=15 -> pilih 5)'}</span>
+                    )}
+                  </p>
+                </div>
+
+                {/* Tactile Keypad */}
+                <div className="grid grid-cols-5 gap-1.5 mb-4">
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((num) => (
+                    <button
+                      key={num}
+                      type="button"
+                      onClick={() => handleHeroSubmit(num)}
+                      className="h-10 rounded-md bg-[#FAFAFA] border border-[#D0D7DE] hover:border-amber-500 active:bg-[#0D1117] active:text-white font-mono font-bold text-base text-[#0D1117] shadow-2xs transition-all cursor-pointer touch-manipulation"
+                    >
+                      {num}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Readout Gauges */}
+                <div className="grid grid-cols-2 gap-2 pt-3 border-t border-[#E1E4E8] text-left">
+                  <div className="p-2.5 rounded bg-[#F6F8FA] border border-[#E1E4E8]">
+                    <span className="text-[10px] font-mono text-[#57606A] block">LAJU KERJA (PANKER)</span>
+                    <span className="text-sm font-mono font-bold text-[#0D1117]">{heroPanker} kol/mnt</span>
+                  </div>
+                  <div className="p-2.5 rounded bg-[#F6F8FA] border border-[#E1E4E8]">
+                    <span className="text-[10px] font-mono text-[#57606A] block">KETELITIAN (TIANKER)</span>
+                    <span className="text-sm font-mono font-bold text-emerald-600">98.5% (Norma A)</span>
+                  </div>
+                </div>
+
+                <div className="mt-3.5 pt-3 border-t border-[#E1E4E8] flex items-center justify-between text-xs">
+                  <span className="text-[11px] font-mono text-[#57606A]">Rekomendasi Plant:</span>
+                  <span className="font-mono font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 text-[11px]">
+                    Lolos Operator QC / CNC
+                  </span>
+                </div>
+
+                <div className="mt-3">
+                  <Link href="/candidate/practice" className="block">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full h-9 rounded-md border-[#D0D7DE] bg-white hover:bg-[#F6F8FA] text-[#0D1117] text-xs font-mono font-medium cursor-pointer"
+                    >
+                      {isEn ? 'Open Fullscreen Test Station' : 'Buka Konsol Uji Penuh (Layar Penuh)'}
+                    </Button>
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -213,19 +338,19 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
         <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
             <div>
-              <span className="text-xs font-semibold text-[#6366F1] uppercase tracking-wider">
+              <span className="text-xs font-mono font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded">
                 {t.jobsSection.badge}
               </span>
-              <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] text-[#0A0A0A] mt-1">
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0D1117] mt-2">
                 {t.jobsSection.title}
               </h2>
-              <p className="text-xs text-[#6B6B6B] mt-1">
+              <p className="text-xs text-[#57606A] mt-1">
                 {t.jobsSection.subtitle}
               </p>
             </div>
             <Link href="/register">
-              <Button variant="outline" size="sm" className="rounded-full border-[#E8E8EC] text-xs h-8">
-                {isEn ? 'Post a Job Opening →' : 'Pasang Lowongan →'}
+              <Button variant="outline" size="sm" className="rounded-lg border-[#D0D7DE] text-xs h-8">
+                {isEn ? 'Post a Job Opening' : 'Pasang Lowongan Pabrik'}
               </Button>
             </Link>
           </div>
@@ -253,26 +378,26 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                 return (
                   <div
                     key={job.id}
-                    className="bg-[#FFFFFF] border border-[#E8E8EC] rounded-2xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:-translate-y-0.5 transition-transform transition-shadow duration-150 ease-out flex flex-col justify-between gpu-layer will-animate content-visibility-auto"
+                    className="bg-[#FFFFFF] border border-[#E1E4E8] rounded-xl p-5 shadow-xs hover:border-[#D0D7DE] transition-all duration-150 flex flex-col justify-between gpu-layer will-animate content-visibility-auto"
                   >
                     <div>
                       <div className="flex items-center justify-between gap-2 mb-3">
-                        <span className="inline-flex items-center gap-1.5 text-xs text-[#52525B] font-medium">
-                          <Building2 className="w-3.5 h-3.5 text-[#6366F1]" />
+                        <span className="inline-flex items-center gap-1.5 text-xs text-[#57606A] font-medium">
+                          <Building2 className="w-3.5 h-3.5 text-amber-600" />
                           {job.expand?.employer_id?.company_name || 'Mitra Industri'}
                         </span>
                         {job.is_featured && (
-                          <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-indigo-50 text-[#6366F1] border border-indigo-100">
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 font-medium">
                             {t.jobsSection.featured}
                           </span>
                         )}
                       </div>
 
-                      <h3 className="font-bold text-base text-[#0A0A0A] leading-snug mb-2">
+                      <h3 className="font-bold text-base text-[#0D1117] leading-snug mb-2">
                         {job.title}
                       </h3>
 
-                      <p className="text-xs text-[#6B6B6B] line-clamp-2 leading-relaxed mb-4">
+                      <p className="text-xs text-[#57606A] line-clamp-2 leading-relaxed mb-4">
                         {job.description?.replace(/<[^>]+>/g, '')}
                       </p>
 
@@ -281,7 +406,7 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                           {keywords.slice(0, 4).map((kw: string) => (
                             <span
                               key={kw}
-                              className="text-[10px] font-medium px-2.5 py-0.5 rounded-full bg-[#F5F5F7] text-[#1D1D1F] border border-[#E8E8EC]"
+                              className="text-[10px] font-mono font-medium px-2 py-0.5 rounded bg-[#F6F8FA] text-[#24292F] border border-[#E1E4E8]"
                             >
                               {kw}
                             </span>
@@ -290,7 +415,7 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                       )}
                     </div>
 
-                    <div className="pt-4 border-t border-[#E8E8EC] flex items-center justify-between">
+                    <div className="pt-4 border-t border-[#E1E4E8] flex items-center justify-between">
                       <span className="text-[11px] font-mono text-emerald-600 flex items-center gap-1 font-medium">
                         <CheckCircle2 className="w-3.5 h-3.5" />
                         Status: Open
@@ -299,10 +424,10 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                         <Button
                           size="sm"
                           variant="ghost"
-                          className="rounded-full text-xs font-semibold text-[#0A0A0A] hover:bg-[#F5F5F7] h-8 px-3 touch-manipulation"
+                          className="rounded-lg text-xs font-semibold text-[#0D1117] hover:bg-[#F6F8FA] h-8 px-3 touch-manipulation cursor-pointer"
                         >
                           {t.jobsSection.applyNow}
-                          <ChevronRight className="w-3.5 h-3.5 ml-1 text-[#52525B]" />
+                          <ChevronRight className="w-3.5 h-3.5 ml-1 text-[#57606A]" />
                         </Button>
                       </Link>
                     </div>
@@ -319,33 +444,33 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
         <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
             <div>
-              <span className="text-xs font-semibold text-[#6366F1] uppercase tracking-wider">
+              <span className="text-xs font-mono font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded">
                 {t.servicesSection.badge}
               </span>
-              <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] text-[#0A0A0A] mt-1">
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0D1117] mt-2">
                 {t.servicesSection.title}
               </h2>
-              <p className="text-xs text-[#6B6B6B] mt-1">
+              <p className="text-xs text-[#57606A] mt-1">
                 {t.servicesSection.subtitle}
               </p>
             </div>
 
             {/* Search Bar */}
             <div className="w-full md:w-64 relative">
-              <Search className="w-3.5 h-3.5 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#52525B]" />
+              <Search className="w-3.5 h-3.5 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#57606A]" />
               <input
                 type="text"
                 placeholder={t.jobsSection.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-8 py-2 bg-[#FFFFFF] border border-[#E8E8EC] rounded-full text-xs text-[#1D1D1F] placeholder:text-[#52525B] focus:outline-none focus:ring-2 focus:ring-[#6366F1] shadow-sm"
+                className="w-full pl-9 pr-8 py-2 bg-[#FFFFFF] border border-[#D0D7DE] rounded-lg text-xs text-[#0D1117] placeholder:text-[#57606A] focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-xs"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery('')}
                   aria-label={isEn ? "Clear search" : "Hapus pencarian"}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[#52525B] hover:text-[#0A0A0A] cursor-pointer"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[#57606A] hover:text-[#0D1117] cursor-pointer"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
@@ -364,10 +489,10 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
               <button
                 key={tab.id}
                 onClick={() => setSelectedPillar(tab.id)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-medium border active:scale-95 transition-transform duration-100 cursor-pointer touch-manipulation ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium border transition-colors cursor-pointer touch-manipulation ${
                   selectedPillar === tab.id
-                    ? 'bg-[#1D1D1F] text-white border-[#1D1D1F] shadow-sm'
-                    : 'bg-[#FFFFFF] text-[#6B6B6B] border-[#E8E8EC] hover:bg-[#F5F5F7]'
+                    ? 'bg-[#0D1117] text-white border-[#0D1117] shadow-xs'
+                    : 'bg-[#FFFFFF] text-[#57606A] border-[#D0D7DE] hover:bg-[#F6F8FA]'
                 }`}
               >
                 {tab.label}
@@ -378,14 +503,14 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
           {/* Cards Grid */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {filteredServices.length === 0 ? (
-              <div className="col-span-full py-12 px-6 bg-white border border-[#E8E8EC] rounded-2xl text-center flex flex-col items-center justify-center">
-                <div className="w-12 h-12 rounded-full bg-[#F5F5F7] border border-[#E8E8EC] flex items-center justify-center text-[#52525B] mb-3">
-                  <Search className="w-5 h-5 text-[#52525B]" />
+              <div className="col-span-full py-12 px-6 bg-white border border-[#E1E4E8] rounded-xl text-center flex flex-col items-center justify-center">
+                <div className="w-12 h-12 rounded-full bg-[#F6F8FA] border border-[#E1E4E8] flex items-center justify-center text-[#57606A] mb-3">
+                  <Search className="w-5 h-5 text-[#57606A]" />
                 </div>
-                <h3 className="text-sm font-bold text-[#0A0A0A]">
+                <h3 className="text-sm font-bold text-[#0D1117]">
                   {isEn ? 'No services found' : 'Layanan tidak ditemukan'}
                 </h3>
-                <p className="text-xs text-[#52525B] max-w-sm mt-1 mb-4 leading-relaxed">
+                <p className="text-xs text-[#57606A] max-w-sm mt-1 mb-4 leading-relaxed">
                   {isEn
                     ? 'We could not find any services matching your filter. Try adjusting your search term or select another pillar.'
                     : 'Tidak ada layanan yang sesuai dengan kriteria filter Anda. Coba ubah kata kunci atau pilih pilar lain.'}
@@ -394,7 +519,7 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                   variant="outline"
                   size="sm"
                   onClick={() => { setSearchQuery(''); setSelectedPillar('all'); }}
-                  className="rounded-full text-xs border-[#E8E8EC] text-[#1D1D1F] hover:bg-[#F5F5F7] touch-manipulation"
+                  className="rounded-lg text-xs border-[#D0D7DE] text-[#0D1117] hover:bg-[#F6F8FA] touch-manipulation cursor-pointer"
                 >
                   {isEn ? 'Reset Filter' : 'Reset Filter'}
                 </Button>
@@ -403,30 +528,30 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
               filteredServices.map((svc) => (
                 <div
                   key={svc.id}
-                  className="bg-[#FFFFFF] border border-[#E8E8EC] rounded-2xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:-translate-y-0.5 transition-transform transition-shadow duration-150 ease-out flex flex-col justify-between gpu-layer will-animate content-visibility-auto"
+                  className="bg-[#FFFFFF] border border-[#E1E4E8] rounded-xl p-5 shadow-xs hover:border-[#D0D7DE] transition-all duration-150 flex flex-col justify-between gpu-layer will-animate content-visibility-auto"
                 >
                   <div>
                     <div className="mb-3">
-                      <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-[#F5F5F7] text-[#1D1D1F] border border-[#E8E8EC] uppercase tracking-wider">
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#F6F8FA] text-[#24292F] border border-[#E1E4E8]">
                         {svc.category}
                       </span>
                     </div>
 
-                    <h3 className="font-bold text-base text-[#0A0A0A] leading-snug mb-2">
+                    <h3 className="font-bold text-base text-[#0D1117] leading-snug mb-2">
                       {svc.title}
                     </h3>
 
-                    <p className="text-xs text-[#6B6B6B] leading-relaxed mb-6 line-clamp-3">
+                    <p className="text-xs text-[#57606A] leading-relaxed mb-6 line-clamp-3">
                       {svc.description}
                     </p>
                   </div>
 
-                  <div className="pt-4 border-t border-[#E8E8EC] flex items-center justify-between gap-3">
+                  <div className="pt-4 border-t border-[#E1E4E8] flex items-center justify-between gap-3">
                     <div>
-                      <span className="text-[10px] text-[#52525B] uppercase tracking-wider block font-medium">
+                      <span className="text-[10px] font-mono text-[#57606A] uppercase tracking-wider block font-medium">
                         {t.servicesSection.sessionFee}
                       </span>
-                      <span className="text-base font-bold text-[#0A0A0A]">
+                      <span className="text-base font-bold font-mono text-[#0D1117]">
                         Rp {Number(svc.price).toLocaleString('id-ID')}
                       </span>
                     </div>
@@ -434,10 +559,9 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                     <Link href={`/booking/${svc.id}`}>
                       <Button
                         size="sm"
-                        className="rounded-lg bg-[#6366F1] hover:bg-[#4F46E5] text-white text-xs font-medium px-4 h-8 shadow-sm transition-colors duration-150 touch-manipulation"
+                        className="rounded-lg bg-[#0D1117] hover:bg-[#24292F] text-white text-xs font-medium px-4 h-8 transition-colors duration-150 touch-manipulation cursor-pointer"
                       >
                         {t.servicesSection.bookSession}
-                        <ArrowRight className="w-3 h-3 ml-1" />
                       </Button>
                     </Link>
                   </div>
