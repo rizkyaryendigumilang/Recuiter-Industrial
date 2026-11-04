@@ -16,7 +16,6 @@ import {
   AlertCircle, 
   Clock, 
   Flame, 
-  ArrowRight,
   TrendingUp,
   Award,
   Zap,
@@ -460,7 +459,7 @@ export default function KraepelinPracticePage() {
           </div>
 
           <Link href="/help">
-            <Button variant="ghost" size="sm" className="text-xs text-[#6B6B6B] hover:text-indigo-600 gap-1 rounded-full">
+            <Button variant="ghost" size="sm" className="text-xs text-[#6B6B6B] hover:text-[#0D1117] hover:bg-[#F6F8FA] gap-1 rounded-lg">
               <HelpCircle className="w-4 h-4" />
               <span className="hidden sm:inline">{isEn ? 'Rules & Tips' : 'Panduan Aturan'}</span>
             </Button>

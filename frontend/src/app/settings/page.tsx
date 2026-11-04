@@ -269,8 +269,8 @@ export default function SettingsPage() {
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-3 border-b border-[#E8E8EC]">
           <div>
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-600 mb-1">
-              <SettingsIcon className="w-4 h-4" />
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-800 mb-1 font-mono">
+              <SettingsIcon className="w-4 h-4 text-amber-600" />
               <span>
                 {userRole === 'admin'
                   ? 'Admin System Settings'
@@ -297,13 +297,13 @@ export default function SettingsPage() {
               userRole === 'admin'
                 ? 'bg-rose-50 text-rose-700 border border-rose-200'
                 : userRole === 'employer'
-                ? 'bg-indigo-50 text-indigo-700 border border-indigo-200'
+                ? 'bg-[#F6F8FA] text-[#0D1117] border border-[#E1E4E8]'
                 : 'bg-blue-50 text-blue-700 border border-blue-200'
             }`}>
               {userRole === 'admin' ? (
                 <ShieldCheck className="w-4 h-4" />
               ) : userRole === 'employer' ? (
-                <Briefcase className="w-4 h-4" />
+                <Briefcase className="w-4 h-4 text-[#0D1117]" />
               ) : (
                 <User className="w-4 h-4" />
               )}
@@ -318,7 +318,7 @@ export default function SettingsPage() {
                     userRole === 'admin'
                       ? 'bg-rose-100 text-rose-800 border-rose-200'
                       : userRole === 'employer'
-                      ? 'bg-indigo-100 text-indigo-800 border-indigo-200'
+                      ? 'bg-[#0D1117] text-white border-[#0D1117]'
                       : 'bg-blue-100 text-blue-800 border-blue-200'
                   }`}
                 >
@@ -375,8 +375,8 @@ export default function SettingsPage() {
             <TabsContent value="profile" className="space-y-6 focus-visible:outline-none">
               <Card className="border-[#E8E8EC] shadow-sm bg-white rounded-2xl max-w-3xl mx-auto">
                 <CardHeader>
-                  <div className="flex items-center gap-2 text-indigo-600 font-semibold text-xs uppercase tracking-wider">
-                    <User className="w-4 h-4" />
+                  <div className="flex items-center gap-2 text-amber-800 font-semibold text-xs uppercase tracking-wider font-mono">
+                    <User className="w-4 h-4 text-amber-600" />
                     <span>Identitas Kandidat</span>
                   </div>
                   <CardTitle className="text-lg font-bold text-[#0A0A0A]">
@@ -411,7 +411,7 @@ export default function SettingsPage() {
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                           placeholder="Nama lengkap Anda..."
-                          className="rounded-lg text-xs border-[#E8E8EC] focus:border-indigo-600"
+                          className="rounded-lg text-xs border-[#E8E8EC] focus:border-[#0D1117]"
                         />
                       </div>
 
@@ -437,7 +437,7 @@ export default function SettingsPage() {
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         placeholder="Contoh: 081234567890"
-                        className="rounded-lg text-xs border-[#E8E8EC] focus:border-indigo-600 font-mono"
+                        className="rounded-lg text-xs border-[#E8E8EC] focus:border-[#0D1117] font-mono"
                       />
                       <p className="text-[11px] text-[#86868B]">
                         {t.settings.profile.phoneHint}
@@ -447,7 +447,7 @@ export default function SettingsPage() {
                     <Button
                       type="submit"
                       size="sm"
-                      className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-medium gap-1.5"
+                      className="w-full bg-[#0D1117] hover:bg-[#21262D] text-white rounded-lg text-xs font-medium gap-1.5"
                     >
                       <Save className="w-3.5 h-3.5" />
                       <span>{t.settings.profile.saveBtn}</span>
@@ -461,8 +461,8 @@ export default function SettingsPage() {
             <TabsContent value="career" className="space-y-6 focus-visible:outline-none">
               <Card className="border-[#E8E8EC] shadow-sm bg-white rounded-2xl max-w-3xl mx-auto">
                 <CardHeader>
-                  <div className="flex items-center gap-2 text-indigo-600 font-semibold text-xs uppercase tracking-wider">
-                    <Compass className="w-4 h-4" />
+                  <div className="flex items-center gap-2 text-amber-800 font-semibold text-xs uppercase tracking-wider font-mono">
+                    <Compass className="w-4 h-4 text-amber-600" />
                     <span>Preferensi Karir & Pekerjaan</span>
                   </div>
                   <CardTitle className="text-lg font-bold text-[#0A0A0A]">
@@ -491,7 +491,7 @@ export default function SettingsPage() {
                           value={careerHeadline}
                           onChange={(e) => setCareerHeadline(e.target.value)}
                           placeholder="Operator Mesin / QA Inspector"
-                          className="rounded-lg text-xs border-[#E8E8EC] focus:border-indigo-600"
+                          className="rounded-lg text-xs border-[#E8E8EC] focus:border-[#0D1117]"
                         />
                       </div>
 
@@ -504,7 +504,7 @@ export default function SettingsPage() {
                           value={domicile}
                           onChange={(e) => setDomicile(e.target.value)}
                           placeholder="Cikarang, Karawang, Bekasi..."
-                          className="rounded-lg text-xs border-[#E8E8EC] focus:border-indigo-600"
+                          className="rounded-lg text-xs border-[#E8E8EC] focus:border-[#0D1117]"
                         />
                       </div>
                     </div>
@@ -519,7 +519,7 @@ export default function SettingsPage() {
                           value={expectedSalary}
                           onChange={(e) => setExpectedSalary(e.target.value)}
                           placeholder="6.500.000"
-                          className="rounded-lg text-xs border-[#E8E8EC] focus:border-indigo-600 font-mono"
+                          className="rounded-lg text-xs border-[#E8E8EC] focus:border-[#0D1117] font-mono"
                         />
                       </div>
 
@@ -531,7 +531,7 @@ export default function SettingsPage() {
                           id="readiness"
                           value={readiness}
                           onChange={(e) => setReadiness(e.target.value)}
-                          className="w-full h-9 px-3 rounded-lg text-xs border border-[#E8E8EC] bg-white text-[#0A0A0A] focus:border-indigo-600 focus:outline-none"
+                          className="w-full h-9 px-3 rounded-lg text-xs border border-[#E8E8EC] bg-white text-[#0A0A0A] focus:border-[#0D1117] focus:outline-none"
                         >
                           <option value="immediate">{t.settings.candidate.readyImmediate}</option>
                           <option value="notice">{t.settings.candidate.readyNotice}</option>
@@ -549,7 +549,7 @@ export default function SettingsPage() {
                         value={portfolioUrl}
                         onChange={(e) => setPortfolioUrl(e.target.value)}
                         placeholder="https://linkedin.com/in/username"
-                        className="rounded-lg text-xs border-[#E8E8EC] focus:border-indigo-600"
+                        className="rounded-lg text-xs border-[#E8E8EC] focus:border-[#0D1117]"
                       />
                     </div>
 
@@ -569,14 +569,14 @@ export default function SettingsPage() {
                         type="checkbox"
                         checked={jobAlertsWA}
                         onChange={(e) => setJobAlertsWA(e.target.checked)}
-                        className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-600 cursor-pointer"
+                        className="w-4 h-4 rounded text-amber-600 focus:ring-amber-500 cursor-pointer"
                       />
                     </label>
 
                     <Button
                       type="submit"
                       size="sm"
-                      className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-medium gap-1.5"
+                      className="w-full bg-[#0D1117] hover:bg-[#21262D] text-white rounded-lg text-xs font-medium gap-1.5"
                     >
                       <Save className="w-3.5 h-3.5" />
                       <span>{t.settings.candidate.saveBtn}</span>
@@ -590,8 +590,8 @@ export default function SettingsPage() {
             <TabsContent value="security" className="space-y-6 focus-visible:outline-none">
               <Card className="border-[#E8E8EC] shadow-sm bg-white rounded-2xl max-w-xl mx-auto">
                 <CardHeader>
-                  <div className="flex items-center gap-2 text-indigo-600 font-semibold text-xs uppercase tracking-wider">
-                    <Key className="w-4 h-4" />
+                  <div className="flex items-center gap-2 text-amber-800 font-semibold text-xs uppercase tracking-wider font-mono">
+                    <Key className="w-4 h-4 text-amber-600" />
                     <span>Keamanan Kata Sandi</span>
                   </div>
                   <CardTitle className="text-lg font-bold text-[#0A0A0A]">
@@ -623,7 +623,7 @@ export default function SettingsPage() {
                         value={currentPassword}
                         onChange={(e) => setCurrentPassword(e.target.value)}
                         placeholder="••••••••"
-                        className="rounded-lg text-xs border-[#E8E8EC] focus:border-indigo-600"
+                        className="rounded-lg text-xs border-[#E8E8EC] focus:border-[#0D1117]"
                       />
                     </div>
 
@@ -637,7 +637,7 @@ export default function SettingsPage() {
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                         placeholder="Minimal 8 karakter"
-                        className="rounded-lg text-xs border-[#E8E8EC] focus:border-indigo-600"
+                        className="rounded-lg text-xs border-[#E8E8EC] focus:border-[#0D1117]"
                       />
                     </div>
 
@@ -651,7 +651,7 @@ export default function SettingsPage() {
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="Ulangi kata sandi baru"
-                        className="rounded-lg text-xs border-[#E8E8EC] focus:border-indigo-600"
+                        className="rounded-lg text-xs border-[#E8E8EC] focus:border-[#0D1117]"
                       />
                     </div>
 
@@ -673,8 +673,8 @@ export default function SettingsPage() {
             <TabsContent value="pwa_candidate" className="space-y-6 focus-visible:outline-none">
               <Card className="border-[#E8E8EC] shadow-sm bg-white rounded-2xl max-w-2xl mx-auto">
                 <CardHeader>
-                  <div className="flex items-center gap-2 text-indigo-600 font-semibold text-xs uppercase tracking-wider">
-                    <Smartphone className="w-4 h-4" />
+                  <div className="flex items-center gap-2 text-amber-800 font-semibold text-xs uppercase tracking-wider font-mono">
+                    <Smartphone className="w-4 h-4 text-amber-600" />
                     <span>Aplikasi Mobile & PWA</span>
                   </div>
                   <CardTitle className="text-lg font-bold text-[#0A0A0A]">
@@ -690,21 +690,21 @@ export default function SettingsPage() {
                         type="button"
                         onClick={() => setLanguage('id')}
                         className={`p-3 rounded-xl border text-left transition-all flex items-center justify-between ${
-                          language === 'id' ? 'border-indigo-600 bg-indigo-50/50' : 'border-[#E8E8EC]'
+                          language === 'id' ? 'border-[#0D1117] bg-[#F6F8FA]' : 'border-[#E8E8EC]'
                         }`}
                       >
                         <span className="text-xs font-semibold text-[#0A0A0A]">🇮🇩 Bahasa Indonesia</span>
-                        {language === 'id' && <CheckCircle2 className="w-4 h-4 text-indigo-600" />}
+                        {language === 'id' && <CheckCircle2 className="w-4 h-4 text-[#0D1117]" />}
                       </button>
                       <button
                         type="button"
                         onClick={() => setLanguage('en')}
                         className={`p-3 rounded-xl border text-left transition-all flex items-center justify-between ${
-                          language === 'en' ? 'border-indigo-600 bg-indigo-50/50' : 'border-[#E8E8EC]'
+                          language === 'en' ? 'border-[#0D1117] bg-[#F6F8FA]' : 'border-[#E8E8EC]'
                         }`}
                       >
                         <span className="text-xs font-semibold text-[#0A0A0A]">🇬🇧 English</span>
-                        {language === 'en' && <CheckCircle2 className="w-4 h-4 text-indigo-600" />}
+                        {language === 'en' && <CheckCircle2 className="w-4 h-4 text-[#0D1117]" />}
                       </button>
                     </div>
                   </div>
@@ -804,8 +804,8 @@ export default function SettingsPage() {
 
                     {/* Passing Score Thresholds */}
                     <div className="p-4 bg-[#FAFAFA] rounded-xl border border-[#E8E8EC] space-y-4">
-                      <h4 className="text-xs font-bold text-[#0A0A0A] uppercase tracking-wider flex items-center gap-2 text-indigo-700">
-                        <FileCheck2 className="w-4 h-4" />
+                      <h4 className="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-amber-800 font-mono">
+                        <FileCheck2 className="w-4 h-4 text-amber-600" />
                         <span>{t.settings.admin.passingScoreTitle}</span>
                       </h4>
 
@@ -813,7 +813,7 @@ export default function SettingsPage() {
                         <div className="space-y-1.5">
                           <div className="flex justify-between items-center text-xs">
                             <Label htmlFor="kraepelin">{t.settings.admin.minKraepelin}</Label>
-                            <span className="font-mono font-bold text-indigo-600">{minKraepelin}%</span>
+                            <span className="font-mono font-bold text-amber-800">{minKraepelin}%</span>
                           </div>
                           <Input
                             id="kraepelin"
@@ -829,7 +829,7 @@ export default function SettingsPage() {
                         <div className="space-y-1.5">
                           <div className="flex justify-between items-center text-xs">
                             <Label htmlFor="ocr">{t.settings.admin.minMatchScore}</Label>
-                            <span className="font-mono font-bold text-indigo-600">{minMatchScore}%</span>
+                            <span className="font-mono font-bold text-amber-800">{minMatchScore}%</span>
                           </div>
                           <Input
                             id="ocr"
@@ -860,7 +860,7 @@ export default function SettingsPage() {
                           type="checkbox"
                           checked={uniqueCodeEnabled}
                           onChange={(e) => setUniqueCodeEnabled(e.target.checked)}
-                          className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-600 cursor-pointer"
+                          className="w-4 h-4 rounded text-amber-600 focus:ring-amber-500 cursor-pointer"
                         />
                       </label>
 
@@ -914,8 +914,8 @@ export default function SettingsPage() {
             <TabsContent value="integrations" className="space-y-6 focus-visible:outline-none">
               <Card className="border-[#E8E8EC] shadow-sm bg-white rounded-2xl max-w-3xl mx-auto">
                 <CardHeader>
-                  <div className="flex items-center gap-2 text-indigo-600 font-semibold text-xs uppercase tracking-wider">
-                    <Server className="w-4 h-4" />
+                  <div className="flex items-center gap-2 text-amber-800 font-semibold text-xs uppercase tracking-wider font-mono">
+                    <Server className="w-4 h-4 text-amber-600" />
                     <span>Infrastruktur & API</span>
                   </div>
                   <CardTitle className="text-lg font-bold text-[#0A0A0A]">
@@ -954,9 +954,9 @@ export default function SettingsPage() {
                           href="http://127.0.0.1:8090/_/"
                           target="_blank"
                           rel="noreferrer"
-                          className="text-xs font-bold text-indigo-600 hover:underline flex items-center gap-1 mt-1"
+                          className="text-xs font-bold text-amber-800 hover:text-amber-900 underline underline-offset-2 flex items-center gap-1 mt-1 font-mono"
                         >
-                          Buka PB Admin ➔
+                          Buka PB Admin
                         </a>
                       </div>
                     </div>
@@ -1128,8 +1128,8 @@ export default function SettingsPage() {
             <TabsContent value="company" className="space-y-6 focus-visible:outline-none">
               <Card className="border-[#E8E8EC] shadow-sm bg-white rounded-2xl max-w-3xl mx-auto">
                 <CardHeader>
-                  <div className="flex items-center gap-2 text-indigo-600 font-semibold text-xs uppercase tracking-wider">
-                    <Building className="w-4 h-4" />
+                  <div className="flex items-center gap-2 text-amber-800 font-semibold text-xs uppercase tracking-wider font-mono">
+                    <Building className="w-4 h-4 text-amber-600" />
                     <span>Identitas Perusahaan / Pabrik</span>
                   </div>
                   <CardTitle className="text-lg font-bold text-[#0A0A0A]">
@@ -1158,7 +1158,7 @@ export default function SettingsPage() {
                           value={companyName}
                           onChange={(e) => setCompanyName(e.target.value)}
                           placeholder="PT Astra / PT Denso..."
-                          className="rounded-lg text-xs border-[#E8E8EC] focus:border-indigo-600"
+                          className="rounded-lg text-xs border-[#E8E8EC] focus:border-[#0D1117]"
                         />
                       </div>
 
@@ -1171,7 +1171,7 @@ export default function SettingsPage() {
                           value={industry}
                           onChange={(e) => setIndustry(e.target.value)}
                           placeholder="Manufaktur Otomotif / Logistik"
-                          className="rounded-lg text-xs border-[#E8E8EC] focus:border-indigo-600"
+                          className="rounded-lg text-xs border-[#E8E8EC] focus:border-[#0D1117]"
                         />
                       </div>
                     </div>
@@ -1186,7 +1186,7 @@ export default function SettingsPage() {
                           value={companySize}
                           onChange={(e) => setCompanySize(e.target.value)}
                           placeholder="250 - 500 Karyawan"
-                          className="rounded-lg text-xs border-[#E8E8EC] focus:border-indigo-600"
+                          className="rounded-lg text-xs border-[#E8E8EC] focus:border-[#0D1117]"
                         />
                       </div>
 
@@ -1199,7 +1199,7 @@ export default function SettingsPage() {
                           value={website}
                           onChange={(e) => setWebsite(e.target.value)}
                           placeholder="https://company.co.id"
-                          className="rounded-lg text-xs border-[#E8E8EC] focus:border-indigo-600"
+                          className="rounded-lg text-xs border-[#E8E8EC] focus:border-[#0D1117]"
                         />
                       </div>
                     </div>
@@ -1214,14 +1214,14 @@ export default function SettingsPage() {
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
                         placeholder="Alamat pabrik / fasilitas industri..."
-                        className="w-full p-2.5 rounded-lg text-xs border border-[#E8E8EC] focus:border-indigo-600 focus:outline-none text-[#0A0A0A] bg-white resize-none"
+                        className="w-full p-2.5 rounded-lg text-xs border border-[#E8E8EC] focus:border-[#0D1117] focus:outline-none text-[#0A0A0A] bg-white resize-none"
                       />
                     </div>
 
                     <Button
                       type="submit"
                       size="sm"
-                      className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-medium gap-1.5"
+                      className="w-full bg-[#0D1117] hover:bg-[#21262D] text-white rounded-lg text-xs font-medium gap-1.5"
                     >
                       <Save className="w-3.5 h-3.5" />
                       <span>{t.settings.company.saveBtn}</span>
@@ -1254,7 +1254,7 @@ export default function SettingsPage() {
                       <Label className="text-xs">Nomor WhatsApp Resmi Rekruter</Label>
                       <Input value={phone} onChange={(e) => setPhone(e.target.value)} className="text-xs font-mono" />
                     </div>
-                    <Button type="submit" size="sm" className="w-full bg-indigo-600 text-white text-xs">
+                    <Button type="submit" size="sm" className="w-full bg-[#0D1117] hover:bg-[#21262D] text-white text-xs font-semibold">
                       Simpan Kontak PIC
                     </Button>
                   </form>

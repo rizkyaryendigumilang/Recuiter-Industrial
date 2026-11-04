@@ -427,7 +427,7 @@ export function PauliTest({
             <span className="text-[10px] font-semibold uppercase px-2.5 py-0.5 rounded-full bg-neutral-100 text-neutral-800 border border-neutral-200">
               {isEn ? 'Psychometric Instrument' : 'Instrumen Psikometri'}
             </span>
-            <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-indigo-50 text-[#6366F1] border border-indigo-100">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
               {isEn ? 'Work Speed & Precision' : 'Kecepatan & Ketelitian Kerja'}
             </span>
             {enableAntiCheat && (
@@ -463,28 +463,28 @@ export function PauliTest({
       {/* STATE 1: IDLE / INSTRUCTION */}
       {gameState === 'idle' && (
         <div className="text-center py-8 max-w-lg mx-auto">
-          <div className="w-14 h-14 rounded-2xl bg-indigo-50 text-[#6366F1] flex items-center justify-center mx-auto mb-4 border border-indigo-100">
-            <Zap className="w-7 h-7" />
+          <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-800 flex items-center justify-center mx-auto mb-4 border border-amber-200">
+            <Zap className="w-6 h-6 text-amber-600" />
           </div>
-          <h3 className="text-base font-bold text-[#0A0A0A] mb-2">
+          <h3 className="text-base font-bold text-[#0D1117] mb-2">
             {isEn ? 'Pauli Addition Test Instructions' : 'Petunjuk Pengerjaan Tes Pauli'}
           </h3>
-          <p className="text-xs text-[#6B6B6B] leading-relaxed mb-6">
+          <p className="text-xs text-[#57606A] leading-relaxed mb-6">
             {isEn
               ? `This test measures your speed, accuracy, and work endurance stability. There are ${totalColumns} columns, each lasting ${columnDurationSeconds} seconds. When the column shifts, proceed with the next column at a consistent pace.`
               : `Tes ini mengukur kecepatan (Panker), ketelitian (Tianker), ketahanan (Hanker), dan stabilitas (Janker). Terdapat ${totalColumns} kolom, masing-masing berdurasi ${columnDurationSeconds} detik. Saat kolom berganti, lanjutkan penjumlahan di kolom berikutnya dengan ritme konsisten.`}
           </p>
 
-          <div className="p-4 bg-[#F5F5F7] rounded-2xl text-xs text-left mb-6 space-y-1.5 border border-[#E8E8EC]">
-            <p className="font-semibold text-[#1D1D1F]">{isEn ? 'Addition Examples:' : 'Contoh Penjumlahan:'}</p>
-            <p className="text-[#6B6B6B]">&bull; 4 + 3 = 7 &rarr; {isEn ? 'Enter digit' : 'Masukkan angka'} <span className="font-bold text-[#1D1D1F]">7</span></p>
-            <p className="text-[#6B6B6B]">&bull; 8 + 6 = 14 &rarr; {isEn ? 'Enter digit' : 'Masukkan angka'} <span className="font-bold text-[#1D1D1F]">4</span> ({isEn ? 'last unit only' : 'hanya satuan terakhir'})</p>
-            <p className="text-[#6B6B6B]">&bull; {isEn ? 'Anti-cheat is actively monitoring tab changes. Do not switch browser tabs.' : 'Sistem anti-cheat aktif memantau integritas tab. Jangan berpindah tab saat tes berlangsung.'}</p>
+          <div className="p-4 bg-[#F6F8FA] rounded-xl text-xs text-left mb-6 space-y-1.5 border border-[#E1E4E8]">
+            <p className="font-semibold text-[#0D1117]">{isEn ? 'Addition Examples:' : 'Contoh Penjumlahan:'}</p>
+            <p className="text-[#57606A] font-mono">&bull; 4 + 3 = 7 ({isEn ? 'Enter digit' : 'Ketik angka'} 7)</p>
+            <p className="text-[#57606A] font-mono">&bull; 8 + 6 = 14 ({isEn ? 'Enter digit' : 'Ketik angka'} 4 - {isEn ? 'last unit only' : 'hanya satuan terakhir'})</p>
+            <p className="text-[#57606A]">&bull; {isEn ? 'Anti-cheat is actively monitoring tab changes. Do not switch browser tabs.' : 'Sistem anti-cheat aktif memantau integritas tab. Jangan berpindah tab saat tes berlangsung.'}</p>
           </div>
 
           <Button
             onClick={startTest}
-            className="rounded-full bg-[#1D1D1F] hover:bg-[#000000] text-white px-8 h-11 text-xs font-semibold shadow-sm active:scale-[0.98] transition-transform"
+            className="rounded-lg bg-[#0D1117] hover:bg-[#21262D] text-white px-8 h-11 text-xs font-mono font-semibold shadow-xs active:scale-[0.98] transition-transform cursor-pointer"
           >
             <Play className="w-4 h-4 mr-2" />
             {t.assessment.startPauliBtn}
@@ -497,8 +497,8 @@ export function PauliTest({
         <div className="max-w-md mx-auto py-2">
           {/* Column Shift Visual Cue */}
           {columnShiftAlert && (
-            <div className="mb-4 p-3 rounded-2xl bg-indigo-600 text-white text-center font-bold text-sm tracking-wide animate-bounce shadow-lg flex items-center justify-center gap-2">
-              <Zap className="w-4 h-4" />
+            <div className="mb-4 p-3 rounded-lg bg-[#0D1117] text-white text-center font-mono font-bold text-xs tracking-wider shadow-xs flex items-center justify-center gap-2">
+              <Zap className="w-4 h-4 text-amber-500" />
               <span>{columnShiftAlert}</span>
             </div>
           )}
@@ -541,7 +541,7 @@ export function PauliTest({
                 key={`btn-digit-${d}`}
                 type="button"
                 onClick={() => handleDigitInput(d)}
-                className="h-14 sm:h-16 rounded-2xl bg-white border border-[#E2E8F0] hover:border-[#6366F1] hover:bg-indigo-50/40 text-slate-900 font-mono font-extrabold text-2xl sm:text-3xl shadow-sm active:scale-95 active:bg-indigo-100 transition-all duration-75 touch-manipulation select-none flex items-center justify-center cursor-pointer"
+                className="h-14 sm:h-16 rounded-lg bg-[#FAFAFA] border border-[#D0D7DE] hover:border-amber-500 hover:text-amber-800 active:bg-[#0D1117] active:text-white text-[#0D1117] font-mono font-bold text-2xl sm:text-3xl shadow-xs active:scale-95 transition-all duration-75 touch-manipulation select-none flex items-center justify-center cursor-pointer"
               >
                 {d}
               </button>
@@ -549,7 +549,7 @@ export function PauliTest({
             <button
               type="button"
               onClick={() => handleDigitInput(0)}
-              className="col-span-3 h-14 sm:h-16 rounded-2xl bg-white border border-[#E2E8F0] hover:border-[#6366F1] hover:bg-indigo-50/40 text-slate-900 font-mono font-extrabold text-2xl sm:text-3xl shadow-sm active:scale-95 active:bg-indigo-100 transition-all duration-75 touch-manipulation select-none flex items-center justify-center cursor-pointer"
+              className="col-span-3 h-14 sm:h-16 rounded-lg bg-[#FAFAFA] border border-[#D0D7DE] hover:border-amber-500 hover:text-amber-800 active:bg-[#0D1117] active:text-white text-[#0D1117] font-mono font-bold text-2xl sm:text-3xl shadow-xs active:scale-95 transition-all duration-75 touch-manipulation select-none flex items-center justify-center cursor-pointer"
             >
               0
             </button>
@@ -633,7 +633,7 @@ export function PauliTest({
                   finalResult.hankerTrend === 'Meningkat'
                     ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                     : finalResult.hankerTrend === 'Stabil'
-                    ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                    ? 'bg-[#F6F8FA] text-[#0D1117] border-[#D0D7DE]'
                     : 'bg-amber-50 text-amber-700 border-amber-200'
                 }`}>
                   {finalResult.hankerTrend}

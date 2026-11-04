@@ -115,9 +115,9 @@ export function PwaInstallPrompt() {
           <div className="flex items-center gap-2 flex-shrink-0">
             <button
               onClick={handleInstallClick}
-              className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition-all"
+              className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-[#0D1117] hover:bg-[#21262D] rounded-lg shadow-sm transition-all"
             >
-              <Download className="w-3.5 h-3.5" />
+              <Download className="w-3.5 h-3.5 text-amber-400" />
               <span>{t.pwa.installBtn}</span>
             </button>
             <button
@@ -159,15 +159,15 @@ export function PwaInstallPrompt() {
 
             <div className="space-y-3 text-xs text-muted-foreground bg-muted/40 p-4 rounded-xl border border-border/50">
               <div className="flex items-start gap-2.5">
-                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 font-bold text-[10px] flex-shrink-0 mt-0.5">
+                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[#0D1117] text-white font-bold text-[10px] flex-shrink-0 mt-0.5 font-mono">
                   1
                 </span>
                 <p className="leading-relaxed">
-                  Tekan ikon <strong>Bagikan</strong> (<Share className="w-3.5 h-3.5 inline text-indigo-600 -mt-0.5" />) di bilah bawah peramban Safari.
+                  Tekan ikon <strong>Bagikan</strong> (<Share className="w-3.5 h-3.5 inline text-amber-600 -mt-0.5" />) di bilah bawah peramban Safari.
                 </p>
               </div>
               <div className="flex items-start gap-2.5">
-                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 font-bold text-[10px] flex-shrink-0 mt-0.5">
+                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[#0D1117] text-white font-bold text-[10px] flex-shrink-0 mt-0.5 font-mono">
                   2
                 </span>
                 <p className="leading-relaxed">
@@ -175,7 +175,7 @@ export function PwaInstallPrompt() {
                 </p>
               </div>
               <div className="flex items-start gap-2.5">
-                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 font-bold text-[10px] flex-shrink-0 mt-0.5">
+                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[#0D1117] text-white font-bold text-[10px] flex-shrink-0 mt-0.5 font-mono">
                   3
                 </span>
                 <p className="leading-relaxed">
@@ -186,7 +186,7 @@ export function PwaInstallPrompt() {
 
             <button
               onClick={() => setShowIOSModal(false)}
-              className="mt-5 w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg text-xs transition-colors"
+              className="mt-5 w-full py-2 bg-[#0D1117] hover:bg-[#21262D] text-white font-medium rounded-lg text-xs transition-colors"
             >
               {t.common.close}
             </button>

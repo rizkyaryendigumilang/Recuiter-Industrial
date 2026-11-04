@@ -192,7 +192,7 @@ export default function CandidateResultsPage() {
             </Link>
             <Button
               onClick={handlePrint}
-              className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold h-9 px-4 gap-2 shadow-sm touch-manipulation"
+              className="w-full sm:w-auto bg-[#0D1117] hover:bg-[#21262D] text-white rounded-xl text-xs font-semibold h-9 px-4 gap-2 shadow-sm touch-manipulation"
             >
               <Printer className="w-3.5 h-3.5" />
               <span>{isEn ? 'Print / Download PDF' : 'Cetak / Unduh Psikogram PDF'}</span>
@@ -216,9 +216,9 @@ export default function CandidateResultsPage() {
               <Badge className="bg-emerald-600 text-white text-[10px]">Live Verified</Badge>
             </div>
           ) : (
-            <div className="p-3.5 rounded-2xl bg-indigo-50/70 border border-indigo-200 flex items-center justify-between">
-              <div className="flex items-center gap-2 text-xs text-indigo-900">
-                <Sparkles className="w-4 h-4 text-indigo-600" />
+            <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs text-amber-900">
+                <Sparkles className="w-4 h-4 text-amber-600" />
                 <span>
                   <strong>{isEn ? 'Calibrated Sample Profile: ' : 'Sampel Profil Terkalibrasi: '}</strong>
                   {isEn
@@ -227,7 +227,7 @@ export default function CandidateResultsPage() {
                 </span>
               </div>
               <Link href="/candidate/practice">
-                <Button size="sm" variant="outline" className="text-xs h-7 border-indigo-300 text-indigo-700 hover:bg-indigo-100">
+                <Button size="sm" variant="outline" className="text-xs h-7 border-amber-300 text-amber-800 hover:bg-amber-100">
                   {isEn ? 'Start Test' : 'Mulai Tes'}
                 </Button>
               </Link>
@@ -241,16 +241,16 @@ export default function CandidateResultsPage() {
           className="bg-white border border-[#E8E8EC] rounded-2xl p-6 sm:p-8 shadow-sm print:shadow-none print:border-none print:p-0 space-y-6"
         >
           {/* Header Kop Surat Dokumen */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b-2 border-indigo-600 pb-4 gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b-2 border-[#0D1117] pb-4 gap-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-black text-xs">
-                  HR
+                <span className="w-7 h-7 rounded-lg bg-[#0D1117] text-white flex items-center justify-center font-black text-xs font-mono">
+                  RI
                 </span>
                 <span className="font-extrabold text-base tracking-tight text-[#0A0A0A]">
                   RECRUITER INDUSTRIAL
                 </span>
-                <Badge variant="outline" className="text-[10px] uppercase font-bold text-indigo-700 bg-indigo-50 border-indigo-200 ml-2">
+                <Badge variant="outline" className="text-[10px] uppercase font-bold text-amber-800 bg-amber-50 border-amber-200 ml-2 font-mono">
                   OFFICIAL PSYCHOGRAM
                 </Badge>
               </div>
@@ -270,7 +270,7 @@ export default function CandidateResultsPage() {
             <div className="space-y-1">
               <p className="text-[10px] uppercase font-bold text-[#86868B]">Nama Kandidat</p>
               <p className="text-sm font-bold text-[#0A0A0A] flex items-center gap-1.5">
-                <User className="w-3.5 h-3.5 text-indigo-600" />
+                <User className="w-3.5 h-3.5 text-[#0D1117]" />
                 <span>{candidateName}</span>
               </p>
               <p className="text-xs text-[#6B6B6B]">{candidateEmail}</p>
@@ -279,7 +279,7 @@ export default function CandidateResultsPage() {
             <div className="space-y-1">
               <p className="text-[10px] uppercase font-bold text-[#86868B]">Target Posisi</p>
               <p className="text-sm font-bold text-[#0A0A0A] flex items-center gap-1.5">
-                <Briefcase className="w-3.5 h-3.5 text-indigo-600" />
+                <Briefcase className="w-3.5 h-3.5 text-[#0D1117]" />
                 <span>{targetPosition}</span>
               </p>
               <p className="text-xs text-[#6B6B6B]">Manufaktur & Presisi Tinggi</p>
@@ -302,7 +302,7 @@ export default function CandidateResultsPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A0A0A] flex items-center gap-1.5">
-                    <Compass className="w-4 h-4 text-indigo-600" />
+                    <Compass className="w-4 h-4 text-[#0D1117]" />
                     <span>Radar Profil DISC (Perilaku Kerja)</span>
                   </h3>
                   <p className="text-[11px] text-[#6B6B6B]">
@@ -339,7 +339,7 @@ export default function CandidateResultsPage() {
                   </text>
 
                   {/* Radar Polygon Area */}
-                  <path d={radarPath} fill="rgba(99, 102, 241, 0.25)" stroke="#6366F1" strokeWidth="2.5" />
+                  <path d={radarPath} fill="rgba(217, 119, 6, 0.14)" stroke="#D97706" strokeWidth="2.5" />
 
                   {/* Corner Points */}
                   <circle cx={pD.x} cy={pD.y} r="4" fill="#DC2626" />
@@ -366,7 +366,7 @@ export default function CandidateResultsPage() {
             <div className="p-4 sm:p-5 rounded-2xl border border-[#E8E8EC] bg-white space-y-3">
               <div>
                 <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A0A0A] flex items-center gap-1.5">
-                  <Activity className="w-4 h-4 text-indigo-600" />
+                  <Activity className="w-4 h-4 text-amber-600" />
                   <span>Grafik Tes Ketahanan Kraepelin / Pauli</span>
                 </h3>
                 <p className="text-[11px] text-[#6B6B6B]">
@@ -378,19 +378,19 @@ export default function CandidateResultsPage() {
               <div className="grid grid-cols-2 gap-2 text-center">
                 <div className="p-2.5 bg-[#FAFAFA] rounded-xl border border-[#E8E8EC]">
                   <p className="text-[10px] text-[#6B6B6B]">Kecepatan (Panker)</p>
-                  <p className="text-base font-bold text-[#0A0A0A]">{kraepelinScores.panker} <span className="text-[10px] font-normal text-[#86868B]">butir/m</span></p>
+                  <p className="text-base font-bold text-[#0A0A0A] font-mono">{kraepelinScores.panker} <span className="text-[10px] font-normal text-[#86868B]">butir/m</span></p>
                 </div>
                 <div className="p-2.5 bg-[#FAFAFA] rounded-xl border border-[#E8E8EC]">
                   <p className="text-[10px] text-[#6B6B6B]">Ketelitian (Tianker)</p>
-                  <p className="text-base font-bold text-emerald-600">{kraepelinScores.tianker}%</p>
+                  <p className="text-base font-bold text-emerald-600 font-mono">{kraepelinScores.tianker}%</p>
                 </div>
                 <div className="p-2.5 bg-[#FAFAFA] rounded-xl border border-[#E8E8EC]">
                   <p className="text-[10px] text-[#6B6B6B]">Ketahanan (Hankker)</p>
-                  <p className="text-xs font-bold text-indigo-600 mt-1">{kraepelinScores.hankker}</p>
+                  <p className="text-xs font-bold text-[#0D1117] mt-1 font-mono">{kraepelinScores.hankker}</p>
                 </div>
                 <div className="p-2.5 bg-[#FAFAFA] rounded-xl border border-[#E8E8EC]">
                   <p className="text-[10px] text-[#6B6B6B]">Stabilitas (Stanker)</p>
-                  <p className="text-base font-bold text-amber-600">{kraepelinScores.stanker}%</p>
+                  <p className="text-base font-bold text-amber-600 font-mono">{kraepelinScores.stanker}%</p>
                 </div>
               </div>
 
@@ -413,12 +413,12 @@ export default function CandidateResultsPage() {
 
                     return (
                       <>
-                        <path d={`${pathD} L 390 100 L 10 100 Z`} fill="rgba(99, 102, 241, 0.08)" />
-                        <path d={pathD} fill="none" stroke="#6366F1" strokeWidth="2.5" strokeLinecap="round" />
+                        <path d={`${pathD} L 390 100 L 10 100 Z`} fill="rgba(217, 119, 6, 0.08)" />
+                        <path d={pathD} fill="none" stroke="#D97706" strokeWidth="2.5" strokeLinecap="round" />
                         {points.map((p, idx) => (
                           <g key={idx}>
-                            <circle cx={p.x} cy={p.y} r="4" fill="#FFFFFF" stroke="#6366F1" strokeWidth="2" />
-                            <text x={p.x} y={p.y - 7} textAnchor="middle" fontSize="9" fontWeight="bold" fill="#0A0A0A">
+                            <circle cx={p.x} cy={p.y} r="4" fill="#FFFFFF" stroke="#D97706" strokeWidth="2" />
+                            <text x={p.x} y={p.y - 7} textAnchor="middle" fontSize="9" fontWeight="bold" fill="#0A0A0A" fontFamily="monospace">
                               {p.val}
                             </text>
                             <text x={p.x} y="108" textAnchor="middle" fontSize="8" fill="#86868B">
@@ -439,11 +439,11 @@ export default function CandidateResultsPage() {
           </div>
 
           {/* Industrial Role Benchmarks (HIMPSI & Factory Standards) */}
-          <div className="p-4 sm:p-5 rounded-2xl border border-indigo-100 bg-indigo-50/40 space-y-3">
+          <div className="p-4 sm:p-5 rounded-2xl border border-[#E1E4E8] bg-[#F6F8FA] space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-indigo-950 flex items-center gap-1.5">
-                  <Award className="w-4 h-4 text-indigo-600" />
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[#0D1117] flex items-center gap-1.5">
+                  <Award className="w-4 h-4 text-amber-600" />
                   <span>Kesesuaian Norma Peran Kerja Industri (HIMPSI Benchmark)</span>
                 </h3>
                 <p className="text-[11px] text-slate-600">
@@ -472,8 +472,8 @@ export default function CandidateResultsPage() {
                   onClick={() => setSelectedRole(bench.id)}
                   className={`text-[11px] px-2.5 py-1 rounded-lg font-medium transition-colors border ${
                     selectedRole === bench.id
-                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
-                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                      ? 'bg-[#0D1117] text-white border-[#0D1117] shadow-sm'
+                      : 'bg-white text-slate-700 border-[#E1E4E8] hover:bg-slate-50'
                   }`}
                 >
                   {bench.title.split('/')[0].trim()}
@@ -482,7 +482,7 @@ export default function CandidateResultsPage() {
             </div>
 
             {/* Visual Threshold Gauge Bars */}
-            <div className="bg-white p-3.5 rounded-xl border border-indigo-100/90 space-y-3 pt-3">
+            <div className="bg-white p-3.5 rounded-xl border border-[#E1E4E8] space-y-3 pt-3">
               <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Perbandingan Metrik Terhadap Ambang Batas Pabrik (Threshold):</p>
               
               {/* Panker Bar */}
@@ -493,7 +493,7 @@ export default function CandidateResultsPage() {
                 </div>
                 <div className="relative h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-indigo-600 rounded-full transition-all duration-300" 
+                    className="h-full bg-amber-500 rounded-full transition-all duration-300" 
                     style={{ width: `${Math.min(100, (kraepelinScores.panker / 60) * 100)}%` }} 
                   />
                   <div 
@@ -526,7 +526,7 @@ export default function CandidateResultsPage() {
 
             {/* Evaluation Breakdown Box */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-              <div className="bg-white p-3 rounded-xl border border-indigo-100/80 space-y-1.5 text-xs">
+              <div className="bg-white p-3 rounded-xl border border-[#E1E4E8] space-y-1.5 text-xs">
                 <p className="text-[10px] uppercase font-bold text-slate-500">Kekuatan Terverifikasi untuk Peran Ini:</p>
                 <ul className="space-y-1">
                   {currentRoleEvaluation.positiveHighlights.map((hl, i) => (
@@ -546,7 +546,7 @@ export default function CandidateResultsPage() {
                 <p className="text-[11px] text-slate-600 leading-relaxed">
                   {currentRoleEvaluation.riskMitigationAdvice}
                 </p>
-                <div className="pt-1 flex items-center gap-2 text-[10px] text-slate-500">
+                <div className="pt-1 flex items-center gap-2 text-[10px] text-slate-500 font-mono">
                   <span>{currentRoleEvaluation.pankerStatus}</span>
                   <span>•</span>
                   <span>{currentRoleEvaluation.tiankerStatus}</span>
@@ -557,7 +557,7 @@ export default function CandidateResultsPage() {
 
           {/* Qualitative Evaluation & Recommendation */}
           <div className="p-4 rounded-xl border border-[#E8E8EC] bg-[#FAFAFA] space-y-2 text-xs leading-relaxed">
-            <h4 className="font-bold text-[#0A0A0A] uppercase tracking-wider text-[11px] text-indigo-700">
+            <h4 className="font-bold uppercase tracking-wider text-[11px] text-amber-800 font-mono">
               Kesimpulan Evaluasi Psikologi Terapan
             </h4>
             <p className="text-[#4B5563]">

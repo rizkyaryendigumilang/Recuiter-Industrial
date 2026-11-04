@@ -15,7 +15,6 @@ import {
   Sparkles,
   CheckCircle2,
   Clock,
-  ArrowRight,
   Briefcase,
   AlertCircle,
   ShieldCheck,
@@ -227,7 +226,7 @@ export default function CandidatePortal() {
                   <FileText className="w-4 h-4 text-neutral-700" />
                   {t.candidatePortal.resumeSection}
                 </h2>
-                <Badge variant="outline" className="text-[10px] bg-indigo-50 text-indigo-700 border-indigo-200">
+                <Badge variant="outline" className="text-[10px] bg-[#F6F8FA] text-[#0D1117] border-[#E1E4E8] font-mono">
                   Industrial OCR Parser
                 </Badge>
               </div>
@@ -314,14 +313,14 @@ export default function CandidatePortal() {
 
                   {/* Certifications & SIO Highlight */}
                   {competencyResult?.certifications && competencyResult.certifications.length > 0 && (
-                    <div className="p-3 bg-indigo-50/70 border border-indigo-100 rounded-xl text-xs space-y-1">
-                      <div className="flex items-center gap-1.5 font-bold text-indigo-900">
-                        <Award className="w-3.5 h-3.5 text-indigo-600" />
+                    <div className="p-3 bg-amber-50/60 border border-amber-200 rounded-xl text-xs space-y-1">
+                      <div className="flex items-center gap-1.5 font-bold text-amber-900">
+                        <Award className="w-3.5 h-3.5 text-amber-600" />
                         <span>Sertifikasi &amp; Lisensi Diakui:</span>
                       </div>
                       <div className="flex flex-wrap gap-1">
                         {competencyResult.certifications.map((cert) => (
-                          <Badge key={cert} variant="outline" className="text-[10px] bg-white border-indigo-200 text-indigo-800">
+                          <Badge key={cert} variant="outline" className="text-[10px] bg-white border-amber-200 text-amber-900 font-mono">
                             {cert}
                           </Badge>
                         ))}
@@ -439,7 +438,7 @@ export default function CandidatePortal() {
                         <Button
                           size="sm"
                           variant="outline"
-                          className="rounded-full border-indigo-200 text-indigo-700 hover:bg-indigo-50 text-xs h-8 px-3"
+                          className="rounded-lg border-[#E1E4E8] text-[#0D1117] hover:bg-[#F6F8FA] text-xs h-8 px-3 font-medium"
                         >
                           {isEn ? 'View Psychogram' : 'Lihat Psikogram'}
                         </Button>

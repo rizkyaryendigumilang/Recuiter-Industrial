@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   experimental: {
     optimizePackageImports: ['lucide-react'],
+    agentUpgrade: "security",
   },
   turbopack: {
     rules: {

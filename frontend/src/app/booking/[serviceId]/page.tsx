@@ -284,9 +284,9 @@ function BookingContent() {
                   <span>{isEn ? 'Official Session Fee' : 'Tarif Layanan Resmi'}</span>
                   <span className="font-mono text-neutral-900 font-semibold">Rp {basePrice.toLocaleString('id-ID')}</span>
                 </div>
-                <div className="flex items-center justify-between text-xs text-indigo-700">
+                <div className="flex items-center justify-between text-xs text-amber-800">
                   <span className="flex items-center gap-1">
-                    <Sparkles className="w-3.5 h-3.5" />
+                    <Sparkles className="w-3.5 h-3.5 text-amber-600" />
                     {isEn ? '3-Digit Verification Code' : 'Estimasi Kode Unik Verifikasi'}
                   </span>
                   <span className="font-mono font-bold">+ Rp {uniqueCode}</span>
@@ -469,9 +469,9 @@ function BookingContent() {
                     </span>
                     <button
                       onClick={handleSimulateAdminApproval}
-                      className="text-xs font-semibold text-[#6366F1] hover:underline"
+                      className="text-xs font-semibold text-amber-700 hover:text-amber-800 underline underline-offset-2 font-mono"
                     >
-                      &rarr; Simulasi Setujui Pembayaran (Mode Uji Admin)
+                      Simulasi Setujui Pembayaran (Mode Uji Admin)
                     </button>
                   </div>
                 </div>

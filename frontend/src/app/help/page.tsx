@@ -16,7 +16,6 @@ import {
   CheckCircle2, 
   ChevronDown, 
   ChevronUp, 
-  ArrowRight,
   ShieldAlert,
   Clock,
   Sparkles
@@ -71,8 +70,8 @@ export default function HelpAndGuidesPage() {
 
         {/* Hero Header */}
         <div className="text-center space-y-3">
-          <Badge className="bg-indigo-50 text-indigo-700 border-indigo-200 text-xs py-1 px-3">
-            <BookOpen className="w-3.5 h-3.5 mr-1" />
+          <Badge className="bg-[#F6F8FA] text-[#0D1117] border-[#E1E4E8] text-xs py-1 px-3 font-mono">
+            <BookOpen className="w-3.5 h-3.5 mr-1 text-amber-600" />
             {isEn ? 'KNOWLEDGE BASE & GUIDES' : 'PUSAT BANTUAN & PANDUAN RESMI'}
           </Badge>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-[#0A0A0A] tracking-tight">
@@ -86,10 +85,9 @@ export default function HelpAndGuidesPage() {
 
           <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
             <Link href="/candidate/practice">
-              <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl h-10 px-4 gap-2 shadow-sm">
-                <Activity className="w-4 h-4" />
+              <Button size="sm" className="bg-[#0D1117] hover:bg-[#21262D] text-white text-xs font-semibold rounded-xl h-10 px-4 gap-2 shadow-sm">
+                <Activity className="w-4 h-4 text-amber-400" />
                 <span>{isEn ? 'Tryout Kraepelin Test Now' : 'Coba Simulasi Kraepelin Sekarang'}</span>
-                <ArrowRight className="w-3.5 h-3.5" />
               </Button>
             </Link>
             <a
@@ -109,10 +107,10 @@ export default function HelpAndGuidesPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Card 1: Panduan Kraepelin */}
           <Card className="border-[#E8E8EC] shadow-sm bg-white rounded-2xl overflow-hidden hover:shadow-md transition-shadow">
-            <div className="h-2 bg-indigo-600 w-full" />
+            <div className="h-2 bg-amber-500 w-full" />
             <CardHeader className="pb-3">
-              <div className="flex items-center gap-2 text-indigo-600 font-semibold text-xs uppercase tracking-wider">
-                <Activity className="w-4 h-4" />
+              <div className="flex items-center gap-2 text-amber-800 font-semibold text-xs uppercase tracking-wider font-mono">
+                <Activity className="w-4 h-4 text-amber-600" />
                 <span>{isEn ? 'Endurance Test Guide' : 'Panduan Tes Ketahanan'}</span>
               </div>
               <CardTitle className="text-xl font-bold text-[#0A0A0A]">
@@ -125,8 +123,8 @@ export default function HelpAndGuidesPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4 text-xs text-[#4B5563] leading-relaxed">
-              <div className="p-3.5 bg-indigo-50/50 rounded-xl border border-indigo-100 space-y-2">
-                <p className="font-semibold text-indigo-900">
+              <div className="p-3.5 bg-amber-50/50 rounded-xl border border-amber-200 space-y-2">
+                <p className="font-semibold text-amber-900">
                   {isEn ? '1. Formula: Take Unit Digit Only' : '1. Aturan Penjumlahan Angka Satuan'}
                 </p>
                 <p className="text-[#4B5563]">
@@ -159,7 +157,7 @@ export default function HelpAndGuidesPage() {
               </div>
 
               <Link href="/candidate/practice" className="block pt-2">
-                <Button size="sm" variant="outline" className="w-full text-indigo-600 border-indigo-200 hover:bg-indigo-50 text-xs font-semibold gap-1.5 rounded-lg">
+                <Button size="sm" variant="outline" className="w-full text-amber-800 border-amber-300 hover:bg-amber-50 text-xs font-semibold gap-1.5 rounded-lg">
                   <Activity className="w-3.5 h-3.5" />
                   <span>{isEn ? 'Launch Interactive Tryout' : 'Mulai Simulasi Tryout Kraepelin'}</span>
                 </Button>
@@ -260,7 +258,7 @@ export default function HelpAndGuidesPage() {
                       {faq.q}
                     </span>
                     <span className="p-1 rounded-full text-[#6B6B6B] flex-shrink-0">
-                      {isOpen ? <ChevronUp className="w-4 h-4 text-indigo-600" /> : <ChevronDown className="w-4 h-4" />}
+                      {isOpen ? <ChevronUp className="w-4 h-4 text-amber-600" /> : <ChevronDown className="w-4 h-4" />}
                     </span>
                   </button>
 
@@ -276,7 +274,7 @@ export default function HelpAndGuidesPage() {
         </div>
 
         {/* Contact Hotline Banner */}
-        <div className="p-6 sm:p-8 bg-gradient-to-r from-slate-900 to-indigo-950 rounded-2xl text-white text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-6 shadow-md">
+        <div className="p-6 sm:p-8 bg-[#0D1117] border border-[#21262D] rounded-2xl text-white text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-6 shadow-md">
           <div className="space-y-1.5">
             <h3 className="text-lg sm:text-xl font-bold">
               {isEn ? 'Need technical assistance or custom company assessment?' : 'Butuh bantuan teknis atau asesmen khusus perusahaan?'}

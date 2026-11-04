@@ -794,7 +794,7 @@ export default function EmployerDashboard() {
                                             e.stopPropagation();
                                             toggleSelectApp(app.id);
                                           }}
-                                          className="rounded border-neutral-300 text-indigo-600 h-3.5 w-3.5 cursor-pointer shrink-0"
+                                          className="rounded border-neutral-300 text-amber-600 focus:ring-amber-500 h-3.5 w-3.5 cursor-pointer shrink-0"
                                         />
                                         <h4 className="font-bold text-xs text-neutral-900 leading-tight truncate">
                                           {cName}
@@ -842,7 +842,7 @@ export default function EmployerDashboard() {
                                       <button
                                         onClick={() => openPsikogram(app)}
                                         title="Unduh Psikogram PDF"
-                                        className="h-8 w-8 rounded-lg flex items-center justify-center bg-indigo-50 hover:bg-indigo-100 text-[#6366F1] border border-indigo-200 active:scale-90 transition-transform cursor-pointer"
+                                        className="h-8 w-8 rounded-lg flex items-center justify-center bg-[#F6F8FA] hover:bg-[#E1E4E8] text-[#0D1117] border border-[#D0D7DE] active:scale-90 transition-transform cursor-pointer"
                                       >
                                         <FileText className="w-3.5 h-3.5" />
                                       </button>
@@ -916,7 +916,7 @@ export default function EmployerDashboard() {
                               e.stopPropagation();
                               toggleSelectApp(app.id);
                             }}
-                            className="mt-1 rounded border-neutral-300 text-indigo-600 h-4 w-4 cursor-pointer shrink-0"
+                            className="mt-1 rounded border-neutral-300 text-amber-600 focus:ring-amber-500 h-4 w-4 cursor-pointer shrink-0"
                           />
                           <div className="space-y-1 min-w-0">
                             <div className="flex items-center gap-2">
@@ -1188,7 +1188,7 @@ export default function EmployerDashboard() {
             </button>
             <button
               onClick={() => handleBatchStatus('interview')}
-              className="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-semibold transition-colors cursor-pointer"
+              className="px-2.5 py-1 rounded-lg bg-[#0D1117] hover:bg-[#21262D] text-white text-[11px] font-semibold transition-colors cursor-pointer"
             >
               Wawancara
             </button>

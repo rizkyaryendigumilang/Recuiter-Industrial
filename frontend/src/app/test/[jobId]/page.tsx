@@ -428,7 +428,7 @@ export function PsychTestContent() {
               <span className="text-[10px] font-semibold uppercase px-2.5 py-0.5 rounded-full bg-neutral-100 text-neutral-700 border border-neutral-200">
                 {isEn ? 'Integrated Psychological Assessment' : 'Modul Asesmen Psikologi Terpadu'}
               </span>
-              <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-indigo-50 text-[#6366F1] border border-indigo-100">
+              <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-[#F6F8FA] text-[#0D1117] border border-[#E1E4E8] font-mono">
                 {isEn ? 'Auto-Sync Active' : 'Sinkronisasi Otomatis Aktif'}
               </span>
             </div>
@@ -620,13 +620,13 @@ export function PsychTestContent() {
                   </span>
                   <div className="flex gap-2">
                     <Link href="/candidate/results">
-                      <Button className="rounded-full text-xs h-9 bg-[#6366F1] hover:bg-indigo-700 text-white flex items-center gap-1.5">
-                        <FileText className="w-3.5 h-3.5" />
+                      <Button className="rounded-xl text-xs h-9 bg-[#0D1117] hover:bg-[#21262D] text-white flex items-center gap-1.5 font-semibold">
+                        <FileText className="w-3.5 h-3.5 text-amber-400" />
                         Buka Lembar Psikogram Lengkap
                       </Button>
                     </Link>
                     <Link href="/candidate">
-                      <Button variant="outline" className="rounded-full text-xs h-9">
+                      <Button variant="outline" className="rounded-xl text-xs h-9 border-[#D0D7DE] text-[#0D1117] hover:bg-[#F6F8FA]">
                         Kembali ke Portal
                       </Button>
                     </Link>

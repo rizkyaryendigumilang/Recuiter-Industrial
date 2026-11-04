@@ -168,8 +168,8 @@ export function CandidateNotificationModal({
             <div className="p-3 bg-neutral-50 border border-neutral-200 rounded-xl flex items-center justify-between">
               <span className="font-mono text-neutral-800 font-semibold">{candidateEmail}</span>
               <a href={mailtoUrl} target="_blank" rel="noreferrer">
-                <Button size="sm" variant="outline" className="h-7 text-[11px] rounded-full">
-                  {t.notification.openMailBtn} &rarr;
+                <Button size="sm" variant="outline" className="h-7 text-[11px] rounded-lg border-[#D0D7DE] text-[#0D1117] hover:bg-[#F6F8FA]">
+                  {t.notification.openMailBtn}
                 </Button>
               </a>
             </div>

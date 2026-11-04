@@ -12,7 +12,6 @@ import {
   HeartHandshake, 
   Clock, 
   CheckCircle2, 
-  ArrowRight, 
   Sparkles, 
   UserCheck, 
   Building2, 
@@ -116,8 +115,8 @@ export default function ServicesPage() {
 
         {/* Header Title */}
         <div className="text-center space-y-2 border-b border-[#E8E8EC] pb-6">
-          <Badge className="bg-indigo-50 text-indigo-700 border-indigo-200 text-xs py-1 px-3">
-            <HeartHandshake className="w-3.5 h-3.5 mr-1" />
+          <Badge className="bg-[#F6F8FA] text-[#0D1117] border-[#E1E4E8] text-xs py-1 px-3 font-mono">
+            <HeartHandshake className="w-3.5 h-3.5 mr-1 text-amber-600" />
             LAYANAN PSIKOLOGI TERAPAN & ASESMEN 2026
           </Badge>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-[#0A0A0A] tracking-tight">
@@ -157,11 +156,11 @@ export default function ServicesPage() {
           {filteredServices.map((srv) => (
             <Card
               key={srv.id}
-              className="border-[#E8E8EC] hover:border-indigo-300 shadow-sm hover:shadow-md transition-all bg-white rounded-2xl flex flex-col justify-between"
+              className="border-[#E8E8EC] hover:border-neutral-400 shadow-sm hover:shadow-md transition-all bg-white rounded-2xl flex flex-col justify-between"
             >
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between gap-2">
-                  <Badge variant="outline" className="text-[10px] uppercase font-bold text-indigo-700 bg-indigo-50 border-indigo-200">
+                  <Badge variant="outline" className="text-[10px] uppercase font-bold text-amber-800 bg-amber-50 border-amber-200 font-mono">
                     {srv.category || 'Service'}
                   </Badge>
                   <span className="text-xs text-[#86868B] flex items-center gap-1">
@@ -195,16 +194,15 @@ export default function ServicesPage() {
                 <div className="flex items-center justify-between pt-2 border-t border-[#F5F5F7]">
                   <div>
                     <p className="text-[10px] text-[#86868B] uppercase font-semibold">Biaya Layanan</p>
-                    <p className="text-lg font-black text-[#0A0A0A]">
+                    <p className="text-lg font-black text-[#0A0A0A] font-mono">
                       Rp {Number(srv.price || 0).toLocaleString('id-ID')}
                     </p>
                   </div>
 
                   <Link href={`/booking/${srv.id}`}>
-                    <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold h-10 px-4 gap-1.5 shadow-sm">
-                      <Calendar className="w-3.5 h-3.5" />
+                    <Button className="bg-[#0D1117] hover:bg-[#21262D] text-white rounded-xl text-xs font-semibold h-10 px-4 gap-1.5 shadow-sm">
+                      <Calendar className="w-3.5 h-3.5 text-amber-400" />
                       <span>Pesan Sesi</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
                     </Button>
                   </Link>
                 </div>
