@@ -39,6 +39,9 @@ jobs:
       - name: Install Root Dependencies
         run: npm ci
 
+      - name: Run Automated Test Suite (QA Gate)
+        run: npm test
+
       - name: Build Mobile Web Bundle (dist)
         run: npm run build
 
