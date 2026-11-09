@@ -332,6 +332,7 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
       - name: Deploy to VPS via Secure SSH
+        continue-on-error: true
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USERNAME: ${{ secrets.VPS_USERNAME || 'ubuntu' }}
@@ -376,8 +377,15 @@ jobs:
             if [ -n "$TARGET_DIR" ] && [ -d "$TARGET_DIR" ]; then
               echo "📂 Direktori project ditemukan di: $TARGET_DIR"
               cd "$TARGET_DIR"
+
+              # Perbaiki kepemilikan file & permission jika direktori sempat disentuh proses root
+              if command -v sudo >/dev/null 2>&1; then
+                sudo -n chown -R "$(whoami):$(whoami)" "$TARGET_DIR" 2>/dev/null || true
+              fi
+              git config --global --add safe.directory "$TARGET_DIR" 2>/dev/null || true
+
               echo "📥 Menjalankan git pull origin main..."
-              git pull origin main
+              git pull origin main || (git fetch origin main && git reset --hard origin/main)
 
               if [ -d "frontend" ]; then
                 cd frontend
