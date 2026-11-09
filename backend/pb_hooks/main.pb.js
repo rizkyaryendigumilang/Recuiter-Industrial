@@ -1,6 +1,32 @@
 /// <reference path="../pb_data/types.d.ts" />
 
 // ---------------------------------------------------------------------------
+// Logging Utility (PocketBase v0.20+ Structured Logger with safe fallback)
+// ---------------------------------------------------------------------------
+const logSystem = (level, message, data) => {
+    try {
+        if (typeof $app !== "undefined" && $app.logger && typeof $app.logger()[level] === "function") {
+            if (data !== undefined) {
+                const serialized = typeof data === "object" ? JSON.stringify(data) : String(data);
+                $app.logger()[level](message, "details", serialized);
+            } else {
+                $app.logger()[level](message);
+            }
+            return;
+        }
+    } catch (_) {}
+
+    // Fallback ke konsol runtime standar
+    if (level === "error") {
+        console.error("[system-error]", message, data !== undefined ? data : "");
+    } else if (level === "warn") {
+        console.warn("[system-warn]", message, data !== undefined ? data : "");
+    } else {
+        console.log("[system-info]", message, data !== undefined ? data : "");
+    }
+};
+
+// ---------------------------------------------------------------------------
 // 0. User Security & Privilege Escalation Guard (CRITICAL FIX)
 //    Mencegah pendaftaran mandiri atau update profil yang menetapkan role 'admin'
 //    tanpa otorisasi administrator.
@@ -93,9 +119,43 @@ onRecordCreateRequest((e) => {
     e.next();
 }, "consultation_bookings");
 
+// Proteksi Update Booking: Mencegah eskalasi status 'paid' dan pengubahan kepemilikan oleh non-admin
+onRecordUpdateRequest((e) => {
+    const auth = e.auth || (e.requestInfo && e.requestInfo().auth);
+    const isAdmin = auth && auth.get("role") === "admin";
+
+    if (!isAdmin) {
+        const orig = e.record.originalCopy ? e.record.originalCopy() : null;
+        if (orig) {
+            const origPaymentStatus = orig.get("payment_status");
+            const newPaymentStatus = e.record.get("payment_status");
+
+            // Cegah manipulasi payment_status menjadi 'paid' secara sepihak
+            if (newPaymentStatus !== origPaymentStatus && newPaymentStatus === "paid") {
+                logSystem("warn", "[consultation_bookings] Percobaan eskalasi payment_status dicegah", {
+                    recordId: e.record.id,
+                    attemptedStatus: newPaymentStatus,
+                    userId: auth ? auth.id : "anonymous"
+                });
+                e.record.set("payment_status", origPaymentStatus);
+            }
+
+            // Kunci user_id dan unique_code agar tidak dapat diubah
+            e.record.set("user_id", orig.get("user_id"));
+            e.record.set("unique_code", orig.get("unique_code"));
+        } else {
+            if (e.record.get("payment_status") === "paid") {
+                e.record.set("payment_status", "pending");
+            }
+        }
+    }
+
+    e.next();
+}, "consultation_bookings");
+
 // ---------------------------------------------------------------------------
 // 1b. Job Application Ownership Guard (MEDIUM FIX)
-//     Mencegah manipulasi candidate_id (IDOR) pada pengiriman lamaran kerja.
+//     Mencegah manipulasi candidate_id (IDOR) pada pengiriman & pembaruan lamaran.
 // ---------------------------------------------------------------------------
 onRecordCreateRequest((e) => {
     const auth = e.auth || (e.requestInfo && e.requestInfo().auth);
@@ -114,6 +174,22 @@ onRecordCreateRequest((e) => {
             }
         }
     }
+    e.next();
+}, "job_applications");
+
+// Proteksi Update Lamaran: Mencegah manipulasi relasi candidate_id dan job_id oleh non-admin
+onRecordUpdateRequest((e) => {
+    const auth = e.auth || (e.requestInfo && e.requestInfo().auth);
+    const isAdmin = auth && auth.get("role") === "admin";
+
+    if (!isAdmin) {
+        const orig = e.record.originalCopy ? e.record.originalCopy() : null;
+        if (orig) {
+            e.record.set("candidate_id", orig.get("candidate_id"));
+            e.record.set("job_id", orig.get("job_id"));
+        }
+    }
+
     e.next();
 }, "job_applications");
 
@@ -162,7 +238,7 @@ onRecordCreateRequest((e) => {
             e.record.set("parsed_skills", extractIndustrialSkillsFromFilename(resume));
         }
     } catch (err) {
-        console.log("[industrial-ocr] create ERROR:", err);
+        logSystem("error", "[industrial-ocr] create ERROR", err);
     }
     e.next();
 }, "candidates");
@@ -174,7 +250,7 @@ onRecordUpdateRequest((e) => {
             e.record.set("parsed_skills", extractIndustrialSkillsFromFilename(resume));
         }
     } catch (err) {
-        console.log("[industrial-ocr] update ERROR:", err);
+        logSystem("error", "[industrial-ocr] update ERROR", err);
     }
     e.next();
 }, "candidates");
@@ -283,7 +359,7 @@ routerAdd("POST", "/api/submit-test", (e) => {
             try {
                 application.set("psychometric_details", psychDetails);
             } catch (err) {
-                console.log("[submit-test] note on psychometric_details:", err);
+                logSystem("warn", "[submit-test] note on psychometric_details", err);
             }
         }
         $app.save(application);

@@ -129,6 +129,16 @@ test('Registration & Authentication Methods Test Suite', async (suite) => {
       assert.equal(email, 'tg_99887766@telegram.user');
       assert.match(email, /^tg_\d+@telegram\.user$/);
     });
+
+    await t.test('Secure Telegram password uses HMAC-SHA256 derived entropy', () => {
+      const tgId = '99887766';
+      const derivedSecret = crypto.createHmac('sha256', mockBotToken).update(`tg_user_${tgId}`).digest('hex').slice(0, 24);
+      const securePassword = `Tg@${tgId}#${derivedSecret}`;
+
+      assert.ok(securePassword.length >= 32, 'Password length must be at least 32 chars');
+      assert.match(securePassword, /^Tg@\d+#[a-f0-9]{24}$/, 'Password must match strong HMAC pattern');
+      assert.notEqual(securePassword, `Tg@${tgId}#${mockBotToken.slice(0, 8)}`, 'Must not use predictable bot token prefix');
+    });
   });
 
   // ==========================================

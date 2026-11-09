@@ -54,29 +54,67 @@ export async function POST(req: NextRequest) {
 
     const pbUrl = process.env.PB_INTERNAL_URL || process.env.NEXT_PUBLIC_PB_URL || 'http://127.0.0.1:8093';
     const email = `tg_${id}@telegram.user`;
-    const tempPassword = `Tg@${id}#${botToken ? botToken.slice(0, 8) : 'demo1234'}`;
 
-    // 1. Coba login dengan kredensial Telegram user yang sudah ada
+    // Derivasi kredensial aman dengan HMAC-SHA256 (tahan brute-force / non-predictable)
+    const derivedSecret = botToken
+      ? crypto.createHmac('sha256', botToken).update(`tg_user_${id}`).digest('hex').slice(0, 24)
+      : 'demo1234';
+    const securePassword = `Tg@${id}#${derivedSecret}`;
+    const legacyPassword = `Tg@${id}#${botToken ? botToken.slice(0, 8) : 'demo1234'}`;
+
+    // 1. Coba login dengan kredensial aman HMAC
     let authRes = await fetch(`${pbUrl}/api/collections/users/auth-with-password`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ identity: email, password: tempPassword }),
+      body: JSON.stringify({ identity: email, password: securePassword }),
     });
 
     let isNewUser = false;
 
-    // 2. Jika belum ada (400 / 404), buat user baru di PocketBase
+    // 2. Jika gagal login secure, coba kredensial legacy untuk akun pengguna lama
+    if (!authRes.ok) {
+      const legacyAuthRes = await fetch(`${pbUrl}/api/collections/users/auth-with-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identity: email, password: legacyPassword }),
+      });
+
+      if (legacyAuthRes.ok) {
+        // Upgrade password ke secure HMAC secara seamless di background
+        const legacyData = await legacyAuthRes.json();
+        try {
+          await fetch(`${pbUrl}/api/collections/users/records/${legacyData.record.id}`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: legacyData.token,
+            },
+            body: JSON.stringify({
+              password: securePassword,
+              passwordConfirm: securePassword,
+              oldPassword: legacyPassword,
+            }),
+          });
+        } catch (upgradeErr) {
+          console.warn('Auto-upgrade to secure Telegram password deferred:', upgradeErr);
+        }
+
+        authRes = legacyAuthRes;
+      }
+    }
+
+    // 3. Jika belum pernah terdaftar sama sekali, buat user baru dengan secure password
     if (!authRes.ok) {
       const createRes = await fetch(`${pbUrl}/api/collections/users/records`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email,
-          password: tempPassword,
-          passwordConfirm: tempPassword,
+          password: securePassword,
+          passwordConfirm: securePassword,
           name: [first_name, username ? `(@${username})` : ''].filter(Boolean).join(' '),
           emailVisibility: true,
-          role: '', // Kosong agar memicu pemilihan peran kandidat / employer
+          role: '', // Kosong agar memicu dialog pemilihan peran kandidat / employer
         }),
       });
 
@@ -92,7 +130,7 @@ export async function POST(req: NextRequest) {
       authRes = await fetch(`${pbUrl}/api/collections/users/auth-with-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ identity: email, password: tempPassword }),
+        body: JSON.stringify({ identity: email, password: securePassword }),
       });
     }
 
