@@ -5,6 +5,8 @@ import { cachedPbGetFullList } from '@/lib/pocketbase';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { CorporateTimeline } from '@/components/corporate-timeline';
+import { StageshowHeroConsole } from './stageshow-hero-console';
+import { StageshowBentoGrid } from './stageshow-bento-grid';
 import { useLanguage } from '@/lib/language-context';
 import {
   Briefcase,
@@ -94,29 +96,7 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
   const [selectedPillar, setSelectedPillar] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Mini interactive Kraepelin simulator in Hero (21st.dev style tactile widget)
-  const [heroNumA, setHeroNumA] = useState(7);
-  const [heroNumB, setHeroNumB] = useState(8);
-  const [heroFeedback, setHeroFeedback] = useState<'idle' | 'correct' | 'wrong'>('idle');
-  const [heroScore, setHeroScore] = useState(14);
-  const [heroPanker, setHeroPanker] = useState(48.5);
 
-  const handleHeroSubmit = (digit: number) => {
-    const expected = (heroNumA + heroNumB) % 10;
-    if (digit === expected) {
-      setHeroFeedback('correct');
-      setHeroScore((prev) => prev + 1);
-      setHeroPanker((prev) => Math.min(65, +(prev + 0.6).toFixed(1)));
-      setTimeout(() => {
-        setHeroNumA(Math.floor(Math.random() * 9) + 1);
-        setHeroNumB(Math.floor(Math.random() * 9) + 1);
-        setHeroFeedback('idle');
-      }, 350);
-    } else {
-      setHeroFeedback('wrong');
-      setTimeout(() => setHeroFeedback('idle'), 500);
-    }
-  };
 
   useEffect(() => {
     async function load() {
@@ -218,118 +198,18 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
               </div>
             </div>
 
-            {/* Right: Tactile Kraepelin Instrument Console (21st.dev inspired) */}
-            <div className="lg:col-span-5">
-              <div className="bg-[#FFFFFF] border border-[#D0D7DE] rounded-xl shadow-xs p-5 relative overflow-hidden">
-                {/* Console Bar */}
-                <div className="flex items-center justify-between pb-3.5 border-b border-[#E1E4E8] mb-4">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-[11px] font-mono font-semibold text-[#0D1117] uppercase tracking-wider">
-                      {isEn ? 'Psychometric Console' : 'Konsol Psikometri HIMPSI'}
-                    </span>
-                  </div>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">
-                    CALIBRATED 2026
-                  </span>
-                </div>
-
-                {/* Tactile Addition Stage */}
-                <div className="bg-[#F6F8FA] border border-[#E1E4E8] rounded-lg p-4 mb-4">
-                  <div className="flex items-center justify-between text-[11px] font-mono text-[#57606A] mb-3">
-                    <span>{isEn ? 'RAPID SUM CHECK' : 'PENJUMLAHAN CEPAT'}</span>
-                    <span className="text-emerald-700 font-bold">Kolom #{heroScore}</span>
-                  </div>
-
-                  <div className="flex items-center justify-center gap-3 py-2">
-                    {/* Top Digit */}
-                    <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-lg bg-white border border-[#D0D7DE] shadow-xs flex items-center justify-center text-2xl font-mono font-bold text-[#0D1117]">
-                      {heroNumA}
-                    </div>
-
-                    <span className="text-xl font-bold text-amber-600">+</span>
-
-                    {/* Bottom Digit */}
-                    <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-lg bg-white border border-[#D0D7DE] shadow-xs flex items-center justify-center text-2xl font-mono font-bold text-[#0D1117]">
-                      {heroNumB}
-                    </div>
-
-                    <span className="text-xl font-bold text-[#57606A]">=</span>
-
-                    {/* Feedback Target */}
-                    <div className={`w-13 h-13 sm:w-14 sm:h-14 rounded-lg border flex items-center justify-center text-xl font-mono font-bold transition-all duration-150 ${
-                      heroFeedback === 'correct'
-                        ? 'bg-emerald-50 border-emerald-500 text-emerald-700 scale-105'
-                        : heroFeedback === 'wrong'
-                        ? 'bg-red-50 border-red-500 text-red-700'
-                        : 'bg-white border-dashed border-[#8C959F] text-[#57606A]'
-                    }`}>
-                      {heroFeedback === 'correct' ? (heroNumA + heroNumB) % 10 : '?'}
-                    </div>
-                  </div>
-
-                  <p className="text-center text-[11px] text-[#57606A] mt-2">
-                    {heroFeedback === 'correct' ? (
-                      <span className="text-emerald-600 font-mono font-semibold">✓ Akurat! Kecepatan meningkat</span>
-                    ) : heroFeedback === 'wrong' ? (
-                      <span className="text-red-600 font-mono font-semibold">✗ Angka satuan salah, coba lagi</span>
-                    ) : (
-                      <span>{isEn ? 'Tap unit digit below (ex: 7+8=15 -> tap 5)' : 'Pilih angka satuan di bawah (cth: 7+8=15 -> pilih 5)'}</span>
-                    )}
-                  </p>
-                </div>
-
-                {/* Tactile Keypad */}
-                <div className="grid grid-cols-5 gap-1.5 mb-4">
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((num) => (
-                    <button
-                      key={num}
-                      type="button"
-                      onClick={() => handleHeroSubmit(num)}
-                      className="h-10 rounded-md bg-[#FAFAFA] border border-[#D0D7DE] hover:border-amber-500 active:bg-[#0D1117] active:text-white font-mono font-bold text-base text-[#0D1117] shadow-2xs transition-all cursor-pointer touch-manipulation"
-                    >
-                      {num}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Readout Gauges */}
-                <div className="grid grid-cols-2 gap-2 pt-3 border-t border-[#E1E4E8] text-left">
-                  <div className="p-2.5 rounded bg-[#F6F8FA] border border-[#E1E4E8]">
-                    <span className="text-[10px] font-mono text-[#57606A] block">LAJU KERJA (PANKER)</span>
-                    <span className="text-sm font-mono font-bold text-[#0D1117]">{heroPanker} kol/mnt</span>
-                  </div>
-                  <div className="p-2.5 rounded bg-[#F6F8FA] border border-[#E1E4E8]">
-                    <span className="text-[10px] font-mono text-[#57606A] block">KETELITIAN (TIANKER)</span>
-                    <span className="text-sm font-mono font-bold text-emerald-600">98.5% (Norma A)</span>
-                  </div>
-                </div>
-
-                <div className="mt-3.5 pt-3 border-t border-[#E1E4E8] flex items-center justify-between text-xs">
-                  <span className="text-[11px] font-mono text-[#57606A]">Rekomendasi Plant:</span>
-                  <span className="font-mono font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 text-[11px]">
-                    Lolos Operator QC / CNC
-                  </span>
-                </div>
-
-                <div className="mt-3">
-                  <Link href="/candidate/practice" className="block">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full h-9 rounded-md border-[#D0D7DE] bg-white hover:bg-[#F6F8FA] text-[#0D1117] text-xs font-mono font-medium cursor-pointer"
-                    >
-                      {isEn ? 'Open Fullscreen Test Station' : 'Buka Konsol Uji Penuh (Layar Penuh)'}
-                    </Button>
-                  </Link>
-                </div>
-              </div>
+            {/* Right: Stageshow-grade Industrial Machine Console Window with Satellite Card */}
+            <div className="lg:col-span-5 relative">
+              <StageshowHeroConsole isEn={isEn} />
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. HORIZONTAL CORPORATE TIMELINE (Infographic Precision) */}
+      {/* 2. STAGESHOW BENTO GRID (Precision Manufacturing Architecture) */}
+      <StageshowBentoGrid isEn={isEn} />
+
+      {/* 3. HORIZONTAL CORPORATE TIMELINE (Infographic Precision) */}
       <CorporateTimeline />
 
       {/* 3. JOB BOARD SECTION (Pilar A) */}

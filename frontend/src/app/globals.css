@@ -81,6 +81,52 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* Stageshow Craft & Framing Tokens (Benji Taylor Design System) */
+  --ss-canvas: #F6F8FA;
+  --ss-surface: #FFFFFF;
+  --ss-chrome: #F6F8FA;
+  --ss-well: #EEF2F6;
+  --ss-line: #D0D7DE;
+  --ss-line-faint: rgba(208, 215, 222, 0.5);
+  --ss-text-strong: #0D1117;
+  --ss-text: #57606A;
+  --ss-text-faint: #8C959F;
+  --ss-accent: #0D1117;
+  --ss-accent-soft: #F6F8FA;
+  --ss-shadow-hero: 0 20px 40px -12px rgba(13, 17, 23, 0.10), 0 6px 16px -4px rgba(13, 17, 23, 0.06), 0 0 0 1px #D0D7DE;
+  --ss-shadow-window: 0 12px 28px -8px rgba(13, 17, 23, 0.08), 0 0 0 1px #D0D7DE;
+  --ss-shadow-satellite: 0 16px 36px -6px rgba(13, 17, 23, 0.16), 0 6px 14px -2px rgba(13, 17, 23, 0.10), 0 0 0 1px rgba(208, 215, 222, 0.9);
+  --ss-shadow-ground: 0 1px 3px rgba(13, 17, 23, 0.05), 0 0 0 1px #D0D7DE;
+  --ss-shadow-card: 0 2px 8px -2px rgba(13, 17, 23, 0.06), 0 0 0 1px #D0D7DE;
+  --ss-shadow-lift: 0 10px 24px -4px rgba(13, 17, 23, 0.12), 0 0 0 1px #0D1117;
+}
+
+.ss-hero-window {
+  box-shadow: var(--ss-shadow-hero);
+  border-radius: 12px;
+  background: var(--ss-surface);
+  overflow: hidden;
+}
+
+.ss-satellite-card {
+  box-shadow: var(--ss-shadow-satellite);
+  border-radius: 10px;
+  background: var(--ss-surface);
+  border: 1px solid rgba(208, 215, 222, 0.9);
+}
+
+.ss-bento-card {
+  box-shadow: var(--ss-shadow-card);
+  border-radius: 12px;
+  background: var(--ss-surface);
+  border: 1px solid var(--ss-line);
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ss-bento-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--ss-shadow-lift);
 }
 
 .dark {
