@@ -5,7 +5,7 @@
  */
 
 import { pb } from '@/lib/pocketbase';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export interface PendingTestSubmission {
   id: string;
@@ -139,15 +139,14 @@ if (typeof window !== 'undefined') {
  */
 export function useOfflineQueue() {
   const [isOnline, setIsOnline] = useState(typeof navigator !== 'undefined' ? navigator.onLine : true);
-  const [pendingCount, setPendingCount] = useState(0);
+  const [pendingCount, setPendingCount] = useState(() => (typeof window !== 'undefined' ? getPendingAssessments().length : 0));
   const [isSyncing, setIsSyncing] = useState(false);
 
-  const refreshCount = () => {
+  const refreshCount = useCallback(() => {
     setPendingCount(getPendingAssessments().length);
-  };
+  }, []);
 
   useEffect(() => {
-    refreshCount();
     const handleOnline = () => {
       setIsOnline(true);
       setIsSyncing(true);
@@ -167,7 +166,7 @@ export function useOfflineQueue() {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
     };
-  }, []);
+  }, [refreshCount]);
 
   const manualFlush = async () => {
     setIsSyncing(true);

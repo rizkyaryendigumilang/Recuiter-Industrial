@@ -130,7 +130,7 @@ export async function GET(request: Request) {
   }
 
   // Buat string kalender format standar iCalendar (RFC 5545)
-  let icsContent = [
+  const icsContent = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
     'PRODID:-//HRTech Industrial//Interview & Consultation Calendar//ID',
