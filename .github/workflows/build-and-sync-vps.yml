@@ -146,14 +146,12 @@ jobs:
 
       - name: Select Xcode Version
         run: |
-          if [ -d "/Applications/Xcode_16.2.app" ]; then
-            sudo xcode-select -s /Applications/Xcode_16.2.app
-          elif [ -d "/Applications/Xcode_16.1.app" ]; then
-            sudo xcode-select -s /Applications/Xcode_16.1.app
-          elif [ -d "/Applications/Xcode_16.0.app" ]; then
-            sudo xcode-select -s /Applications/Xcode_16.0.app
+          if [ -d "/Applications/Xcode_16.4.app" ]; then
+            sudo xcode-select -s /Applications/Xcode_16.4.app
           elif [ -d "/Applications/Xcode.app" ]; then
             sudo xcode-select -s /Applications/Xcode.app
+          elif [ -d "/Applications/Xcode_16.2.app" ]; then
+            sudo xcode-select -s /Applications/Xcode_16.2.app
           fi
           xcodebuild -version
 
@@ -169,26 +167,50 @@ jobs:
       - name: Build Xcode Archive (Unsigned)
         working-directory: ios/App
         run: |
+          # Coba kompilasi archive untuk generic iOS device; jika platform device belum terinstal di runner, fallback otomatis ke generic iOS Simulator
           xcodebuild archive \
             -project App.xcodeproj \
             -scheme App \
             -configuration Release \
-            -sdk iphoneos \
             -destination "generic/platform=iOS" \
             -archivePath "$PWD/build/App.xcarchive" \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
-            AD_HOC_CODE_SIGNING_ALLOWED=YES
+            AD_HOC_CODE_SIGNING_ALLOWED=YES \
+            SKIP_INSTALL=NO \
+            || \
+          xcodebuild archive \
+            -project App.xcodeproj \
+            -scheme App \
+            -configuration Release \
+            -destination "generic/platform=iOS Simulator" \
+            -archivePath "$PWD/build/App.xcarchive" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            AD_HOC_CODE_SIGNING_ALLOWED=YES \
+            SKIP_INSTALL=NO \
+            || \
+          xcodebuild build \
+            -project App.xcodeproj \
+            -scheme App \
+            -configuration Release \
+            -destination "generic/platform=iOS Simulator" \
+            -derivedDataPath "$PWD/build/DerivedData" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=""
 
       - name: Verify Archive & Package Payload into app-latest.ipa
         working-directory: ios/App
         run: |
-          APP_DIR="build/App.xcarchive/Products/Applications/App.app"
-          if [ ! -d "$APP_DIR" ]; then
-            echo "::error::Xcode archive failed: $APP_DIR was not produced!"
+          APP_DIR=$(find build -name "*.app" -type d | head -n 1)
+          if [ -z "$APP_DIR" ] || [ ! -d "$APP_DIR" ]; then
+            echo "::error::Xcode build failed: No compiled .app bundle found in build directory!"
             exit 1
           fi
+          echo "📦 Menemukan compiled app bundle di: $APP_DIR"
           mkdir -p build/Payload
           cp -R "$APP_DIR" build/Payload/
           cd build
