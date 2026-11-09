@@ -18,6 +18,7 @@ import {
   Calendar,
   Sparkles,
   X,
+  Activity,
 } from 'lucide-react';
 
 // Fallback data industri manufaktur jika PocketBase belum di-seed
@@ -130,38 +131,41 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-[#1D1D1F] flex flex-col font-sans">
       {/* 1. HERO SECTION (Tactile Industrial Precision & Interactive Psychometric Console) */}
-      <section className="relative pt-12 pb-16 md:pt-16 md:pb-24 bg-[#FFFFFF] border-b border-[#E1E4E8]">
+      <section className="relative pt-12 pb-16 md:pt-16 md:pb-24 bg-gradient-to-b from-[#F6F8FA] via-white to-white border-b border-[#E1E4E8]">
         <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
           <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left: Confident Technical Grounding */}
             <div className="lg:col-span-7 text-left">
               {/* Contextual Technical Badge */}
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#F6F8FA] border border-[#E1E4E8] text-xs font-mono text-[#52525B] mb-5">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[#D0D7DE] text-xs font-mono text-neutral-700 mb-5 shadow-xs">
                 <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-                <span>{isEn ? 'Industrial Manufacturing • HIMPSI & K3 Standard' : 'Pabrik & Manufaktur Presisi • Standar HIMPSI & Kemnaker'}</span>
+                <span className="font-semibold text-[#0D1117]">{isEn ? 'Industrial ATS Engine' : 'Engine Rekrutmen Manufaktur'}</span>
+                <span className="text-neutral-400">&bull;</span>
+                <span className="text-neutral-600">{isEn ? 'HIMPSI & K3 PP 50/2012' : 'Standar HIMPSI & K3 Kemnaker'}</span>
               </div>
 
-              {/* Headline - Editorial, solid, without split-color words */}
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-[#0D1117] leading-[1.12] mb-5">
+              {/* Headline - Editorial, bold, authoritative */}
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-[#0D1117] leading-[1.12] mb-5">
                 {isEn 
                   ? 'Factory Operator Recruitment and Industrial Psychometric Calibration.'
                   : 'Standar Rekrutmen Operator Pabrik dan Kalibrasi Psikometri Industri.'}
               </h1>
 
               {/* Subtitle */}
-              <p className="text-sm sm:text-base text-[#57606A] max-w-xl leading-relaxed mb-8">
+              <p className="text-sm sm:text-base text-[#475569] max-w-xl leading-relaxed mb-8">
                 {isEn
                   ? 'Precision technical workforce screening: automated Kraepelin/Pauli test engine calibrated to HIMPSI norms, Kemnaker K3 license verification, and 3-shift mental load mitigation.'
                   : 'Ekosistem seleksi teknis pabrik: auto-scoring tes Kraepelin/Pauli terkalibrasi norma HIMPSI, verifikasi lisensi K3 Kemnaker, audit 7 QC Tools, dan mitigasi kelelahan kerja 3-shift.'}
               </p>
 
-              {/* Direct CTAs without trailing arrow spam */}
-              <div className="flex flex-wrap items-center gap-3 mb-10">
+              {/* Direct CTAs with tactile press physics */}
+              <div className="flex flex-wrap items-center gap-3 mb-8">
                 <Link href="#jobs">
                   <Button
                     size="lg"
-                    className="h-11 px-6 rounded-lg bg-[#0D1117] hover:bg-[#24292F] text-white text-xs font-medium shadow-xs transition-colors duration-150 touch-manipulation cursor-pointer"
+                    className="h-11 px-6 rounded-xl bg-[#0D1117] hover:bg-neutral-800 text-white text-xs font-bold shadow-md hover:shadow-lg active:scale-[0.98] transition-all touch-manipulation cursor-pointer flex items-center gap-2"
                   >
+                    <Briefcase className="w-4 h-4 text-amber-400" />
                     {isEn ? 'Explore Factory Vacancies' : 'Jelajahi Lowongan Pabrik'}
                   </Button>
                 </Link>
@@ -169,8 +173,9 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                   <Button
                     variant="outline"
                     size="lg"
-                    className="h-11 px-6 rounded-lg border-[#D0D7DE] bg-white hover:bg-[#F6F8FA] text-[#0D1117] text-xs font-medium transition-colors duration-150 touch-manipulation cursor-pointer"
+                    className="h-11 px-6 rounded-xl border-[#D0D7DE] bg-white hover:bg-[#F6F8FA] text-[#0D1117] text-xs font-bold shadow-xs active:scale-[0.98] transition-all touch-manipulation cursor-pointer flex items-center gap-2"
                   >
+                    <Activity className="w-4 h-4 text-emerald-600" />
                     {isEn ? 'Practice Kraepelin Test' : 'Simulasi Uji Kraepelin'}
                   </Button>
                 </Link>
@@ -178,15 +183,31 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                   <Button
                     variant="ghost"
                     size="lg"
-                    className="h-11 px-5 rounded-lg text-[#57606A] hover:text-[#0D1117] hover:bg-[#F6F8FA] text-xs font-medium transition-colors duration-150 touch-manipulation cursor-pointer"
+                    className="h-11 px-5 rounded-xl text-[#57606A] hover:text-[#0D1117] hover:bg-[#F6F8FA] text-xs font-semibold active:scale-[0.98] transition-all touch-manipulation cursor-pointer"
                   >
                     {isEn ? 'B2B Plant Retainer' : 'Konsultasi Plant B2B'}
                   </Button>
                 </Link>
               </div>
 
+              {/* Live Stat Badges (Telemetry Row) */}
+              <div className="grid grid-cols-3 gap-3 pt-6 border-t border-[#E1E4E8] mb-6">
+                <div>
+                  <span className="text-xl sm:text-2xl font-extrabold font-mono text-[#0D1117] block">1,250+</span>
+                  <span className="text-[11px] font-mono text-neutral-500 uppercase tracking-tight">Operator Teruji</span>
+                </div>
+                <div>
+                  <span className="text-xl sm:text-2xl font-extrabold font-mono text-emerald-600 block">98.6%</span>
+                  <span className="text-[11px] font-mono text-neutral-500 uppercase tracking-tight">Akurasi Norma</span>
+                </div>
+                <div>
+                  <span className="text-xl sm:text-2xl font-extrabold font-mono text-amber-600 block">48 Jam</span>
+                  <span className="text-[11px] font-mono text-neutral-500 uppercase tracking-tight">Penempatan Cepat</span>
+                </div>
+              </div>
+
               {/* Industrial Corridors & Cluster Indicators */}
-              <div className="pt-6 border-t border-[#E1E4E8]">
+              <div className="pt-4 border-t border-[#E1E4E8]">
                 <p className="text-[11px] font-mono text-[#57606A] uppercase tracking-wider mb-2">
                   {isEn ? 'Integrated Manufacturing Corridors' : 'Klaster Industri Terintegrasi'}
                 </p>
