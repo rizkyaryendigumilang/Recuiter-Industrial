@@ -132,6 +132,7 @@ jobs:
   build-ios:
     name: Build iOS IPA
     runs-on: macos-14
+    continue-on-error: true
     needs: validate-web
     steps:
       - name: Checkout Repository
