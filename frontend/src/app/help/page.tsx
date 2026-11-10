@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/language-context';
+import { useHelpdesk } from '@/components/helpdesk/helpdesk-provider';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -18,11 +19,13 @@ import {
   ChevronUp, 
   ShieldAlert,
   Clock,
-  Sparkles
+  Sparkles,
+  LifeBuoy
 } from 'lucide-react';
 
 export default function HelpAndGuidesPage() {
   const { language } = useLanguage();
+  const { openHelpdesk } = useHelpdesk();
   const isEn = language === 'en';
 
   const [openFaq, setOpenFaq] = useState<number | null>(0);
@@ -84,6 +87,14 @@ export default function HelpAndGuidesPage() {
           </p>
 
           <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
+            <Button
+              size="sm"
+              onClick={() => openHelpdesk()}
+              className="bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold rounded-xl h-10 px-4 gap-2 shadow-sm cursor-pointer active:scale-95 transition-transform"
+            >
+              <LifeBuoy className="w-4 h-4 text-white" />
+              <span>{isEn ? '🆘 Open Helpdesk Ticket' : '🆘 Buka Tiket Helpdesk VPS'}</span>
+            </Button>
             <Link href="/candidate/practice">
               <Button size="sm" className="bg-[#0D1117] hover:bg-[#21262D] text-white text-xs font-semibold rounded-xl h-10 px-4 gap-2 shadow-sm">
                 <Activity className="w-4 h-4 text-amber-400" />
@@ -100,6 +111,45 @@ export default function HelpAndGuidesPage() {
                 <span>{isEn ? 'WhatsApp Support Hotline' : 'Hotline WhatsApp Admin'}</span>
               </Button>
             </a>
+          </div>
+        </div>
+
+        {/* Industrial Helpdesk VPS Integration Banner */}
+        <div className="p-6 sm:p-7 bg-white border border-[#D0D7DE] rounded-2xl shadow-sm space-y-4 hover:shadow-md transition-shadow">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-start gap-3.5">
+              <div className="w-12 h-12 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center shrink-0">
+                <LifeBuoy className="w-6 h-6 text-amber-600" />
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Badge className="bg-amber-100 text-amber-900 border-amber-300 text-[10px] font-mono px-2 py-0.5">
+                    SSO JUST-IN-TIME HANDOFF
+                  </Badge>
+                  <span className="text-[11px] font-mono text-[#57606A]">
+                    HOST: 43.156.236.102/helpdesk/handoff
+                  </span>
+                </div>
+                <h2 className="text-lg sm:text-xl font-bold text-[#0D1117]">
+                  {isEn ? 'Encountering Technical Issues or Questions?' : 'Mengalami Kendala Teknis atau Butuh Bantuan?'}
+                </h2>
+                <p className="text-xs text-[#57606A] leading-relaxed max-w-2xl">
+                  {isEn
+                    ? 'Submit tickets directly to our centralized VPS Helpdesk. Active session credentials and current URL are automatically handoffed without re-login. You can optionally attach a screenshot proof.'
+                    : 'Laporkan kendala langsung ke VPS Helpdesk terpusat. Sesi login dan URL halaman Anda akan diteruskan otomatis tanpa login ulang. Anda dapat melampirkan foto bukti kendala (opsional).'}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 shrink-0">
+              <Button
+                onClick={() => openHelpdesk()}
+                className="bg-[#0D1117] hover:bg-[#21262D] text-white text-xs font-semibold rounded-xl h-10 px-4 gap-2 shadow-xs cursor-pointer active:scale-95 transition-transform"
+              >
+                <LifeBuoy className="w-4 h-4 text-amber-400" />
+                <span>{isEn ? 'Report Issue with Photo' : 'Laporkan Kendala + Foto'}</span>
+              </Button>
+            </div>
           </div>
         </div>
 

@@ -7,12 +7,14 @@ import { useLanguage } from '@/lib/language-context';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { LanguageSwitcher } from '@/components/language-switcher';
+import { useHelpdesk } from '@/components/helpdesk/helpdesk-provider';
 import { useState, Suspense } from 'react';
-import { Menu, LogOut, User, Briefcase, ShieldCheck, Settings, Activity, HelpCircle, Award } from 'lucide-react';
+import { Menu, LogOut, User, Briefcase, ShieldCheck, Settings, Activity, HelpCircle, Award, LifeBuoy } from 'lucide-react';
 
 function NavContent() {
   const { isLoggedIn, role, logout, user } = useAuth();
   const { t } = useLanguage();
+  const { openHelpdesk } = useHelpdesk();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -56,7 +58,19 @@ function NavContent() {
       </nav>
 
       {/* Language Switcher & Auth Actions (Desktop) */}
-      <div className="hidden lg:flex items-center gap-3">
+      <div className="hidden lg:flex items-center gap-2.5">
+        {/* Helpdesk SSO JIT Handoff Button */}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => openHelpdesk()}
+          className="rounded-full text-xs font-semibold border-amber-300/80 bg-amber-50/70 hover:bg-amber-100 text-amber-900 h-8 px-3 active:scale-95 transition-all gap-1.5 cursor-pointer shadow-2xs"
+          title="Bantuan & Laporkan Kendala (SSO VPS Helpdesk)"
+        >
+          <LifeBuoy className="w-3.5 h-3.5 text-amber-600" />
+          <span>Bantuan</span>
+        </Button>
+
         {/* Language Selection Menu */}
         <LanguageSwitcher variant="dropdown" />
 
@@ -129,9 +143,25 @@ function NavContent() {
                 <p className="text-xs text-[#52525B] mt-0.5">{t.nav.brandSub}</p>
               </div>
 
-              {/* Mobile Language Selector */}
-              <div className="py-2 px-1">
+              {/* Mobile Language Selector & Help Button */}
+              <div className="py-2 px-1 space-y-2">
                 <LanguageSwitcher variant="mobile" />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpen(false);
+                    openHelpdesk();
+                  }}
+                  className="w-full px-3 py-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 font-semibold text-xs flex items-center justify-between active:scale-98 transition-all cursor-pointer"
+                >
+                  <span className="flex items-center gap-2">
+                    <LifeBuoy className="w-4 h-4 text-amber-600" />
+                    <span>Bantuan / Lapor Kendala</span>
+                  </span>
+                  <span className="text-[10px] font-mono bg-white border border-amber-300 px-1.5 py-0.5 rounded text-amber-800">
+                    SSO VPS
+                  </span>
+                </button>
               </div>
 
               <div className="border-t border-[#E8E8EC] my-1" />

@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { AuthProvider } from "@/lib/auth-context";
 import { LanguageProvider } from "@/lib/language-context";
+import { HelpdeskProvider } from "@/components/helpdesk/helpdesk-provider";
 import { SiteFooter } from "@/components/site-footer";
 import { PwaRegistrar } from "@/components/pwa-registrar";
 
@@ -64,10 +65,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-full flex flex-col bg-background text-foreground overflow-x-clip">
         <LanguageProvider>
           <AuthProvider>
-            <PwaRegistrar />
-            <Navbar />
-            <main className="flex-1">{children}</main>
-            <SiteFooter />
+            <HelpdeskProvider>
+              <PwaRegistrar />
+              <Navbar />
+              <main className="flex-1">{children}</main>
+              <SiteFooter />
+            </HelpdeskProvider>
           </AuthProvider>
         </LanguageProvider>
       </body>
