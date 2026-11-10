@@ -5,7 +5,11 @@ import { useAuth } from '@/lib/auth-context';
 import { useLanguage } from '@/lib/language-context';
 import { Button } from '@/components/ui/button';
 import { triggerHaptic } from '@/lib/haptics';
-import { buildHelpdeskUrl, openHelpdeskHandoff, getHelpdeskUserContext } from '@/lib/helpdesk';
+import {
+  laporkanKendalaKeHelpdesk,
+  getHelpdeskUserContext,
+  HelpdeskCategory,
+} from '@/lib/helpdesk';
 import {
   LifeBuoy,
   X,
@@ -18,7 +22,12 @@ import {
   Trash2,
   Sparkles,
   ShieldCheck,
-  SendHorizontal
+  SendHorizontal,
+  Flame,
+  Bug,
+  KeyRound,
+  FileText,
+  HelpCircle
 } from 'lucide-react';
 
 interface HelpdeskTicketModalProps {
@@ -27,6 +36,13 @@ interface HelpdeskTicketModalProps {
   initialKeluhan?: string;
   initialSubject?: string;
 }
+
+const CATEGORIES: { id: HelpdeskCategory; labelId: string; labelEn: string; icon: React.ElementType }[] = [
+  { id: 'bug_error', labelId: 'Bug / Kendala Teknis', labelEn: 'Bug / Technical Issue', icon: Bug },
+  { id: 'assessment_issue', labelId: 'Asesmen & Tes Kraepelin', labelEn: 'Assessment & Tests', icon: FileText },
+  { id: 'account_access', labelId: 'Akun & Autentikasi', labelEn: 'Account & Access', icon: KeyRound },
+  { id: 'general_inquiry', labelId: 'Pertanyaan Umum', labelEn: 'General Inquiry', icon: HelpCircle },
+];
 
 export function HelpdeskTicketModal({
   isOpen,
@@ -38,7 +54,12 @@ export function HelpdeskTicketModal({
   const { t, language } = useLanguage();
   const isEn = language === 'en';
 
+  const [subject, setSubject] = useState(initialSubject);
   const [keluhan, setKeluhan] = useState(initialKeluhan);
+  const [category, setCategory] = useState<HelpdeskCategory>('bug_error');
+  const [isUrgent, setIsUrgent] = useState(false);
+  const [autoSubmit, setAutoSubmit] = useState(true);
+
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -51,7 +72,11 @@ export function HelpdeskTicketModal({
   // Sync initial values
   useEffect(() => {
     if (isOpen) {
+      setSubject(initialSubject);
       setKeluhan(initialKeluhan);
+      setCategory('bug_error');
+      setIsUrgent(false);
+      setAutoSubmit(true);
       setErrorMessage(null);
       setIsSuccess(false);
       triggerHaptic.light();
@@ -62,7 +87,7 @@ export function HelpdeskTicketModal({
         setPreviewUrl(null);
       }
     }
-  }, [isOpen, initialKeluhan]);
+  }, [isOpen, initialKeluhan, initialSubject]);
 
   // Handle escape key
   useEffect(() => {
@@ -174,33 +199,36 @@ export function HelpdeskTicketModal({
       }
     }
 
-    // Build Helpdesk Handoff URL with all parameters
-    const handoffUrl = buildHelpdeskUrl({
+    // Eksekusi handoff SSO JIT ke VPS Helpdesk
+    laporkanKendalaKeHelpdesk({
+      subject: subject.trim() || `[recruiter] Kendala: ${keluhan.trim().slice(0, 50)}`,
+      description: keluhan.trim(),
+      category,
+      isUrgent,
+      autoSubmit,
+      photoUrl,
       user,
       role,
       fromUrl: typeof window !== 'undefined' ? window.location.href : '',
-      keluhan,
-      photoUrl,
-      subject: initialSubject,
     });
 
     triggerHaptic.success();
     setIsSuccess(true);
 
-    // Open directly in new tab as specified
-    if (typeof window !== 'undefined') {
-      window.open(handoffUrl, '_blank', 'noopener,noreferrer');
-    }
-
     setTimeout(() => {
       setIsSubmitting(false);
       onClose();
-    }, 900);
+    }, 800);
   };
 
   const handleDirectHandoff = () => {
     triggerHaptic.light();
-    openHelpdeskHandoff({
+    laporkanKendalaKeHelpdesk({
+      subject: '[recruiter] Tiket Bantuan Langsung',
+      description: 'Pengguna mengakses formulir tiket langsung dari menu bantuan aplikasi.',
+      category: 'general_inquiry',
+      isUrgent: false,
+      autoSubmit: false,
       user,
       role,
       fromUrl: typeof window !== 'undefined' ? window.location.href : '',
@@ -211,7 +239,7 @@ export function HelpdeskTicketModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150 overscroll-contain">
       <div
-        className="w-full max-w-lg max-h-[calc(100dvh-2rem)] flex flex-col bg-white border border-[#D0D7DE] rounded-2xl shadow-2xl animate-in zoom-in-95 duration-200 overflow-hidden"
+        className="w-full max-w-xl max-h-[calc(100dvh-2rem)] flex flex-col bg-white border border-[#D0D7DE] rounded-2xl shadow-2xl animate-in zoom-in-95 duration-200 overflow-hidden"
         role="dialog"
         aria-modal="true"
         aria-labelledby="helpdesk-modal-title"
@@ -292,6 +320,55 @@ export function HelpdeskTicketModal({
 
           {/* Form */}
           <form id="helpdesk-form" onSubmit={handleSubmit} className="space-y-4">
+            {/* Kategori Kendala */}
+            <div className="space-y-1.5">
+              <label className="block font-semibold text-[#0D1117]">
+                {isEn ? 'Issue Category' : 'Kategori Kendala'}
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {CATEGORIES.map((cat) => {
+                  const Icon = cat.icon;
+                  const isSelected = category === cat.id;
+                  return (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => setCategory(cat.id)}
+                      className={`p-2.5 rounded-xl border text-left flex flex-col items-start gap-1.5 transition-all cursor-pointer ${
+                        isSelected
+                          ? 'border-[#0D1117] bg-[#0D1117] text-white shadow-xs'
+                          : 'border-[#D0D7DE] bg-white hover:bg-[#F6F8FA] text-[#0D1117]'
+                      }`}
+                    >
+                      <Icon className={`w-4 h-4 ${isSelected ? 'text-amber-400' : 'text-[#57606A]'}`} />
+                      <span className="text-[11px] font-semibold leading-tight line-clamp-1">
+                        {isEn ? cat.labelEn : cat.labelId}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Subject (Optional / Auto) */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label htmlFor="subject-input" className="block font-semibold text-[#0D1117]">
+                  {isEn ? 'Subject / Summary' : 'Subjek / Judul Kendala'}
+                </label>
+                <span className="text-[10px] font-mono text-[#57606A]">Opsional (Otomatis)</span>
+              </div>
+              <input
+                id="subject-input"
+                type="text"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                placeholder={isEn ? 'Brief summary of issue (e.g., Timer stopped on column 5)' : 'Contoh: Timer Kraepelin macet di kolom 5'}
+                disabled={isSubmitting}
+                className="w-full px-3.5 py-2 rounded-xl border border-[#D0D7DE] focus:border-[#0D1117] focus:ring-1 focus:ring-[#0D1117] text-xs text-[#0D1117] placeholder:text-[#8C959F] outline-none transition-all disabled:opacity-50"
+              />
+            </div>
+
             {/* Keluhan / Complaint Field */}
             <div className="space-y-1.5">
               <label htmlFor="keluhan-input" className="block font-semibold text-[#0D1117]">
@@ -299,7 +376,7 @@ export function HelpdeskTicketModal({
               </label>
               <textarea
                 id="keluhan-input"
-                rows={4}
+                rows={3}
                 value={keluhan}
                 onChange={(e) => setKeluhan(e.target.value)}
                 placeholder={t.helpdesk.keluhanPlaceholder}
@@ -370,23 +447,51 @@ export function HelpdeskTicketModal({
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onClick={() => fileInputRef.current?.click()}
-                  className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all duration-150 ${
+                  className={`border-2 border-dashed rounded-xl p-3.5 text-center cursor-pointer transition-all duration-150 ${
                     isDragging
                       ? 'border-amber-500 bg-amber-50/50'
                       : 'border-[#D0D7DE] hover:border-[#0D1117] hover:bg-[#F6F8FA] bg-white'
                   }`}
                 >
-                  <div className="w-10 h-10 rounded-full bg-[#F6F8FA] border border-[#E1E4E8] text-[#57606A] flex items-center justify-center mx-auto mb-2">
-                    <Upload className="w-4 h-4 text-amber-600" />
+                  <div className="w-8 h-8 rounded-full bg-[#F6F8FA] border border-[#E1E4E8] text-[#57606A] flex items-center justify-center mx-auto mb-1.5">
+                    <Upload className="w-3.5 h-3.5 text-amber-600" />
                   </div>
                   <p className="font-medium text-[#0D1117] text-xs">
                     {t.helpdesk.photoDropzone}
                   </p>
-                  <p className="text-[11px] text-[#8C959F] mt-1 font-mono">
+                  <p className="text-[10px] text-[#8C959F] mt-0.5 font-mono">
                     Format: PNG, JPG, WEBP • Max 5MB
                   </p>
                 </div>
               )}
+            </div>
+
+            {/* Options: Urgent Priority & Auto Submit */}
+            <div className="p-3 bg-[#F6F8FA] border border-[#E1E4E8] rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={isUrgent}
+                  onChange={(e) => setIsUrgent(e.target.checked)}
+                  className="rounded border-[#D0D7DE] text-amber-600 focus:ring-amber-500 h-4 w-4"
+                />
+                <span className="text-xs font-semibold text-[#0D1117] flex items-center gap-1.5">
+                  <Flame className={`w-3.5 h-3.5 ${isUrgent ? 'text-red-500' : 'text-[#8C959F]'}`} />
+                  <span>{isEn ? 'Urgent Priority' : 'Tandai Mendesak (Urgent)'}</span>
+                </span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={autoSubmit}
+                  onChange={(e) => setAutoSubmit(e.target.checked)}
+                  className="rounded border-[#D0D7DE] text-[#0D1117] focus:ring-[#0D1117] h-4 w-4"
+                />
+                <span className="text-xs text-[#57606A]">
+                  {isEn ? 'Auto-submit on open (auto_submit=1)' : 'Auto-submit tiket langsung (auto_submit=1)'}
+                </span>
+              </label>
             </div>
           </form>
         </div>

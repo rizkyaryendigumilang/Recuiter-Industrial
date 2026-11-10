@@ -1,24 +1,39 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-// Import our TypeScript module via ts-node / node module or test the core logic
 test('Helpdesk VPS SSO Handoff Test Suite', async (suite) => {
   const HELPDESK_BASE = 'https://43.156.236.102/helpdesk/handoff';
   const APP_SLUG = 'recruiter';
 
   // Helper mirroring frontend/src/lib/helpdesk.ts logic
-  function buildHelpdeskUrl({ user, role, fromUrl, keluhan, photoUrl, subject }) {
-    let uid = user?.id || user?.email || 'tamu_test123';
-    let name = user?.name || user?.fullName || (user?.email ? user.email.split('@')[0] : 'Tamu / Pengguna');
-    let userRole = role || user?.role || 'Tamu';
+  function buildHelpdeskUrl({
+    user,
+    role,
+    fromUrl,
+    keluhan,
+    description,
+    photoUrl,
+    subject,
+    category = 'bug_error',
+    isUrgent = false,
+    priority,
+    autoSubmit = true,
+  }) {
+    let uid = user?.id || user?.username || user?.email || 'tamu_test123';
+    let name = user?.name || user?.username || user?.fullName || (user?.email ? user.email.split('@')[0] : 'Tamu / Pengguna');
+    let userRole = role || user?.role || 'Pengguna';
     let activeUrl = fromUrl || 'https://industrial.recruiter.test/candidate/practice';
 
-    let description = keluhan || '';
+    let descText = (description || keluhan || '').trim();
+    let finalDescription = descText;
     if (photoUrl) {
-      description += `\n\n--- LAMPIRAN BUKTI KENDALA ---\nFoto/Screenshot: ${photoUrl}`;
+      finalDescription += `\n\n--- LAMPIRAN BUKTI KENDALA ---\nFoto/Screenshot: ${photoUrl}`;
     }
 
-    let subj = subject || (keluhan ? `[${APP_SLUG}] Kendala: ${keluhan.slice(0, 50)}` : `[${APP_SLUG}] Tiket Bantuan`);
+    let subj = (subject || (descText ? `[${APP_SLUG}] Kendala: ${descText.slice(0, 50)}` : `[${APP_SLUG}] Tiket Bantuan`)).trim();
+
+    const finalPriority = priority || (isUrgent ? 'urgent' : 'medium');
+    const autoSubmitVal = autoSubmit !== false ? '1' : '0';
 
     const params = new URLSearchParams();
     params.set('app', APP_SLUG);
@@ -27,13 +42,20 @@ test('Helpdesk VPS SSO Handoff Test Suite', async (suite) => {
     params.set('role', userRole);
     params.set('from_url', activeUrl);
     params.set('new', '1');
+    params.set('auto_submit', autoSubmitVal);
+    params.set('subject', subj);
+    params.set('description', finalDescription);
+    params.set('category', category);
+    params.set('priority', finalPriority);
 
-    if (subj) params.set('subject', subj);
-    if (description) params.set('description', description);
     if (keluhan) params.set('keluhan', keluhan);
     if (photoUrl) params.set('photo_url', photoUrl);
 
     return `${HELPDESK_BASE}?${params.toString()}`;
+  }
+
+  function laporkanKendalaKeHelpdesk(options) {
+    return buildHelpdeskUrl(options);
   }
 
   await suite.test('Mandatory Parameters & SSO Handoff URL Format', () => {
@@ -60,8 +82,28 @@ test('Helpdesk VPS SSO Handoff Test Suite', async (suite) => {
     assert.equal(parsed.searchParams.get('role'), 'Candidate');
     assert.equal(parsed.searchParams.get('from_url'), 'https://industrial.recruiter.test/candidate/test/job-42');
     assert.equal(parsed.searchParams.get('new'), '1');
+    assert.equal(parsed.searchParams.get('auto_submit'), '1');
+    assert.equal(parsed.searchParams.get('category'), 'bug_error');
+    assert.equal(parsed.searchParams.get('priority'), 'medium');
     assert.equal(parsed.searchParams.get('keluhan'), 'Timer tes Kraepelin sempat berhenti saat tab berganti');
     assert.ok(parsed.searchParams.get('description').includes('Timer tes Kraepelin sempat berhenti'));
+  });
+
+  await suite.test('laporkanKendalaKeHelpdesk with Category and isUrgent = true', () => {
+    const targetUrl = laporkanKendalaKeHelpdesk({
+      subject: 'Gagal verifikasi pembayaran',
+      description: 'Transfer unik tidak terbaca di mutasi admin',
+      category: 'account_access',
+      isUrgent: true,
+      user: { id: 'usr_pay_1', name: 'Siti Rahma', role: 'Employer' },
+    });
+
+    const parsed = new URL(targetUrl);
+    assert.equal(parsed.searchParams.get('subject'), 'Gagal verifikasi pembayaran');
+    assert.equal(parsed.searchParams.get('description'), 'Transfer unik tidak terbaca di mutasi admin');
+    assert.equal(parsed.searchParams.get('category'), 'account_access');
+    assert.equal(parsed.searchParams.get('priority'), 'urgent');
+    assert.equal(parsed.searchParams.get('auto_submit'), '1');
   });
 
   await suite.test('Guest / Unauthenticated User Fallback Handling', () => {
@@ -76,7 +118,7 @@ test('Helpdesk VPS SSO Handoff Test Suite', async (suite) => {
     assert.equal(parsed.searchParams.get('app'), 'recruiter');
     assert.ok(parsed.searchParams.get('uid').startsWith('tamu_'));
     assert.equal(parsed.searchParams.get('name'), 'Tamu / Pengguna');
-    assert.equal(parsed.searchParams.get('role'), 'Tamu');
+    assert.equal(parsed.searchParams.get('role'), 'Pengguna');
     assert.equal(parsed.searchParams.get('new'), '1');
   });
 
