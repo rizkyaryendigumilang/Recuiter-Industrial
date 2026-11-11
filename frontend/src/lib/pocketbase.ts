@@ -88,6 +88,11 @@ export async function cachedPbGetFullList<T = RecordModel>(
     .collection(collectionName)
     .getFullList(options)
     .then((result) => {
+      // Bound cache size to prevent memory bloat during prolonged sessions
+      if (memoryCache.size >= 100) {
+        const oldestKey = memoryCache.keys().next().value;
+        if (oldestKey) memoryCache.delete(oldestKey);
+      }
       memoryCache.set(cacheKey, {
         data: result,
         expiresAt: Date.now() + ttlMs,

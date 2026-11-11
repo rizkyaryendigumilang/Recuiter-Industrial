@@ -1,5 +1,17 @@
 import { NextResponse } from 'next/server';
+import crypto from 'node:crypto';
 import { pb } from '@/lib/pocketbase';
+
+function safeCompare(a: string | null, b: string): boolean {
+  if (!a) return false;
+  try {
+    const bufA = Buffer.from(a);
+    const bufB = Buffer.from(b);
+    return bufA.length === bufB.length && crypto.timingSafeEqual(bufA, bufB);
+  } catch {
+    return false;
+  }
+}
 
 function formatICSDate(date: Date): string {
   return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
@@ -27,8 +39,12 @@ export async function GET(request: Request) {
   const token = searchParams.get('token');
   const authHeader = request.headers.get('authorization');
 
-  const isTokenValid = Boolean(token && token === VALID_CALENDAR_TOKEN);
-  const isAuthValid = Boolean(authHeader && (authHeader === `Bearer ${VALID_CALENDAR_TOKEN}` || authHeader.startsWith('Bearer ')));
+  const isTokenValid = safeCompare(token, VALID_CALENDAR_TOKEN);
+  const isAuthValid = Boolean(
+    authHeader &&
+      (safeCompare(authHeader, `Bearer ${VALID_CALENDAR_TOKEN}`) ||
+        (authHeader.startsWith('Bearer ') && safeCompare(authHeader.slice(7).trim(), VALID_CALENDAR_TOKEN)))
+  );
 
   if (!isTokenValid && !isAuthValid) {
     return NextResponse.json(
