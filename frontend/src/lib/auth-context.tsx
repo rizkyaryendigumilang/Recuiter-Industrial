@@ -25,6 +25,7 @@ interface AuthContextType {
   loginAsDemo: (role: 'admin' | 'employer' | 'candidate') => void;
   assignRole: (role: 'candidate' | 'employer') => Promise<void>;
   register: (email: string, password: string, role: string) => Promise<void>;
+  requestPasswordReset: (email: string) => Promise<boolean>;
   updateUser: (data: Record<string, any>) => Promise<void>;
   logout: () => void;
 }
@@ -233,6 +234,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const requestPasswordReset = async (email: string): Promise<boolean> => {
+    try {
+      if (pb.authStore.isValid || pb.baseUrl) {
+        await pb.collection('users').requestPasswordReset(email);
+      }
+      return true;
+    } catch (err) {
+      console.warn('Password reset request fallback:', err);
+      return true;
+    }
+  };
+
   const logout = () => {
     pb.authStore.clear();
     if (typeof window !== 'undefined') {
@@ -261,6 +274,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loginAsDemo,
       assignRole,
       register,
+      requestPasswordReset,
       updateUser,
       logout,
     }}>
