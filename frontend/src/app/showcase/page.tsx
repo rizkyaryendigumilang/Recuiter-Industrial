@@ -35,7 +35,9 @@ import {
   ArrowDown,
   Scissors,
   CheckCircle2,
+  PanelLeft,
 } from 'lucide-react';
+import { Sidebar } from '@/components/sidebar';
 
 // Dynamically import @remotion/player on client only
 const RemotionPlayer = dynamic(
@@ -60,6 +62,7 @@ export default function RemotionShowcasePage() {
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
   const [isWebZoomed, setIsWebZoomed] = useState<boolean>(true);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
+  const [showSorvoDemo, setShowSorvoDemo] = useState<boolean>(false);
   const [customCaption, setCustomCaption] = useState<string>(INSTAGRAM_CAPTION_COPY);
 
   const [copiedCaption, setCopiedCaption] = useState<boolean>(false);
@@ -200,6 +203,16 @@ export default function RemotionShowcasePage() {
           <div className="flex flex-wrap items-center gap-2.5">
             <Button
               type="button"
+              onClick={() => setShowSorvoDemo(!showSorvoDemo)}
+              className="rounded-lg text-xs font-semibold h-10 px-4 gap-2 bg-gradient-to-r from-rose-950/70 to-zinc-900 hover:from-rose-900/80 text-rose-200 border border-rose-500/30 cursor-pointer"
+            >
+              <PanelLeft className="w-4 h-4 text-rose-400" />
+              <span>{showSorvoDemo ? 'Tutup Sorvo Sidebar' : 'Demo Sorvo Sidebar'}</span>
+              <kbd className="text-[10px] font-mono bg-rose-500/20 text-rose-300 px-1.5 py-0.5 rounded border border-rose-500/30">[</kbd>
+            </Button>
+
+            <Button
+              type="button"
               onClick={() => setIsEditMode(!isEditMode)}
               className="rounded-lg text-xs font-semibold h-10 px-4 gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-700 cursor-pointer"
             >
@@ -230,6 +243,27 @@ export default function RemotionShowcasePage() {
             </a>
           </div>
         </div>
+
+        {/* SORVO COLLAPSIBLE SIDEBAR INTERACTIVE DEMO */}
+        {showSorvoDemo && (
+          <section className="bg-[#0D1017] border border-rose-500/30 rounded-2xl overflow-hidden relative shadow-2xl p-4 sm:p-6 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/10">
+              <div className="flex items-center gap-3">
+                <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse" />
+                <h3 className="text-base font-bold text-white flex items-center gap-2">
+                  <span>Sorvo Collapsible Sidebar Motion &amp; Glassmorphism Engine</span>
+                </h3>
+              </div>
+              <p className="text-xs text-zinc-400">
+                Tekan tombol <kbd className="px-1.5 py-0.5 rounded bg-white/10 text-white font-mono text-[11px]">[</kbd> di keyboard atau klik tombol panel untuk melihat flip icon &amp; badge morphing.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-white/10 overflow-hidden min-h-[520px] relative bg-[#0D1017]">
+              <Sidebar isContained />
+            </div>
+          </section>
+        )}
 
         {/* CONCAT DESKTOP EDITOR BANNER */}
         <section className="bg-[#121215] border border-zinc-800 rounded-xl p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-6">

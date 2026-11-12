@@ -1,0 +1,350 @@
+/* ===================================================
+   VARIABLES & DESIGN TOKENS (Sorvo Motion & Glass)
+   =================================================== */
+:root {
+  --side: 256px;          /* Lebar saat terbuka */
+  --rail: 80px;           /* Lebar saat collapse */
+  --ease-fluid: cubic-bezier(0.16, 1, 0.3, 1); /* Apple / GSAP Expo Out */
+  --glass-bg: rgba(22, 25, 33, 0.78);
+  --glass-rim: rgba(255, 255, 255, 0.12);
+  --glass-rim-low: rgba(255, 255, 255, 0.04);
+  --accent: #ff4766;
+  --accent-soft: rgba(255, 71, 102, 0.18);
+  --ink: #f5f7fa;
+  --muted: #838d9e;
+  --line: rgba(255, 255, 255, 0.08);
+}
+
+/* ===================================================
+   LAYOUT CONTAINER
+   =================================================== */
+.layout-wrap {
+  display: flex;
+  min-height: 100vh;
+  background-color: #0d1017;
+  color: var(--ink);
+  font-family: var(--font-noto-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  position: relative;
+  width: 100%;
+}
+
+/* Area Konten Utama */
+.col {
+  flex: 1;
+  padding: 32px 32px 32px calc(var(--side) + 32px);
+  transition: padding-left 0.5s var(--ease-fluid);
+  min-width: 0;
+}
+
+.layout-wrap.is-rail .col {
+  padding-left: calc(var(--rail) + 32px);
+}
+
+/* Scoped Container Mode (for previews, modals, and embedded tabs) */
+.layout-wrap.is-contained {
+  min-height: 520px;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.layout-wrap.is-contained .side {
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
+  left: 16px;
+}
+
+/* ===================================================
+   GLASSMORPHISM CORE (Khas Sorvo)
+   =================================================== */
+.glass {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(16px) saturate(170%);
+  backdrop-filter: blur(16px) saturate(170%);
+  border-radius: 24px;
+  box-shadow: 
+    inset 0 1px 0 var(--glass-rim),
+    inset 0 0 0 1px var(--glass-rim-low),
+    0 18px 40px -20px rgba(0, 0, 0, 0.6);
+  position: relative;
+}
+
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.1), transparent 42%);
+}
+
+/* ===================================================
+   SIDEBAR ASIDE
+   =================================================== */
+.side {
+  position: fixed;
+  top: 16px;
+  bottom: 16px;
+  left: 16px;
+  width: var(--side);
+  padding: 16px 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 40;
+  overflow: hidden;
+  /* Transisi lebar yang sangat mulus */
+  transition: width 0.52s var(--ease-fluid);
+}
+
+/* KETIKA COLLAPSE (RAIL MODE) */
+.layout-wrap.is-rail .side {
+  width: var(--rail);
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+/* ===================================================
+   HEADER & COLLAPSE BUTTON
+   =================================================== */
+.side__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 4px 8px;
+  gap: 8px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.mark {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.brand__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  white-space: nowrap;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.brand__text b {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.brand__text small {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* TOMBOL COLLAPSE */
+.collapse-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.collapse-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.collapse-btn svg {
+  width: 18px;
+  height: 18px;
+  /* Icon membalik saat collapsed */
+  transition: transform 0.45s var(--ease-fluid);
+}
+
+/* ICON FLIP: Ketika rail mode aktif, icon berbalik arah */
+.layout-wrap.is-rail .collapse-btn svg {
+  transform: scaleX(-1);
+}
+
+/* Sembunyikan text saat collapse */
+.layout-wrap.is-rail .brand__text,
+.layout-wrap.is-rail .side__group,
+.layout-wrap.is-rail .snav__label,
+.layout-wrap.is-rail .side__me-text {
+  opacity: 0;
+  transform: translateX(-10px);
+  pointer-events: none;
+  position: absolute;
+}
+
+/* ===================================================
+   NAVIGATION ITEMS & ACTIVE INDICATOR
+   =================================================== */
+.snav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.side__group {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 8px 12px 4px;
+  transition: opacity 0.2s ease;
+}
+
+.snav__item {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 12px;
+  gap: 12px;
+  border-radius: 14px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s ease, background 0.2s ease;
+  white-space: nowrap;
+}
+
+.snav__item:hover {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Item Aktif */
+.snav__item.is-active {
+  color: #fff;
+  background: var(--accent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.snav__item .ico {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.layout-wrap.is-rail .snav__item {
+  justify-content: center;
+  padding: 0;
+}
+
+/* ===================================================
+   BADGE COUNTER & MORPHING TO DOT
+   =================================================== */
+.snav__count {
+  margin-left: auto;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 99px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: inline-grid;
+  place-items: center;
+  transition: all 0.35s var(--ease-fluid);
+}
+
+.snav__item.is-active .snav__count {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+/* MORPHING TO DOT: Ketika collapsed, badge berubah jadi dot kecil di pojok icon */
+.layout-wrap.is-rail .snav__count {
+  position: absolute;
+  top: 8px;
+  right: 14px;
+  min-width: 8px;
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  font-size: 0;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 2px var(--glass-bg);
+}
+
+/* ===================================================
+   FOOTER PROFILE
+   =================================================== */
+.side__me {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 0 0 1px var(--line);
+  overflow: hidden;
+  transition: padding 0.3s ease;
+}
+
+.layout-wrap.is-rail .side__me {
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.side__me-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: #3b82f6;
+  color: #fff;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.side__me-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.side__me-text b {
+  font-size: 0.88rem;
+}
+
+.side__me-text small {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.demo-content-card {
+  padding: 24px;
+  max-width: 600px;
+}

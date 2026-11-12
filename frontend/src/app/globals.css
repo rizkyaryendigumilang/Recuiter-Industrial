@@ -271,4 +271,37 @@
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.02em;
   }
+
+  /* Sorvo Fluid Motion & Glass Primitives */
+  .sorvo-flip {
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .sorvo-flipped {
+    transform: scaleX(-1);
+  }
+
+  .sorvo-text-fade {
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  .sorvo-text-hidden {
+    opacity: 0;
+    transform: translateX(-10px);
+    pointer-events: none;
+    position: absolute;
+  }
+
+  .sorvo-badge-morph {
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .sorvo-badge-dot {
+    position: absolute;
+    top: 8px;
+    right: 14px;
+    min-width: 8px;
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    font-size: 0;
+    border-radius: 50%;
+  }
 }
