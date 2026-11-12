@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Roboto, Roboto_Mono } from "next/font/google";
+import { Noto_Sans, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { AuthProvider } from "@/lib/auth-context";
@@ -8,10 +8,9 @@ import { HelpdeskProvider } from "@/components/helpdesk/helpdesk-provider";
 import { SiteFooter } from "@/components/site-footer";
 import { PwaRegistrar } from "@/components/pwa-registrar";
 
-const roboto = Roboto({
-  weight: ["300", "400", "500", "700", "900"],
+const notoSans = Noto_Sans({
   subsets: ["latin"],
-  variable: "--font-roboto",
+  variable: "--font-noto-sans",
   display: "swap",
 });
 
@@ -60,8 +59,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="id"
-      className={`${roboto.variable} ${robotoMono.variable} h-full antialiased`}
+      className={`${notoSans.variable} ${robotoMono.variable} h-full antialiased`}
     >
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body className="min-h-full flex flex-col bg-background text-foreground overflow-x-clip">
         <LanguageProvider>
           <AuthProvider>

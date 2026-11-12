@@ -556,7 +556,7 @@ export const ShowcaseSlideScene: React.FC<{
       style={{
         backgroundColor: bgColor,
         color: textPrimary,
-        fontFamily: 'Geist, Inter, system-ui, -apple-system, sans-serif',
+        fontFamily: '"Noto Sans", Geist, Inter, system-ui, -apple-system, sans-serif',
         padding: is9x16 ? '56px 52px' : is1x1 ? '36px 46px' : '46px 52px',
         display: 'flex',
         flexDirection: 'column',
