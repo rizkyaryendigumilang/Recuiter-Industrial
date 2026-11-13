@@ -74,9 +74,9 @@ onRecordCreateRequest((e) => {
     // Jika mencoba mendaftar sebagai admin tanpa otorisasi admin yang sah
     if (role === "admin" && !isAdmin) {
         e.record.set("role", "candidate");
-    } else if (!role) {
-        e.record.set("role", "candidate");
     }
+    // Catatan: Jika role belum diisi (misal pendaftaran OAuth Google/GitHub atau Telegram baru),
+    // biarkan role kosong agar client dapat menampilkan dialog pemilihan peran (RoleSelectionDialog).
     e.next();
 }, "users");
 

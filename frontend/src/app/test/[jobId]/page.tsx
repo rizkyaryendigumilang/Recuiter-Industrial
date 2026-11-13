@@ -260,25 +260,33 @@ export function PsychTestContent() {
     };
 
     try {
-      // 1. Try finding application in PocketBase
+      // 1. Try finding application in PocketBase for the authenticated candidate
       let applicationId = '';
-      try {
-        if (pb.authStore.record?.id) {
+      if (pb.authStore.record?.id) {
+        try {
+          const myApp = await pb.collection('job_applications').getFirstListItem(
+            `job_id = "${jobId}" && candidate_id.user_id = "${pb.authStore.record.id}"`
+          );
+          applicationId = myApp.id;
+        } catch {
+          // If no prior application exists for this user, attempt safe auto-creation
           try {
-            const myApp = await pb.collection('job_applications').getFirstListItem(
-              `job_id = "${jobId}" && candidate_id.user_id = "${pb.authStore.record.id}"`
+            const candRecord = await pb.collection('candidates').getFirstListItem(
+              `user_id = "${pb.authStore.record.id}"`
             );
-            applicationId = myApp.id;
+            const createdApp = await pb.collection('job_applications').create({
+              job_id: jobId,
+              candidate_id: candRecord.id,
+              consent_given: true,
+              status: nextStatus,
+              test_score: penalizedScore,
+              psychometric_details: psychDetails,
+            });
+            applicationId = createdApp.id;
           } catch {
-            const anyApp = await pb.collection('job_applications').getFirstListItem(`job_id = "${jobId}"`);
-            applicationId = anyApp.id;
+            applicationId = '';
           }
-        } else {
-          const anyApp = await pb.collection('job_applications').getFirstListItem(`job_id = "${jobId}"`);
-          applicationId = anyApp.id;
         }
-      } catch {
-        applicationId = '';
       }
 
       // Check network status: if offline, store to offline queue immediately

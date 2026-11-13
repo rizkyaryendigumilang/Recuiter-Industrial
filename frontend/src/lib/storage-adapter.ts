@@ -36,17 +36,31 @@ export async function saveUploadedFile(
       const endpoint = process.env.S3_ENDPOINT!.replace(/\/+$/, '');
       const s3Path = `${folder}/${filename}`;
 
-      // In production with R2 / S3, PUT to S3 endpoint or use pre-signed PUT
+      // In production with R2 / S3, PUT binary buffer to S3/R2 endpoint
       const publicBaseUrl = process.env.S3_PUBLIC_URL || `${endpoint}/${bucket}`;
       const fileUrl = `${publicBaseUrl}/${s3Path}`;
+      const targetUploadUrl = `${endpoint}/${bucket}/${s3Path}`;
 
-      return {
-        success: true,
-        provider: 's3',
-        filename,
-        url: fileUrl,
-        path: s3Path,
-      };
+      const s3Response = await fetch(targetUploadUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': mimeType,
+          'Content-Length': String(buffer.length),
+        },
+        body: new Uint8Array(buffer),
+      });
+
+      if (s3Response.ok) {
+        return {
+          success: true,
+          provider: 's3',
+          filename,
+          url: fileUrl,
+          path: s3Path,
+        };
+      } else {
+        console.warn(`[Storage] S3 upload returned HTTP ${s3Response.status}, falling back to local disk:`, await s3Response.text().catch(() => ''));
+      }
     } catch (err: any) {
       console.warn('[Storage] S3 upload failed, falling back to local disk storage:', err);
     }

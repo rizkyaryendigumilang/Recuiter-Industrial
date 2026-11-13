@@ -104,6 +104,23 @@ export async function flushOfflineAssessments(): Promise<{ syncedCount: number; 
         } catch (err) {
           console.warn('[OfflineQueue] Direct PB update retry failed:', err);
         }
+      } else if (!isSuccess && !item.applicationId && item.jobId && pb.authStore.record?.id) {
+        // Safe auto-creation jika saat pengerjaan offline record lamaran belum sempat dibuat
+        try {
+          const cand = await pb.collection('candidates').getFirstListItem(`user_id = "${pb.authStore.record.id}"`);
+          const created = await pb.collection('job_applications').create({
+            job_id: item.jobId,
+            candidate_id: cand.id,
+            consent_given: true,
+            status: item.testScore >= 70 ? 'interview' : 'testing',
+            test_score: item.testScore,
+            psychometric_details: item.psychometricDetails,
+          });
+          item.applicationId = created.id;
+          isSuccess = true;
+        } catch (createErr) {
+          console.warn('[OfflineQueue] Auto-create application during offline sync failed:', createErr);
+        }
       }
 
       if (isSuccess) {

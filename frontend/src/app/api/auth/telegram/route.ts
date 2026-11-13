@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     }
 
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
-    const isDevOrTest = process.env.NODE_ENV !== 'production' || !botToken;
+    const isDevOrTest = process.env.NODE_ENV === 'test' || (process.env.NODE_ENV === 'development' && !botToken);
 
     // Jika botToken terisi, lakukan verifikasi kriptografi HMAC-SHA256
     if (botToken) {

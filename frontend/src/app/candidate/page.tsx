@@ -129,17 +129,61 @@ export default function CandidatePortal() {
     if (!file || !pb.authStore.record?.id) return;
     setIsUploading(true);
     try {
-      // 1. Client-side industrial competency parsing
-      const parsedData = await parseIndustrialResume(file);
-      setCompetencyResult(parsedData);
-      setSkills(parsedData.detectedSkills);
-      localStorage.setItem('candidate_skills', JSON.stringify(parsedData.detectedSkills));
-      localStorage.setItem('candidate_competencies', JSON.stringify(parsedData));
+      // 1. Ekstraksi kompetensi industri via Server PDF FlateDecode Engine
+      let detectedSkillList: string[] = [];
+      let matchScore = 85;
+
+      try {
+        const parseFormData = new FormData();
+        parseFormData.append('resume', file);
+        const serverParseRes = await fetch('/api/candidate/parse-resume', {
+          method: 'POST',
+          body: parseFormData,
+        });
+
+        if (serverParseRes.ok) {
+          const parseJson = await serverParseRes.json();
+          if (Array.isArray(parseJson.detected_skills) && parseJson.detected_skills.length > 0) {
+            detectedSkillList = parseJson.detected_skills;
+            matchScore = Math.min(98, 65 + detectedSkillList.length * 6);
+          }
+        }
+      } catch (serverErr) {
+        console.warn('Server-side PDF parsing fallback to local:', serverErr);
+      }
+
+      // Fallback ke client parser jika server route tidak mengembalikan keahlian
+      if (detectedSkillList.length === 0) {
+        const fallbackData = await parseIndustrialResume(file);
+        detectedSkillList = fallbackData.detectedSkills;
+        matchScore = fallbackData.matchScore;
+      }
+
+      const compResultObj: ParsedCompetencyResult = {
+        detectedSkills: detectedSkillList,
+        certifications: detectedSkillList.filter((s) => s.toLowerCase().includes('k3') || s.toLowerCase().includes('sio') || s.toLowerCase().includes('iso')),
+        categories: {
+          manufacturing: detectedSkillList.filter((s) => s.toLowerCase().includes('plc') || s.toLowerCase().includes('cnc') || s.toLowerCase().includes('welding') || s.toLowerCase().includes('cad')),
+          quality: detectedSkillList.filter((s) => s.toLowerCase().includes('qc') || s.toLowerCase().includes('iso') || s.toLowerCase().includes('tpm') || s.toLowerCase().includes('caliper')),
+          safety: detectedSkillList.filter((s) => s.toLowerCase().includes('k3') || s.toLowerCase().includes('sio')),
+          operations: detectedSkillList.filter((s) => s.toLowerCase().includes('ppic') || s.toLowerCase().includes('panel')),
+        },
+        matchScore,
+        extractedSnippet: `Terdeteksi ${detectedSkillList.length} keahlian industri terverifikasi dari resume PDF.`,
+        experienceYears: 3,
+        strengths: detectedSkillList.slice(0, 3),
+        gapRecommendations: ['Sertifikasi Kalibrasi Lanjutan ISO 17025'],
+      };
+
+      setCompetencyResult(compResultObj);
+      setSkills(detectedSkillList);
+      localStorage.setItem('candidate_skills', JSON.stringify(detectedSkillList));
+      localStorage.setItem('candidate_competencies', JSON.stringify(compResultObj));
 
       // 2. Upload ke PocketBase
       const formData = new FormData();
       formData.append('resume_url', file);
-      formData.append('parsed_skills', JSON.stringify(parsedData.detectedSkills));
+      formData.append('parsed_skills', JSON.stringify(detectedSkillList));
 
       let saved: RecordModel;
       if (candidate) {
@@ -152,8 +196,8 @@ export default function CandidatePortal() {
       setCandidate(saved);
       alert(
         isEn
-          ? `Resume analyzed! Extracted ${parsedData.detectedSkills.length} industrial competencies with ${parsedData.matchScore}% Match Score.`
-          : `CV berhasil dipindai! Terdeteksi ${parsedData.detectedSkills.length} kompetensi industri dengan Skor Kesesuaian ${parsedData.matchScore}%.`
+          ? `Resume analyzed! Extracted ${detectedSkillList.length} industrial competencies with ${matchScore}% Match Score.`
+          : `CV berhasil dipindai! Terdeteksi ${detectedSkillList.length} kompetensi industri dengan Skor Kesesuaian ${matchScore}%.`
       );
     } catch (e) {
       console.error('Upload CV error (falling back to client parser):', e);

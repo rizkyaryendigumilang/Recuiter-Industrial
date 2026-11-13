@@ -142,9 +142,8 @@ export default function EmployerDashboard() {
           setJobs(myJobs);
 
           if (myJobs.length > 0) {
-            const jobIds = myJobs.map((j) => `job_id = "${j.id}"`).join(' || ');
             const apps = await pb.collection('job_applications').getFullList({
-              filter: jobIds,
+              filter: `job_id.employer_id = "${empRecord.id}"`,
               expand: 'job_id,candidate_id.user_id',
               sort: '-created',
             });
