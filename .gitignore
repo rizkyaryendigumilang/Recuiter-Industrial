@@ -63,3 +63,7 @@ frontend/public/showcase/instagram-*/
 
 # Auxiliary / Ticket CRM
 vps-ticket-crm/
+
+# Uploads
+public/uploads/
+frontend/public/uploads/

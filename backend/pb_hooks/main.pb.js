@@ -27,6 +27,41 @@ const logSystem = (level, message, data) => {
 };
 
 // ---------------------------------------------------------------------------
+// Immutable Audit Trail Helper
+// ---------------------------------------------------------------------------
+const recordAuditLog = (actorId, actorRole, actionType, targetCollection, targetId, prevState, newState, ip) => {
+    try {
+        if (typeof $app === "undefined") return;
+        const auditColl = $app.findCollectionByNameOrId("audit_logs");
+        if (!auditColl) return;
+
+        const auditRecord = new Record(auditColl);
+        auditRecord.set("actor_id", actorId || "system");
+        auditRecord.set("actor_role", actorRole || "system");
+        auditRecord.set("action_type", actionType);
+        auditRecord.set("target_collection", targetCollection);
+        auditRecord.set("target_id", targetId);
+        auditRecord.set("previous_state", prevState || {});
+        auditRecord.set("new_state", newState || {});
+        auditRecord.set("ip_address", ip || "127.0.0.1");
+        $app.save(auditRecord);
+    } catch (err) {
+        logSystem("warn", "[audit_logs] Failed to record audit log", err);
+    }
+};
+
+// ---------------------------------------------------------------------------
+// Database Performance & Concurrency Initialization (SQLite WAL)
+// ---------------------------------------------------------------------------
+try {
+    if (typeof $app !== "undefined" && $app.db) {
+        $app.db().newQuery("PRAGMA journal_mode = WAL;").execute();
+        $app.db().newQuery("PRAGMA busy_timeout = 5000;").execute();
+        $app.db().newQuery("PRAGMA synchronous = NORMAL;").execute();
+    }
+} catch (_) {}
+
+// ---------------------------------------------------------------------------
 // 0. User Security & Privilege Escalation Guard (CRITICAL FIX)
 //    Mencegah pendaftaran mandiri atau update profil yang menetapkan role 'admin'
 //    tanpa otorisasi administrator.
@@ -148,6 +183,21 @@ onRecordUpdateRequest((e) => {
                 e.record.set("payment_status", "pending");
             }
         }
+    } else {
+        // Admin update: Catat audit log permanen jika status pembayaran diubah
+        const orig = e.record.originalCopy ? e.record.originalCopy() : null;
+        if (orig && orig.get("payment_status") !== e.record.get("payment_status")) {
+            recordAuditLog(
+                auth ? auth.id : "admin_system",
+                "admin",
+                "PAYMENT_STATUS_CHANGE",
+                "consultation_bookings",
+                e.record.id,
+                { payment_status: orig.get("payment_status") },
+                { payment_status: e.record.get("payment_status") },
+                e.requestInfo ? (e.requestInfo().remoteIp || "127.0.0.1") : "127.0.0.1"
+            );
+        }
     }
 
     e.next();
@@ -190,6 +240,37 @@ onRecordUpdateRequest((e) => {
         }
     }
 
+    e.next();
+}, "job_applications");
+
+// Asynchronous Event Dispatcher: Notifikasi otomatis saat status lamaran berubah
+onRecordAfterUpdateRequest((e) => {
+    try {
+        const orig = e.record.originalCopy ? e.record.originalCopy() : null;
+        const oldStatus = orig ? orig.get("status") : null;
+        const newStatus = e.record.get("status");
+
+        if (oldStatus && oldStatus !== newStatus && (newStatus === "interview" || newStatus === "hired")) {
+            logSystem("info", "[event-dispatcher] Trigger status transition event", {
+                applicationId: e.record.id,
+                oldStatus: oldStatus,
+                newStatus: newStatus
+            });
+
+            recordAuditLog(
+                "system_event_dispatcher",
+                "system",
+                "APPLICATION_STATUS_TRANSITION",
+                "job_applications",
+                e.record.id,
+                { status: oldStatus },
+                { status: newStatus },
+                "127.0.0.1"
+            );
+        }
+    } catch (err) {
+        logSystem("warn", "[event-dispatcher] Error processing post-update notification", err);
+    }
     e.next();
 }, "job_applications");
 

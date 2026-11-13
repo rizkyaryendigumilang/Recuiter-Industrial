@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'node:crypto';
+import { checkRateLimit, getClientIp } from '@/lib/rate-limiter';
 
 // Verifikasi hash Telegram sesuai dokumentasi resmi Telegram Login Widget:
 // https://core.telegram.org/widgets/login#checking-authorization
@@ -32,6 +33,21 @@ function verifyTelegramAuth(data: Record<string, any>, botToken: string): boolea
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate limit: max 10 auth requests per 5 minutes per IP
+    const clientIp = getClientIp(req);
+    const rateCheck = checkRateLimit(`telegram_auth:${clientIp}`, 10, 5 * 60 * 1000);
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        { error: `Terlalu banyak percobaan autentikasi. Harap tunggu ${rateCheck.retryAfterSeconds} detik lagi.` },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': String(rateCheck.retryAfterSeconds),
+          },
+        }
+      );
+    }
+
     const body = await req.json();
     const { id, first_name, username, photo_url, auth_date, hash } = body;
 

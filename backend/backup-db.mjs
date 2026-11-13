@@ -11,6 +11,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { encryptBackupBuffer, generateBackupManifest } from './backup-crypto.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -97,6 +98,24 @@ function performBackup() {
       console.log(`  - Skipped (not found): ${item}`);
     }
   }
+
+  // Generate cryptographic manifest for backup audit verification
+  const encKey = process.env.BACKUP_ENCRYPTION_KEY || (process.argv.includes('--encrypt') ? 'default_vault_secret' : null);
+  const dataDbPath = path.join(targetDir, 'data.db');
+  let dataBytes = Buffer.from([]);
+  if (fs.existsSync(dataDbPath)) {
+    dataBytes = fs.readFileSync(dataDbPath);
+  }
+
+  if (encKey && fs.existsSync(dataDbPath)) {
+    const encryptedData = encryptBackupBuffer(dataBytes, encKey);
+    fs.writeFileSync(`${dataDbPath}.enc`, encryptedData);
+    console.log(`  + Created AES-256-GCM encrypted database snapshot: data.db.enc`);
+  }
+
+  const manifest = generateBackupManifest(`backup_${timestamp}`, dataBytes, Boolean(encKey));
+  fs.writeFileSync(path.join(targetDir, 'backup_manifest.json'), JSON.stringify(manifest, null, 2));
+  console.log(`  + Generated cryptographic manifest: backup_manifest.json (SHA-256: ${manifest.sha256_checksum.slice(0, 16)}...)`);
 
   const totalBackupSize = calculateDirSize(targetDir);
   console.log(`\n[SUCCESS] Backup completed! Total snapshot size: ${formatBytes(totalBackupSize)}`);
