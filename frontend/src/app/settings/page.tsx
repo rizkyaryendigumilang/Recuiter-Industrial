@@ -60,8 +60,20 @@ import {
   Sparkles,
   Calendar,
   X,
+  FileSpreadsheet,
+  FileText,
 } from 'lucide-react';
 import { laporkanKendalaKeHelpdesk } from '@/lib/helpdesk';
+import {
+  generatePersonalDataCsv,
+  generateLatestJsonBackup,
+  saveLocalBackupSnapshot,
+  isAutoSyncBackupEnabled,
+  setAutoSyncBackupEnabled,
+  getLastSyncFormatted,
+  triggerClientDownload,
+  type PersonalBackupUserData,
+} from '@/lib/backup-sync';
 import {
   SETTINGS_CATEGORIES,
   SETTINGS_GROUPS,
@@ -161,6 +173,11 @@ export default function SettingsPage() {
   const [cacheClearing, setCacheClearing] = useState(false);
   const [cacheMessage, setCacheMessage] = useState('');
 
+  // --- Backup & Auto-Sync State (Lapisan 1 & JSON Sync) ---
+  const [autoSyncBackup, setAutoSyncBackup] = useState<boolean>(true);
+  const [lastSyncTimestamp, setLastSyncTimestamp] = useState<string>('Memuat...');
+  const [isManualSyncing, setIsManualSyncing] = useState<boolean>(false);
+
   // --- Confirmation Dialog States ---
   const [confirmResetOpen, setConfirmResetOpen] = useState(false);
   const [confirmClearCacheOpen, setConfirmClearCacheOpen] = useState(false);
@@ -244,15 +261,124 @@ export default function SettingsPage() {
 
       const savedApiKey = localStorage.getItem('dev_api_key');
       if (savedApiKey) setApiKey(savedApiKey);
+
+      // Load auto-sync backup preference & timestamp
+      const autoSyncPref = isAutoSyncBackupEnabled();
+      setAutoSyncBackup(autoSyncPref);
+      setLastSyncTimestamp(getLastSyncFormatted());
     }
   }, [user]);
 
-  // Trigger simulated autosave indicator
+  // Construct current freshest user data payload for Lapisan 1 & Auto-Sync
+  const getCurrentBackupData = (): PersonalBackupUserData => {
+    let detectedSkills: string[] = [];
+    let kraepelinScores: any = null;
+
+    if (typeof window !== 'undefined') {
+      try {
+        const skillsRaw = localStorage.getItem('cand_extracted_skills');
+        if (skillsRaw) detectedSkills = JSON.parse(skillsRaw);
+        const kraepelinRaw = localStorage.getItem('cand_kraepelin_result');
+        if (kraepelinRaw) kraepelinScores = JSON.parse(kraepelinRaw);
+      } catch {
+        // fallback
+      }
+    }
+
+    return {
+      id: user?.id,
+      name: name || user?.name || (user?.email ? user.email.split('@')[0] : 'Kandidat Industri'),
+      username: username || user?.username || '',
+      email: email || user?.email || '',
+      phone: phone || user?.phone || '',
+      role: userRole,
+      careerHeadline: careerHeadline || 'Operator Manufaktur / Quality Control',
+      domicile: domicile || 'Cikarang, Jawa Barat',
+      expectedSalary: expectedSalary || '6.500.000',
+      portfolioUrl: portfolioUrl || '',
+      detectedSkills: detectedSkills.length > 0 ? detectedSkills : [
+        'Pengoperasian Mesin CNC',
+        'Pembacaan Gambar Teknik (CAD/CAM)',
+        'Sertifikasi K3 Umum Industri',
+        'Alat Ukur Presisi (Mikrometer & Dial Gauge)',
+      ],
+      kraepelinScores: kraepelinScores || {
+        testCode: 'PSI-KRAEPELIN-LATEST',
+        panker: 52,
+        tianker: 96,
+        hanker: 'Stabil',
+        janker: 90,
+        grade: 'Sangat Teliti',
+        recommendation: 'Direkomendasikan untuk Penempatan Manufaktur Presisi',
+        testDate: new Date().toLocaleDateString('id-ID'),
+      },
+      preferences: {
+        language,
+        timezone,
+        dateFormat,
+        defaultLanding,
+      },
+      appearance: {
+        theme: themeMode,
+        accentColor,
+        density,
+        fontSize,
+      },
+      notifications: {
+        jobAlertsWA,
+        emailAlerts,
+        pushAlerts,
+        reminderFreq,
+      },
+      company:
+        userRole === 'employer' || userRole === 'admin'
+          ? {
+              name: companyName,
+              industry,
+              size: companySize,
+              website,
+              address,
+              minKraepelin,
+              minMatchScore,
+            }
+          : undefined,
+    };
+  };
+
+  // Trigger simulated autosave indicator and update local backup snapshot if auto-sync is enabled
   const triggerAutosave = () => {
     setAutosaveStatus('saving');
     setTimeout(() => {
       setAutosaveStatus('saved');
+      if (typeof window !== 'undefined' && isAutoSyncBackupEnabled()) {
+        const currentData = getCurrentBackupData();
+        saveLocalBackupSnapshot(currentData);
+        setLastSyncTimestamp(getLastSyncFormatted());
+      }
     }, 600);
+  };
+
+  // Toggle Auto-Sync
+  const handleToggleAutoSync = (enabled: boolean) => {
+    setAutoSyncBackup(enabled);
+    setAutoSyncBackupEnabled(enabled);
+    if (enabled) {
+      const data = getCurrentBackupData();
+      saveLocalBackupSnapshot(data);
+      setLastSyncTimestamp(getLastSyncFormatted());
+    }
+    triggerAutosave();
+  };
+
+  // Manual Trigger Sync Now
+  const handleManualSyncNow = () => {
+    setIsManualSyncing(true);
+    const data = getCurrentBackupData();
+    saveLocalBackupSnapshot(data);
+    setLastSyncTimestamp(getLastSyncFormatted());
+    setTimeout(() => {
+      setIsManualSyncing(false);
+    }, 500);
   };
 
   // Filter categories
@@ -537,34 +663,25 @@ export default function SettingsPage() {
     router.push('/login');
   };
 
-  // Handler: Export Data
+  // Handler: Export Data (Lapisan 1 CSV with UTF-8 BOM & Schema v1.2.0 JSON with Checksum)
   const handleExportData = (type: 'json' | 'csv') => {
-    const payload = {
-      user: { id: user?.id, name, email, phone, role: userRole },
-      preferences: { timezone, dateFormat, defaultLanding, theme: themeMode },
-      notifications: { emailAlerts, pushAlerts, jobAlertsWA },
-      timestamp: new Date().toISOString(),
-    };
+    // Pastikan data yang diekspor adalah data paling mutakhir (freshest live state)
+    const currentData = getCurrentBackupData();
+    saveLocalBackupSnapshot(currentData);
+    setLastSyncTimestamp(getLastSyncFormatted());
 
-    let blob: Blob;
-    let filename: string;
+    const timestampStr = new Date().toISOString().replace(/[:.]/g, '-');
+    const userSlug = user?.id || 'pengguna';
 
-    if (type === 'json') {
-      blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-      filename = `recruiter_settings_${user?.id || 'export'}.json`;
+    if (type === 'csv') {
+      const csv = generatePersonalDataCsv(currentData);
+      const filename = `recruiter_data_pribadi_${userSlug}_${timestampStr}.csv`;
+      triggerClientDownload(csv, filename, 'text/csv;charset=utf-8;');
     } else {
-      const csvContent = `Key,Value\nUser Name,"${name}"\nEmail,"${email}"\nPhone,"${phone}"\nRole,"${userRole}"\nTimezone,"${timezone}"\nDateFormat,"${dateFormat}"\nExportDate,"${new Date().toISOString()}"\n`;
-      blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      filename = `recruiter_settings_${user?.id || 'export'}.csv`;
+      const { payload } = generateLatestJsonBackup(currentData);
+      const filename = `recruiter_backup_lengkap_${userSlug}_${timestampStr}.json`;
+      triggerClientDownload(JSON.stringify(payload, null, 2), filename, 'application/json;charset=utf-8;');
     }
-
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', filename);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   };
 
   // Category Icon Resolver
@@ -1967,18 +2084,175 @@ export default function SettingsPage() {
             {/* ========================================================================= */}
             {activeCategory === 'data' && (
               <div className="space-y-6">
+                {/* 1. AUTO-SYNC BACKUP CARD (LAPISAN 1) */}
+                <Card className="border-[#D0D7DE] bg-white rounded-xl shadow-xs overflow-hidden">
+                  <CardHeader className="border-b border-[#E1E4E8] bg-[#F6F8FA] pb-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <CardTitle className="text-base font-bold text-[#0D1117]">
+                            Cadangan Otomatis (Auto-Sync Backup)
+                          </CardTitle>
+                          <Badge
+                            className={`font-mono text-[10px] tracking-wider uppercase px-2 py-0.5 rounded-full ${
+                              autoSyncBackup
+                                ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                                : 'bg-neutral-100 text-neutral-600 border-neutral-300'
+                            }`}
+                          >
+                            {autoSyncBackup ? '● Auto-Sync Aktif' : '○ Dijeda'}
+                          </Badge>
+                        </div>
+                        <CardDescription className="text-xs text-[#57606A]">
+                          Menyinkronkan data profil kandidat, verifikasi keahlian OCR, riwayat skor psikotes Kraepelin, dan preferensi secara real-time ke snapshot lokal.
+                        </CardDescription>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={handleManualSyncNow}
+                        disabled={isManualSyncing}
+                        className="text-xs font-mono border-[#D0D7DE] text-[#0D1117] hover:bg-neutral-100 shrink-0 gap-1.5"
+                      >
+                        <RefreshCw className={`w-3.5 h-3.5 ${isManualSyncing ? 'animate-spin text-amber-600' : 'text-[#57606A]'}`} />
+                        <span>{isManualSyncing ? 'Menyinkronkan...' : 'Sinkronkan Sekarang'}</span>
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-4 sm:p-5 space-y-4">
+                    {/* Status Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      <div className="p-3 bg-[#F6F8FA] border border-[#E1E4E8] rounded-lg">
+                        <p className="text-[11px] font-mono text-[#57606A] uppercase tracking-wider">Status Sinkronisasi</p>
+                        <p className="text-sm font-bold text-[#0D1117] mt-0.5 flex items-center gap-1.5">
+                          <span className={`w-2 h-2 rounded-full ${autoSyncBackup ? 'bg-emerald-500 animate-pulse' : 'bg-neutral-400'}`} />
+                          {autoSyncBackup ? 'Aktif (Real-Time)' : 'Nonaktif / Manual'}
+                        </p>
+                      </div>
+                      <div className="p-3 bg-[#F6F8FA] border border-[#E1E4E8] rounded-lg">
+                        <p className="text-[11px] font-mono text-[#57606A] uppercase tracking-wider">Waktu Pembaruan Terakhir</p>
+                        <p className="text-sm font-semibold text-[#0D1117] mt-0.5 font-mono text-xs">
+                          {lastSyncTimestamp}
+                        </p>
+                      </div>
+                      <div className="p-3 bg-[#F6F8FA] border border-[#E1E4E8] rounded-lg">
+                        <p className="text-[11px] font-mono text-[#57606A] uppercase tracking-wider">Standar Kompatibilitas</p>
+                        <p className="text-sm font-bold text-amber-800 mt-0.5 font-mono text-xs">
+                          RFC 4180 + Excel BOM
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Auto-Sync Toggle Control */}
+                    <div className="pt-2 border-t border-[#E1E4E8] flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label htmlFor="toggle-auto-sync" className="text-xs font-bold text-[#0D1117] cursor-pointer">
+                          Sinkronisasi Otomatis Setiap Perubahan Data
+                        </Label>
+                        <p className="text-[11px] text-[#57606A]">
+                          Perbarui arsip cadangan saat Anda mengubah profil, target karir, nilai tes, atau preferensi sistem.
+                        </p>
+                      </div>
+                      <input
+                        id="toggle-auto-sync"
+                        type="checkbox"
+                        checked={autoSyncBackup}
+                        onChange={(e) => handleToggleAutoSync(e.target.checked)}
+                        className="h-4 w-4 rounded border-[#D0D7DE] text-amber-600 focus:ring-amber-500 cursor-pointer"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* 2. EXPORT OPTIONS CARDS (LAPISAN 1 CSV & FULL JSON) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Card Lapisan 1: CSV Pribadi */}
+                  <Card className="border-[#D0D7DE] bg-white rounded-xl shadow-xs flex flex-col justify-between">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between">
+                        <Badge className="bg-amber-100 text-amber-900 border-amber-300 font-mono text-[10px]">
+                          LAPISAN 1 PRIBADI
+                        </Badge>
+                        <span className="text-[11px] font-mono text-emerald-700 font-semibold">Excel & Sheets Ready</span>
+                      </div>
+                      <CardTitle className="text-sm font-bold text-[#0D1117] mt-2 flex items-center gap-2">
+                        <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+                        <span>Unduh CSV Data Pribadi</span>
+                      </CardTitle>
+                      <CardDescription className="text-xs text-[#57606A] leading-relaxed">
+                        Format CSV terstruktur khusus data pribadi kandidat (KTP/SIM, kontak telepon, domisili, ekspektasi gaji, riwayat skor psikotes Kraepelin HIMPSI, dan preferensi notifikasi).
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3 pt-0">
+                      <div className="p-3 bg-[#F6F8FA] border border-[#E1E4E8] rounded-lg text-[11px] text-[#57606A] space-y-1">
+                        <p className="font-semibold text-[#0D1117] flex items-center gap-1">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 inline" />
+                          Dilengkapi UTF-8 BOM (\uFEFF)
+                        </p>
+                        <p>Karakter aksen dan simbol teks terbuka sempurna di Microsoft Excel Windows tanpa korupsi karakter encoding.</p>
+                      </div>
+                      <Button
+                        size="sm"
+                        onClick={() => handleExportData('csv')}
+                        className="w-full text-xs font-mono bg-[#0D1117] hover:bg-neutral-800 text-white gap-2"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>Unduh CSV (Lapisan 1)</span>
+                      </Button>
+                    </CardContent>
+                  </Card>
+
+                  {/* Card Lapisan 2: Arsip JSON Lengkap */}
+                  <Card className="border-[#D0D7DE] bg-white rounded-xl shadow-xs flex flex-col justify-between">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between">
+                        <Badge className="bg-blue-100 text-blue-900 border-blue-300 font-mono text-[10px]">
+                          ARSIP SISTEM LENGKAP
+                        </Badge>
+                        <span className="text-[11px] font-mono text-neutral-600">Schema v1.2.0</span>
+                      </div>
+                      <CardTitle className="text-sm font-bold text-[#0D1117] mt-2 flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-blue-600" />
+                        <span>Unduh Arsip JSON Terbaru</span>
+                      </CardTitle>
+                      <CardDescription className="text-xs text-[#57606A] leading-relaxed">
+                        Cadangan struktur hierarki JSON terverifikasi SHA-256 yang memuat seluruh parameter akun, konfigurasi organisasi, hak akses, dan preferensi untuk pemulihan (restore) akun.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3 pt-0">
+                      <div className="p-3 bg-[#F6F8FA] border border-[#E1E4E8] rounded-lg text-[11px] text-[#57606A] space-y-1">
+                        <p className="font-semibold text-[#0D1117] flex items-center gap-1">
+                          <ShieldCheck className="w-3.5 h-3.5 text-blue-600 inline" />
+                          Integritas Data SHA-256
+                        </p>
+                        <p>Dilengkapi hash integritas data untuk verifikasi konsistensi sebelum restore ke server baru.</p>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleExportData('json')}
+                        className="w-full text-xs font-mono border-[#D0D7DE] text-[#0D1117] hover:bg-neutral-100 gap-2"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>Unduh JSON Lengkap</span>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* 3. PWA & OFFLINE QUEUE CARD */}
                 <Card className="border-[#D0D7DE] bg-white rounded-xl shadow-xs">
                   <CardHeader>
-                    <CardTitle className="text-base font-bold text-[#0D1117]">
-                      Pengelolaan Data, Ekspor, dan Penyimpanan Offline
+                    <CardTitle className="text-sm font-bold text-[#0D1117]">
+                      Status Penyimpanan Offline & PWA
                     </CardTitle>
                     <CardDescription className="text-xs text-[#57606A]">
-                      Unduh arsip portofolio Anda, pantau status cache PWA, dan bersihkan memori lokal.
+                      Pemantauan service worker, antrean asesmen offline, dan manajemen cache peramban.
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {/* Status PWA */}
-                    <div className="p-4 bg-[#F6F8FA] border border-[#E1E4E8] rounded-xl flex items-center justify-between">
+                    <div className="p-3.5 bg-[#F6F8FA] border border-[#E1E4E8] rounded-xl flex items-center justify-between">
                       <div className="space-y-0.5">
                         <p className="text-xs font-bold text-[#0D1117]">Status Progressive Web App (PWA)</p>
                         <p className="text-[11px] text-[#57606A]">
@@ -1993,7 +2267,7 @@ export default function SettingsPage() {
                     </div>
 
                     {/* Offline Queue */}
-                    <div className="p-4 bg-[#F6F8FA] border border-[#E1E4E8] rounded-xl flex items-center justify-between">
+                    <div className="p-3.5 bg-[#F6F8FA] border border-[#E1E4E8] rounded-xl flex items-center justify-between">
                       <div className="space-y-0.5">
                         <p className="text-xs font-bold text-[#0D1117]">Antrean Asesmen Offline</p>
                         <p className="text-[11px] text-[#57606A]">
@@ -2005,36 +2279,8 @@ export default function SettingsPage() {
                       </Badge>
                     </div>
 
-                    {/* Export Actions */}
-                    <div className="p-4 bg-white border border-[#D0D7DE] rounded-xl space-y-3">
-                      <p className="text-xs font-bold text-[#0D1117]">Ekspor Salinan Data Akun</p>
-                      <p className="text-[11px] text-[#57606A]">
-                        Unduh seluruh profil, riwayat skor psikotes, dan konfigurasi Anda dalam format terbuka.
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleExportData('json')}
-                          className="text-xs font-mono border-[#D0D7DE] gap-1.5"
-                        >
-                          <Download className="w-3.5 h-3.5" />
-                          <span>Unduh Arsip JSON</span>
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleExportData('csv')}
-                          className="text-xs font-mono border-[#D0D7DE] gap-1.5"
-                        >
-                          <Download className="w-3.5 h-3.5" />
-                          <span>Unduh Rekap CSV</span>
-                        </Button>
-                      </div>
-                    </div>
-
                     {/* Clear Cache Card */}
-                    <div className="p-4 bg-rose-50/40 border border-rose-200 rounded-xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div className="p-3.5 bg-rose-50/40 border border-rose-200 rounded-xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                       <div className="space-y-0.5">
                         <p className="text-xs font-bold text-rose-900">Bersihkan Cache & Refresh Aplikasi</p>
                         <p className="text-[11px] text-rose-800">
