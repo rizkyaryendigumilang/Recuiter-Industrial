@@ -189,6 +189,27 @@ export default function AdminDashboard() {
       return;
     }
     loadData();
+
+    let isSubscribed = true;
+    pb.collection('job_applications')
+      .subscribe('*', (e) => {
+        if (!isSubscribed) return;
+        if (e.action === 'create') {
+          setApplications((prev) => [e.record as any, ...prev]);
+        } else if (e.action === 'update') {
+          setApplications((prev) =>
+            prev.map((a) => (a.id === e.record.id ? { ...a, ...e.record } : a))
+          );
+        } else if (e.action === 'delete') {
+          setApplications((prev) => prev.filter((a) => a.id !== e.record.id));
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      isSubscribed = false;
+      pb.collection('job_applications').unsubscribe('*').catch(() => {});
+    };
   }, [router]);
 
   const handleLogout = () => {

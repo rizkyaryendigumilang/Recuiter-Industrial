@@ -25,10 +25,19 @@ export async function POST(req: NextRequest) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // 1. Ekstrak teks riil dari struktur PDF stream
+    // 1. Keamanan Biner: Validasi Magic Bytes PDF (%PDF-) untuk mencegah upload malware terselubung
+    const headerPrefix = buffer.slice(0, 5).toString('ascii');
+    if (!headerPrefix.startsWith('%PDF-')) {
+      return NextResponse.json(
+        { error: 'Format berkas tidak valid: Berkas bukan dokumen PDF asli (Magic bytes %PDF- tidak ditemukan).' },
+        { status: 400 }
+      );
+    }
+
+    // 2. Ekstrak teks riil dari struktur PDF stream
     const rawText = extractTextFromPdfBuffer(buffer);
 
-    // 2. Deteksi kompetensi manufaktur
+    // 3. Deteksi kompetensi manufaktur
     const skills = detectIndustrialCompetencies(rawText);
 
     return NextResponse.json({

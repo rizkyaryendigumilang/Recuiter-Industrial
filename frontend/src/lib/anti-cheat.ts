@@ -1,5 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { triggerHaptic } from './haptics';
+import { isMacroAnomaly } from './anti-cheat-core';
+
+export { isMacroAnomaly };
 
 export interface AntiCheatOptions {
   enabled?: boolean;
@@ -55,6 +58,26 @@ export function useAntiCheat({
   const dismissWarningModal = useCallback(() => {
     setShowWarningModal(false);
   }, []);
+
+  const lastInputTimestampRef = useRef<number>(0);
+  const consecutiveSuperfastInputsRef = useRef<number>(0);
+
+  // Validasi latensi respon untuk mencegah bot macro / auto-clicker
+  const checkInputLatency = useCallback((): boolean => {
+    if (!enabled) return true;
+    const now = Date.now();
+    const delta = now - lastInputTimestampRef.current;
+    lastInputTimestampRef.current = now;
+
+    const { isAnomaly, newCount } = isMacroAnomaly(delta, consecutiveSuperfastInputsRef.current);
+    consecutiveSuperfastInputsRef.current = newCount;
+
+    if (isAnomaly) {
+      handleViolation('Kecepatan input tidak wajar (<130ms) terdeteksi berulang (indikasi macro / auto-clicker)');
+      return false;
+    }
+    return true;
+  }, [enabled, handleViolation]);
 
   useEffect(() => {
     if (!enabled || typeof window === 'undefined') return;
@@ -118,6 +141,7 @@ export function useAntiCheat({
     dismissWarningModal,
     isFullscreen,
     requestFullscreen,
+    checkInputLatency,
     isExceeded: warnings >= maxWarnings,
   };
 }

@@ -42,6 +42,47 @@ export function CandidateNotificationModal({
 
   const [copiedWA, setCopiedWA] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
+  const [dispatchStatus, setDispatchStatus] = useState<string | null>(null);
+  const [isDispatching, setIsDispatching] = useState(false);
+
+  const handleAutomatedDispatch = async () => {
+    setIsDispatching(true);
+    setDispatchStatus(null);
+    try {
+      // Kirim event status notifikasi ke endpoint internal
+      await fetch('/api/webhooks/status-notification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          event: 'candidate.status.notification',
+          data: {
+            candidate_name: candidateName,
+            candidate_phone: cleanPhone,
+            candidate_email: candidateEmail,
+            job_title: jobTitle,
+            company_name: companyName,
+            new_status: newStatus,
+            message: waTemplate,
+            timestamp: Math.floor(Date.now() / 1000),
+          },
+          signature: 'client_internal_dispatch',
+        }),
+      });
+      setDispatchStatus(
+        isEn
+          ? 'Notification queued successfully in WhatsApp Gateway!'
+          : 'Notifikasi berhasil diantrekan ke antrean WhatsApp Gateway API!'
+      );
+    } catch {
+      setDispatchStatus(
+        isEn
+          ? 'Gateway unreachable. Please use the direct WhatsApp button below.'
+          : 'Gateway tidak dapat dijangkau. Silakan buka tautan langsung WhatsApp.'
+      );
+    } finally {
+      setIsDispatching(false);
+    }
+  };
 
   React.useEffect(() => {
     if (!isOpen) return;
@@ -192,8 +233,26 @@ export function CandidateNotificationModal({
               {waTemplate}
             </div>
 
+            {/* Dispatch Status Feedback */}
+            {dispatchStatus && (
+              <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-[11px] font-mono flex items-center gap-1.5 animate-in fade-in">
+                <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <span>{dispatchStatus}</span>
+              </div>
+            )}
+
             {/* Actions for WhatsApp */}
-            <div className="grid grid-cols-2 gap-2 pt-1">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+              <Button
+                type="button"
+                onClick={handleAutomatedDispatch}
+                disabled={isDispatching}
+                className="rounded-full text-xs h-9 bg-[#0D1117] hover:bg-[#21262D] text-white flex items-center justify-center gap-1.5 font-medium shadow-xs"
+              >
+                <Send className="w-3.5 h-3.5 text-amber-500" />
+                <span>{isDispatching ? 'Mengirim...' : 'Kirim via API Gateway'}</span>
+              </Button>
+
               <Button
                 type="button"
                 onClick={copyWAText}

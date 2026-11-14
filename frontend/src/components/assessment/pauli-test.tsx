@@ -83,6 +83,7 @@ export function PauliTest({
     lastViolationReason,
     isExceeded,
     requestFullscreen,
+    checkInputLatency,
   } = useAntiCheat({
     enabled: enableAntiCheat && gameState === 'running',
     maxWarnings: 3,
@@ -243,10 +244,11 @@ export function PauliTest({
     };
   }, [gameState, currentColumn, currentAnswers, columnNumbers, columnDurationSeconds, moveToNextColumn]);
 
-  // Handle number input (0 - 9)
+  // Handle number input (0 - 9) with Anti-Cheat Bot & Macro Detection
   const handleDigitInput = useCallback(
     (digit: number) => {
       if (gameState !== 'running') return;
+      if (!checkInputLatency()) return; // Blokir klik otomatis/makro tidak wajar
       const currentCols = columnNumbers[currentColumn] || [];
       if (pairIndex >= currentCols.length - 1) return; // Column finished
 
@@ -254,7 +256,7 @@ export function PauliTest({
       setCurrentAnswers((prev) => [...prev, digit]);
       setPairIndex((prev) => prev + 1);
     },
-    [gameState, columnNumbers, currentColumn, pairIndex]
+    [gameState, columnNumbers, currentColumn, pairIndex, checkInputLatency]
   );
 
   // Listen to physical keyboard keys (0 - 9)
