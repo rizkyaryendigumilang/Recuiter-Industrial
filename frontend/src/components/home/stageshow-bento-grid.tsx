@@ -41,10 +41,10 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
   ];
 
   return (
-    <section className="py-20 bg-slate-50/70 text-slate-900 relative overflow-hidden border-y border-slate-200/80">
-      {/* Ambient Lighting */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[300px] bg-amber-400/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-[500px] h-[300px] bg-emerald-400/10 rounded-full blur-[120px] pointer-events-none" />
+    <section className="py-20 bg-slate-50/70 text-slate-900 relative overflow-hidden border-y border-slate-200/80 contain-paint">
+      {/* Ambient Lighting (Optimized for Mobile Battery & GPU) */}
+      <div className="absolute top-0 left-1/4 w-[320px] sm:w-[500px] h-[200px] sm:h-[300px] bg-amber-400/8 rounded-full blur-3xl pointer-events-none hardware-accelerated" />
+      <div className="absolute bottom-0 right-1/4 w-[320px] sm:w-[500px] h-[200px] sm:h-[300px] bg-emerald-400/8 rounded-full blur-3xl pointer-events-none hardware-accelerated" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
         {/* Section Header */}

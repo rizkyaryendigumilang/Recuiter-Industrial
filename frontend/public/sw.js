@@ -1,5 +1,5 @@
 // Service Worker for Recruiter Industrial PWA
-const CACHE_NAME = 'recruiter-industrial-v1';
+const CACHE_NAME = 'recruiter-industrial-v2';
 
 const PRECACHE_ASSETS = [
   '/',

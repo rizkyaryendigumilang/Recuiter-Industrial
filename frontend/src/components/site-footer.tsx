@@ -15,7 +15,7 @@ export function SiteFooter() {
   }, []);
 
   return (
-    <footer className="border-t border-slate-200/90 bg-white/80 backdrop-blur-md pt-12 pb-[calc(2.5rem+env(safe-area-inset-bottom,0px))] text-slate-600 text-xs mt-16">
+    <footer className="border-t border-slate-200/90 bg-white/95 backdrop-blur-sm pt-12 pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] sm:pb-[calc(2.5rem+env(safe-area-inset-bottom,0px))] text-slate-600 text-xs mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {/* Top 4-Column Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">

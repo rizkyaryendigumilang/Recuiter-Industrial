@@ -1,15 +1,17 @@
 {
-  "name": "Recruiter Industrial - AI Recruitment & Assessment",
-  "short_name": "Recruiter",
-  "description": "Platform rekrutmen industri pintar berbasis AI, psikotes Kraepelin, DISC, dan matching cerdas.",
+  "name": "Recruiter Industrial - Seleksi Pabrik & Tes Kraepelin",
+  "short_name": "Recruiter Industrial",
+  "description": "Platform rekrutmen tenaga kerja pabrik, simulasi tes Kraepelin, dan verifikasi sertifikasi K3 resmi.",
   "start_url": "/",
   "id": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#FFFFFF",
-  "theme_color": "#6366F1",
+  "background_color": "#FAFAFA",
+  "theme_color": "#0F172A",
   "orientation": "portrait-primary",
   "lang": "id",
   "dir": "ltr",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/icons/icon-72x72.png",
@@ -74,23 +76,23 @@
   ],
   "shortcuts": [
     {
-      "name": "Lowongan Kerja",
+      "name": "Bursa Lowongan Kerja",
       "short_name": "Lowongan",
-      "description": "Cari lowongan kerja manufaktur & industri terbaru",
+      "description": "Lihat lowongan pabrik terverifikasi di kawasan industri",
       "url": "/jobs",
       "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
     },
     {
-      "name": "Tes Psikotes",
-      "short_name": "Psikotes",
-      "description": "Mulai asesmen psikometri Kraepelin & DISC",
-      "url": "/candidate/test",
+      "name": "Latihan Tes Kraepelin",
+      "short_name": "Latihan",
+      "description": "Simulasi tes Kraepelin dan uji ketelitian angka",
+      "url": "/candidate/practice",
       "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
     },
     {
-      "name": "Masuk Akun",
-      "short_name": "Login",
-      "description": "Akses portal kandidat atau employer",
+      "name": "Masuk ke Akun",
+      "short_name": "Masuk",
+      "description": "Akses portal pelamar atau panel perusahaan",
       "url": "/login",
       "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
     }

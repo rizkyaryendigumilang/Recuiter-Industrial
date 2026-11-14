@@ -62,9 +62,9 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
   };
 
   return (
-    <div className="relative w-full max-w-lg mx-auto lg:max-w-none">
+    <div className="relative w-full max-w-lg mx-auto lg:max-w-none contain-paint">
       {/* Decorative Glow Ambient Layer */}
-      <div className="absolute -inset-1.5 rounded-3xl bg-gradient-to-r from-amber-500/15 via-emerald-500/15 to-blue-500/15 blur-xl opacity-70 pointer-events-none" />
+      <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-amber-500/10 via-emerald-500/10 to-blue-500/10 blur-lg opacity-60 pointer-events-none hardware-accelerated" />
 
       {/* 1. Main High-Tech Industrial Instrument Chassis */}
       <div className="relative z-10 bg-slate-950 text-white border border-slate-800 rounded-3xl shadow-2xl overflow-hidden transition-all duration-300">

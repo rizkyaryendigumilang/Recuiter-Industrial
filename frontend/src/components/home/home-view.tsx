@@ -174,10 +174,10 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-slate-900 flex flex-col font-sans">
       {/* 1. HERO SECTION */}
-      <section className="relative pt-8 pb-16 md:pt-14 md:pb-24 bg-gradient-to-b from-white via-slate-50/50 to-slate-50 border-b border-slate-200/80 overflow-hidden">
-        {/* Subtle Ambient Glow */}
-        <div className="absolute top-0 left-1/3 w-[600px] h-[350px] bg-amber-400/8 rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute top-1/4 right-10 w-[500px] h-[350px] bg-emerald-400/8 rounded-full blur-[140px] pointer-events-none" />
+      <section className="relative pt-8 pb-16 md:pt-14 md:pb-24 bg-gradient-to-b from-white via-slate-50/50 to-slate-50 border-b border-slate-200/80 overflow-hidden contain-paint">
+        {/* Subtle Ambient Glow (Optimized for Battery & Frame Rate) */}
+        <div className="absolute top-0 left-1/3 w-[300px] sm:w-[600px] h-[200px] sm:h-[350px] bg-amber-400/8 rounded-full blur-3xl pointer-events-none hardware-accelerated" />
+        <div className="absolute top-1/4 right-10 w-[300px] sm:w-[500px] h-[200px] sm:h-[350px] bg-emerald-400/8 rounded-full blur-3xl pointer-events-none hardware-accelerated" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
@@ -404,7 +404,7 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                 return (
                   <div
                     key={job.id}
-                    className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group"
+                    className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-transform duration-150 flex flex-col justify-between group content-visibility-auto contain-content"
                   >
                     <div>
                       <div className="flex items-center justify-between gap-2 mb-3.5">
@@ -562,7 +562,7 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
               filteredServices.map((svc) => (
                 <div
                   key={svc.id}
-                  className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group"
+                  className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-transform duration-150 flex flex-col justify-between group content-visibility-auto contain-content"
                 >
                   <div>
                     <div className="mb-3">

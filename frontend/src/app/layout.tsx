@@ -7,6 +7,8 @@ import { LanguageProvider } from "@/lib/language-context";
 import { HelpdeskProvider } from "@/components/helpdesk/helpdesk-provider";
 import { SiteFooter } from "@/components/site-footer";
 import { PwaRegistrar } from "@/components/pwa-registrar";
+import { MobileBottomNav } from "@/components/mobile-bottom-nav";
+import { PwaInstallBanner } from "@/components/pwa-install-banner";
 
 const notoSans = Noto_Sans({
   subsets: ["latin"],
@@ -23,8 +25,8 @@ const robotoMono = Roboto_Mono({
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
-    { media: "(prefers-color-scheme: dark)", color: "#0A0A0A" },
+    { media: "(prefers-color-scheme: light)", color: "#FAFAFA" },
+    { media: "(prefers-color-scheme: dark)", color: "#0F172A" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -34,13 +36,13 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "HRTech — Rekrutmen & Psikologi Terapan",
-  description: "Platform B2B & B2C untuk HR Tech, Assessment, dan Konseling Psikologi.",
+  title: "Recruiter Industrial — Rekrutmen Pabrik & Tes Kraepelin",
+  description: "Platform rekrutmen tenaga kerja pabrik terintegrasi dengan latihan tes ketelitian Kraepelin, kesiapan kerja shift, dan sertifikasi K3 resmi.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "HRTech",
+    title: "Recruiter Industrial",
   },
   icons: {
     icon: [
@@ -61,22 +63,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="id"
       className={`${notoSans.variable} ${robotoMono.variable} h-full antialiased`}
     >
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="min-h-full flex flex-col bg-background text-foreground overflow-x-clip">
+      <body className="min-h-full flex flex-col bg-background text-foreground overflow-x-clip selection:bg-amber-100 selection:text-amber-900">
         <LanguageProvider>
           <AuthProvider>
             <HelpdeskProvider>
               <PwaRegistrar />
+              <PwaInstallBanner />
               <Navbar />
-              <main className="flex-1">{children}</main>
+              <main className="flex-1 pb-16 sm:pb-0">{children}</main>
               <SiteFooter />
+              <MobileBottomNav />
             </HelpdeskProvider>
           </AuthProvider>
         </LanguageProvider>

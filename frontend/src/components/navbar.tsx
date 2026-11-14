@@ -228,7 +228,7 @@ function NavContent() {
 export function Navbar() {
   return (
     <header className="sticky top-2 sm:top-3 z-50 px-3 sm:px-6 max-w-7xl mx-auto w-full pt-[env(safe-area-inset-top,0px)]">
-      <div className="bg-white/92 backdrop-blur-xl border border-slate-200/90 shadow-xs hover:shadow-sm transition-all rounded-2xl px-4 sm:px-5 h-14 flex items-center justify-between">
+      <div className="bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-xs transition-shadow rounded-2xl px-3.5 sm:px-5 h-13 sm:h-14 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5 group">
           <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 text-white flex items-center justify-center font-bold text-xs tracking-wider shadow-sm group-hover:scale-105 transition-transform border border-slate-700/50">
             <span className="text-amber-400 font-black">R</span>

@@ -92,8 +92,8 @@ export default function JobsPage() {
       <div className="max-w-7xl mx-auto space-y-8">
 
         {/* Modern Header Banner */}
-        <div className="p-8 sm:p-10 bg-white border border-slate-200/90 rounded-3xl shadow-xs space-y-3 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="p-6 sm:p-10 bg-white border border-slate-200/90 rounded-3xl shadow-xs space-y-3 relative overflow-hidden contain-paint">
+          <div className="absolute top-0 right-0 w-48 h-48 sm:w-80 sm:h-80 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
           <div className="relative z-10 space-y-2">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-xs font-mono font-semibold">
               <Briefcase className="w-3.5 h-3.5 text-amber-600" />
@@ -226,7 +226,7 @@ export default function JobsPage() {
               filteredJobs.map((job) => (
                 <div
                   key={job.id}
-                  className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group"
+                  className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-transform duration-150 flex flex-col justify-between group content-visibility-auto contain-content"
                 >
                   <div className="space-y-3">
                     <div className="flex items-start justify-between gap-2">
