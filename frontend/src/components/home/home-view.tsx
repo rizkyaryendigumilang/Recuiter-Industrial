@@ -28,22 +28,21 @@ import {
   Cpu,
 } from 'lucide-react';
 
-// Fallback data industri manufaktur jika PocketBase offline
 export const FALLBACK_SERVICES = [
-  { id: 'fb-1', category: 'Pilar C: Asesmen Psikometri', title: 'Asesmen Massal Kraepelin & Ketahanan Kerja Operator', description: 'Uji psikotes Kraepelin/Pauli massal tersertifikasi HIMPSI untuk seleksi operator pabrik dan teknisi perakitan presisi.', price: 150000 },
-  { id: 'fb-2', category: 'Pilar C: Evaluasi Ergonomi', title: 'Beban Mental Kerja & Stabilitas Regulasi Shift Malam', description: 'Evaluasi kesiapan psikologis dan daya tahan shift malam 3-gilir untuk memitigasi risiko insiden kecelakaan kerja.', price: 275000 },
-  { id: 'fb-3', category: 'Pilar B: Sertifikasi K3 & Mutu', title: 'Klinik Sertifikasi Ahli K3 Umum & SIO Kemnaker', description: 'Verifikasi kelengkapan berkas lisensi K3, SIO Forklift, dan standar SMK3 PP 50/2012 sebelum penempatan kerja.', price: 250000 },
-  { id: 'fb-4', category: 'Pilar B: Pemetaan Kompetensi', title: 'Uji Kalibrasi & Akurasi 7 QC Tools (ISO 9001:2015)', description: 'Simulasi pengukuran dimensi presisi menggunakan micrometer/caliper dan studi kasus diagram Ishikawa/Pareto.', price: 200000 },
-  { id: 'fb-5', category: 'Pilar A: Layanan B2B Plant', title: 'Corporate Industrial Recruitment Retainer (Pabrik)', description: 'Layanan penyediaan tenaga teknis siap kerja: screening CV berbasis AI, tes psikometri, dan orientasi plant.', price: 2500000 },
-  { id: 'fb-6', category: 'Pilar A: Layanan B2B Plant', title: 'Audit Ergonomi & Pemetaan Kinerja Line Produksi', description: 'Observasi kepatuhan SOP 5S, laju kelelahan kerja operator, dan rekomendasi rotasi workstation manufaktur.', price: 3200000 },
+  { id: 'fb-1', category: 'Pilar C: Asesmen Psikometri', title: 'Asesmen Massal Kraepelin & Ketahanan Kerja Operator', description: 'Uji psikotes Kraepelin/Pauli massal untuk seleksi operator pabrik dan teknisi perakitan presisi.', price: 150000 },
+  { id: 'fb-2', category: 'Pilar C: Evaluasi Ergonomi', title: 'Pemeriksaan Kesiapan Kerja & Regulasi Shift Malam', description: 'Evaluasi kesiapan fisik dan daya tahan kerja shift malam untuk mencegah kelelahan dan risiko kecelakaan kerja.', price: 275000 },
+  { id: 'fb-3', category: 'Pilar B: Sertifikasi K3 & Mutu', title: 'Verifikasi Sertifikat Ahli K3 Umum & SIO Kemnaker', description: 'Pemeriksaan kelengkapan berkas lisensi K3, SIO Forklift, dan standar SMK3 PP No. 50/2012 sebelum penempatan kerja.', price: 250000 },
+  { id: 'fb-4', category: 'Pilar B: Pemetaan Kompetensi', title: 'Uji Ketelitian 7 QC Tools & Alat Ukur Presisi', description: 'Simulasi pengukuran jangka sorong (caliper), micrometer, dan pemahaman diagram kendali mutu ISO 9001:2015.', price: 200000 },
+  { id: 'fb-5', category: 'Pilar A: Layanan B2B Plant', title: 'Layanan Rekrutmen Tenaga Teknis Pabrik (HR Retainer)', description: 'Penyediaan operator dan teknisi siap kerja: seleksi berkas otomatis, tes Kraepelin, dan orientasi kerja.', price: 2500000 },
+  { id: 'fb-6', category: 'Pilar A: Layanan B2B Plant', title: 'Audit Keselamatan Kerja & Evaluasi Lini Produksi', description: 'Pemantauan kepatuhan SOP 5S, tingkat kelelahan operator, dan rekomendasi rotasi meja kerja pabrik.', price: 3200000 },
 ];
 
 export const FALLBACK_JOBS = [
   {
     id: 'fb-j1',
     title: 'Teknisi Maintenance & Otomasi PLC (Siemens / Omron)',
-    description: 'Pemeliharaan berkala PLC S7-1200, penanganan breakdown sensor mekatronika, wiring panel 3-phase, dan hidrolik mesin.',
-    requirements_keywords: ['PLC Siemens S7', 'Wiring 3-Phase', 'Hidrolik & Pneumatik', 'Preventive Maint.'],
+    description: 'Perawatan rutin mesin PLC S7-1200, perbaikan sensor mesin, instalasi panel listrik 3 fasa, dan sistem hidrolik pabrik.',
+    requirements_keywords: ['PLC Siemens S7', 'Panel Listrik 3 Fasa', 'Hidrolik & Pneumatik', 'Perawatan Mesin'],
     is_featured: true,
     location: 'Cikarang (Kawasan MM2100)',
     salary: 'Rp 6.800.000 - Rp 8.500.000',
@@ -52,8 +51,8 @@ export const FALLBACK_JOBS = [
   {
     id: 'fb-j2',
     title: 'Operator CNC Milling & Machining Center (3-Axis)',
-    description: 'Setup tooling, running program G-Code mesin CNC, dan inspeksi dimensi toleransi mikro 0.01mm sesuai engineering drawing.',
-    requirements_keywords: ['CNC Milling', 'Caliper & Micrometer', 'Mastercam', 'ISO 9001:2015'],
+    description: 'Persiapan alat perkakas, menjalankan program G-Code mesin CNC, dan memeriksa ukuran benda kerja dengan ketelitian 0.01mm.',
+    requirements_keywords: ['Mesin CNC Milling', 'Jangka Sorong & Mikrometer', 'Gambar Teknik', 'ISO 9001:2015'],
     is_featured: true,
     location: 'Karawang (Kawasan KIIC)',
     salary: 'Rp 5.500.000 - Rp 6.800.000',
@@ -62,8 +61,8 @@ export const FALLBACK_JOBS = [
   {
     id: 'fb-j3',
     title: 'Supervisor QA/QC & Ahli K3 Umum Kemnaker',
-    description: 'Memastikan kepatuhan zero-accident di lantai fabrikasi serta verifikasi standar mutu inspeksi produk ekspor (FMEA/SPC).',
-    requirements_keywords: ['Ahli K3 Umum', 'ISO 9001:2015', '7 QC Tools', 'Welding Inspection'],
+    description: 'Menjaga keselamatan kerja di area pabrik dan memastikan mutu produk sesuai standar pengiriman ekspor.',
+    requirements_keywords: ['Ahli K3 Umum', 'ISO 9001:2015', '7 QC Tools', 'Inspeksi Mutu'],
     is_featured: true,
     location: 'Cilegon (Kawasan Krakatau)',
     salary: 'Rp 8.000.000 - Rp 11.000.000',
@@ -72,8 +71,8 @@ export const FALLBACK_JOBS = [
   {
     id: 'fb-j4',
     title: 'Operator Forklift Gudang Raw Material (SIO Kemnaker)',
-    description: 'Bongkar muat bahan baku industri di sistem racking gudang 6 meter, mematuhi SOP manuver keselamatan operasional forklift.',
-    requirements_keywords: ['SIO Forklift', 'Gudang FIFO', 'K3 Gudang', 'PPIC Buffer Stock'],
+    description: 'Bongkar muat bahan baku industri di rak gudang ketinggian 6 meter dengan mengutamakan keselamatan operasional.',
+    requirements_keywords: ['SIO Forklift', 'Gudang FIFO', 'Keselamatan Kerja', 'Stok Gudang'],
     is_featured: false,
     location: 'Cikarang (Kawasan Jababeka 1)',
     salary: 'Rp 5.200.000 - Rp 6.200.000',
@@ -81,9 +80,9 @@ export const FALLBACK_JOBS = [
   },
   {
     id: 'fb-j5',
-    title: 'Staff PPIC (Production Planning & Inventory Control)',
-    description: 'Menyusun jadwal produksi mingguan assembly plant, sinkronisasi stok bahan baku impor, dan pemantauan OEE mesin.',
-    requirements_keywords: ['PPIC', 'SAP ERP', 'Kaizen / 5S', 'Bill of Materials'],
+    title: 'Staff PPIC (Perencanaan Produksi & Kontrol Stok)',
+    description: 'Menyusun jadwal produksi mingguan pabrik, memantau ketersediaan bahan baku, dan efisiensi waktu kerja mesin.',
+    requirements_keywords: ['PPIC', 'Sistem ERP / SAP', 'Kaizen / 5S', 'Jadwal Produksi'],
     is_featured: true,
     location: 'Karawang (Surya Cipta)',
     salary: 'Rp 6.000.000 - Rp 7.500.000',
@@ -92,8 +91,8 @@ export const FALLBACK_JOBS = [
   {
     id: 'fb-j6',
     title: 'Welder Fabrikasi Struktur Baja 3G / 6G (SMAW & GTAW)',
-    description: 'Pengelasan pipa bertekanan tinggi dan konstruksi girder baja dengan lolos uji penetrant (NDT) standar mutu ASME.',
-    requirements_keywords: ['Welding 3G/6G', 'SMAW & GTAW', 'Uji NDT', 'Keselamatan K3'],
+    description: 'Pengelasan pipa tekanan tinggi dan konstruksi rangka baja yang lolos uji tanpa cacat (NDT) standar mutu ASME.',
+    requirements_keywords: ['Pengelasan 3G/6G', 'SMAW & GTAW', 'Uji NDT', 'Keselamatan Las'],
     is_featured: false,
     location: 'Gresik (Kawasan JIIPE)',
     salary: 'Rp 6.500.000 - Rp 8.000.000',
@@ -147,34 +146,34 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
 
   const FAQS = [
     {
-      q: isEn ? 'How does the automated Kraepelin/Pauli test engine calculate scores?' : 'Bagaimana engine Kraepelin/Pauli otomatis menghitung skor kandidat?',
+      q: isEn ? 'How does the automated Kraepelin/Pauli test calculate results?' : 'Bagaimana tes Kraepelin dan Pauli dihitung oleh sistem?',
       a: isEn
-        ? 'Our system evaluates four psychological dimensions in real-time: Panker (work speed per minute), Tianker (accuracy percentage), Hanker (stamina endurance slope), and Janker (work curve stability), benchmarking directly against HIMPSI manufacturing norms.'
-        : 'Sistem mengevaluasi 4 dimensi psikofisik secara real-time: Panker (kecepatan kerja per menit), Tianker (persentase akurasi & ketelitian), Hanker (kurva ketahanan stamina), dan Janker (stabilitas ritme kerja), dikalibrasikan langsung dengan norma HIMPSI industri manufaktur.'
+        ? 'The system calculates your results automatically by measuring addition speed (Panker), accuracy percentage (Tianker), endurance slope (Hanker), and rhythm consistency (Janker), comparing against HIMPSI industrial standards.'
+        : 'Sistem menghitung hasil tes Anda secara otomatis dengan mengukur 4 hal utama: kecepatan berhitung per menit (Panker), tingkat ketelitian (Tianker), daya tahan kerja (Hanker), dan kestabilan ritme kerja (Janker) sesuai standar psikologi industri.'
     },
     {
-      q: isEn ? 'Are K3 Kemnaker certificates and SIO licenses verified automatically?' : 'Apakah sertifikasi K3 Kemnaker dan lisensi SIO diverifikasi resmi?',
+      q: isEn ? 'Is the Kraepelin practice test free to try?' : 'Apakah latihan tes Kraepelin di sini gratis?',
       a: isEn
-        ? 'Yes. Every uploaded certificate (SIO Forklift, Ahli K3 Umum, Welder 3G/6G) is validated using OCR stream technology against national Kemnaker regulatory databases (SMK3 PP No. 50/2012).'
-        : 'Ya. Setiap sertifikasi yang diunggah (SIO Forklift, Ahli K3 Umum, Juru Las 3G/6G) divalidasi menggunakan OCR stream dan format barcode resmi Kemnaker RI sesuai standar kepatuhan SMK3 PP No. 50 Tahun 2012.'
+        ? 'Yes. The Kraepelin and Pauli practice simulators are 100% free for all candidates. You can practice as many times as you need to build speed and accuracy before taking the actual factory test.'
+        : 'Ya, latihan tes Kraepelin dan Pauli dapat dicoba gratis kapan saja. Calon pekerja bisa berlatih berulang kali untuk membiasakan diri dan meningkatkan kecepatan serta ketelitian berhitung sebelum menghadapi tes resmi di pabrik.'
     },
     {
-      q: isEn ? 'How quickly can a factory hire qualified technical operators?' : 'Berapa cepat pabrik dapat merekrut tenaga operator yang siap kerja?',
+      q: isEn ? 'How are K3 Kemnaker certificates and SIO licenses verified?' : 'Bagaimana sertifikat K3 dan lisensi SIO diperiksa keasliannya?',
       a: isEn
-        ? 'With pre-calibrated Kraepelin psychograms and verified technical credentials, plant HR can shortlist, interview, and deploy qualified operators within 48 hours.'
-        : 'Dengan psikogram Kraepelin yang sudah teruji dan sertifikasi kompetensi teknis yang telah diverifikasi, HR pabrik dapat melakukan shortlisting, wawancara, dan penempatan kerja dalam waktu rata-rata 48 jam.'
+        ? 'Every uploaded certificate (such as SIO Forklift, K3 Umum, and welding credentials) is checked for official registration numbers and validity against national regulatory standards.'
+        : 'Setiap sertifikat yang diunggah (seperti lisensi SIO Forklift, sertifikat Ahli K3 Umum, dan keahlian las) diperiksa nomor registrasi resmi dan masa berlakunya sesuai ketentuan Kementerian Ketenagakerjaan (Kemnaker RI).'
     },
     {
-      q: isEn ? 'Can this platform integrate with our existing factory ATS or HRIS?' : 'Dapatkah platform ini diintegrasikan dengan sistem ATS atau HRIS pabrik?',
+      q: isEn ? 'How do manufacturing plants post jobs or interview candidates?' : 'Bagaimana cara pabrik memasang lowongan atau merekrut tenaga kerja?',
       a: isEn
-        ? 'Yes. We provide modern REST APIs and secure HMAC-signed Webhooks that automatically sync candidate application statuses, Kraepelin test scores, and interview invites to your HRIS.'
-        : 'Bisa. Kami menyediakan REST API dan Webhook terenkripsi HMAC yang secara otomatis menyinkronkan status lamaran, skor psikotes Kraepelin, dan jadwal wawancara langsung ke sistem HRIS/ATS internal pabrik Anda.'
+        ? 'Factory HR teams can register an Employer account to post openings, review candidate psychograms and test scores, and invite qualified operators to interviews.'
+        : 'Pihak pabrik atau HR dapat mendaftar sebagai Employer untuk membuka lowongan, melihat hasil psikogram dan nilai tes pelamar, serta mengirim undangan wawancara langsung melalui platform.'
     }
   ];
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-slate-900 flex flex-col font-sans">
-      {/* 1. HERO SECTION (Modern, Airy, Tactile & Interactive) */}
+      {/* 1. HERO SECTION */}
       <section className="relative pt-8 pb-16 md:pt-14 md:pb-24 bg-gradient-to-b from-white via-slate-50/50 to-slate-50 border-b border-slate-200/80 overflow-hidden">
         {/* Subtle Ambient Glow */}
         <div className="absolute top-0 left-1/3 w-[600px] h-[350px] bg-amber-400/8 rounded-full blur-[140px] pointer-events-none" />
@@ -182,28 +181,32 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-            {/* Left: Headline & Informative Value Proposition */}
+            {/* Left: Headline & Clear Value Proposition */}
             <div className="lg:col-span-7 text-left space-y-6">
-              {/* Contextual Announcement Badge */}
+              {/* Contextual Badge */}
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200/90 text-xs font-mono text-slate-800 shadow-2xs">
                 <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-                <span className="font-semibold text-slate-950">{isEn ? 'Industrial ATS Engine' : 'Rekrutmen Manufaktur Terpadu'}</span>
+                <span className="font-semibold text-slate-950">
+                  {isEn ? 'Factory Recruitment & Skills Testing' : 'Lowongan Kerja Pabrik & Tes Kraepelin'}
+                </span>
                 <span className="text-slate-300">&bull;</span>
-                <span className="text-slate-600">{isEn ? 'HIMPSI Norms & K3 Kemnaker' : 'Norma HIMPSI & K3 Kemnaker'}</span>
+                <span className="text-slate-600">
+                  {isEn ? 'HIMPSI Standards & K3 Kemnaker' : 'Standar Resmi HIMPSI & K3 Kemnaker'}
+                </span>
               </div>
 
               {/* Headline */}
               <h1 className="text-3xl sm:text-5xl lg:text-[3.25rem] font-extrabold tracking-tight text-slate-950 leading-[1.12]">
                 {isEn 
-                  ? 'Precision Factory Recruitment & HIMPSI Psychometric Calibration.'
-                  : 'Rekrutmen Operator Pabrik & Kalibrasi Psikometri Terpadu.'}
+                  ? 'Factory Job Directory & Online Kraepelin Psychometric Test.'
+                  : 'Pusat Lowongan Kerja Pabrik & Latihan Tes Kraepelin Online.'}
               </h1>
 
               {/* Subtitle */}
               <p className="text-sm sm:text-base text-slate-600 max-w-xl leading-relaxed">
                 {isEn
-                  ? 'Precision technical workforce screening: automated Kraepelin/Pauli test engine calibrated to HIMPSI norms, Kemnaker K3 license verification, and 3-shift mental load mitigation.'
-                  : 'Solusi seleksi tenaga teknis pabrik: auto-scoring tes Kraepelin/Pauli standar HIMPSI, verifikasi lisensi K3 Kemnaker, audit 7 QC Tools, dan evaluasi beban kerja shift malam.'}
+                  ? 'Find verified manufacturing positions in top industrial zones. Practice Kraepelin and Pauli tests for free, verify your technical credentials, and get hired faster.'
+                  : 'Temukan lowongan kerja pabrik terpercaya di kawasan industri Cikarang, Karawang, dan sekitarnya. Ikuti latihan tes Kraepelin gratis untuk mempersiapkan diri menghadapi seleksi kerja.'}
               </p>
 
               {/* Action Buttons */}
@@ -214,7 +217,7 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                     className="h-11 px-6 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-sm hover:shadow-md active:scale-98 transition-all cursor-pointer flex items-center gap-2"
                   >
                     <Briefcase className="w-4 h-4 text-amber-400" />
-                    {isEn ? 'Explore Factory Vacancies' : 'Jelajahi Lowongan Pabrik'}
+                    {isEn ? 'Browse Factory Jobs' : 'Lihat Lowongan Kerja'}
                   </Button>
                 </Link>
                 <Link href="/candidate/practice">
@@ -224,7 +227,7 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                     className="h-11 px-6 rounded-2xl border-slate-300/90 bg-white hover:bg-slate-50 text-slate-900 text-xs font-bold shadow-2xs active:scale-98 transition-all cursor-pointer flex items-center gap-2"
                   >
                     <Activity className="w-4 h-4 text-emerald-600" />
-                    {isEn ? 'Practice Kraepelin Test' : 'Simulasi Uji Kraepelin'}
+                    {isEn ? 'Try Free Kraepelin Test' : 'Coba Tes Kraepelin Gratis'}
                   </Button>
                 </Link>
                 <Link href="#services">
@@ -233,12 +236,12 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                     size="lg"
                     className="h-11 px-4 rounded-2xl text-slate-600 hover:text-slate-950 hover:bg-slate-100/80 text-xs font-semibold active:scale-98 transition-all cursor-pointer"
                   >
-                    {isEn ? 'B2B Plant Retainer' : 'Konsultasi B2B Pabrik'}
+                    {isEn ? 'For Factory Employers' : 'Untuk Perusahaan Pabrik'}
                   </Button>
                 </Link>
               </div>
 
-              {/* Live Stat Badges (Telemetry Row) */}
+              {/* Telemetry Row */}
               <div className="grid grid-cols-3 gap-4 pt-6 border-t border-slate-200/80">
                 <div className="p-3 bg-white/70 border border-slate-200/80 rounded-2xl shadow-2xs">
                   <span className="text-xl sm:text-2xl font-extrabold font-mono text-slate-900 block">14,200+</span>
@@ -246,18 +249,18 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                 </div>
                 <div className="p-3 bg-white/70 border border-slate-200/80 rounded-2xl shadow-2xs">
                   <span className="text-xl sm:text-2xl font-extrabold font-mono text-emerald-700 block">98.6%</span>
-                  <span className="text-[10px] font-mono text-slate-500 uppercase tracking-tight">Akurasi Norma</span>
+                  <span className="text-[10px] font-mono text-slate-500 uppercase tracking-tight">Tingkat Ketelitian</span>
                 </div>
                 <div className="p-3 bg-white/70 border border-slate-200/80 rounded-2xl shadow-2xs">
                   <span className="text-xl sm:text-2xl font-extrabold font-mono text-amber-700 block">48 Jam</span>
-                  <span className="text-[10px] font-mono text-slate-500 uppercase tracking-tight">Penempatan Cepat</span>
+                  <span className="text-[10px] font-mono text-slate-500 uppercase tracking-tight">Proses Cepat</span>
                 </div>
               </div>
 
-              {/* Industrial Corridors & Cluster Indicators */}
+              {/* Industrial Hubs List */}
               <div className="pt-2">
                 <p className="text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-2 font-semibold">
-                  {isEn ? 'Connected Industrial Corridors' : 'Klaster Kawasan Industri Terkoneksi'}
+                  {isEn ? 'Major Industrial Zones' : 'Kawasan Industri Terintegrasi'}
                 </p>
                 <div className="flex flex-wrap gap-2 text-xs font-mono text-slate-700">
                   <span className="px-2.5 py-1 rounded-xl bg-white border border-slate-200 shadow-2xs">Cikarang (MM2100 &bull; GIIC)</span>
@@ -267,7 +270,7 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
               </div>
             </div>
 
-            {/* Right: Modern High-Tech Machine Console */}
+            {/* Right: Modern Machine Console */}
             <div className="lg:col-span-5 relative">
               <StageshowHeroConsole isEn={isEn} />
             </div>
@@ -275,22 +278,24 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
         </div>
       </section>
 
-      {/* 2. STAGESHOW BENTO GRID (Precision Manufacturing Architecture) */}
+      {/* 2. BENTO GRID */}
       <StageshowBentoGrid isEn={isEn} />
 
-      {/* 3. WHY CHOOSE US (4 Key Architectural Differentiators) */}
+      {/* 3. WHY CHOOSE US */}
       <section className="py-20 bg-white border-b border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-xs font-mono font-semibold">
               <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-              NILAI PRESISE INDUSTRI
+              {isEn ? 'KEY ADVANTAGES' : 'KEUNGGULAN PLATFORM'}
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-950 tracking-tight">
-              Mengapa Pabrik Memilih Recruiter Industrial?
+              {isEn ? 'Why Candidates and Plants Choose Us?' : 'Mengapa Mencari Kerja & Merekrut Lewat Sini?'}
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Arsitektur rekrutmen dirancang khusus menjawab tantangan operasional plant: nol kesalahan, kepatuhan K3, dan ketahanan fisik-mental kerja 3-shift.
+              {isEn
+                ? 'Built for manufacturing needs: accurate testing, verified technical credentials, and shift-ready candidates.'
+                : 'Dirancang untuk kebutuhan pabrik: penilaian tes yang objektif, sertifikasi keahlian terverifikasi resmi, dan lowongan terpercaya.'}
             </p>
           </div>
 
@@ -299,9 +304,13 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
               <div className="w-10 h-10 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-center font-bold">
                 <Activity className="w-5 h-5 text-emerald-600" />
               </div>
-              <h3 className="font-extrabold text-base text-slate-900">Kraepelin Auto-Scoring</h3>
+              <h3 className="font-extrabold text-base text-slate-900">
+                {isEn ? 'Automated Kraepelin Test' : 'Tes Kraepelin Otomatis'}
+              </h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Kalkulasi otomatis algoritma Panker, Tianker, Hanker, dan Janker standar HIMPSI tanpa koreksi manual kertas.
+                {isEn
+                  ? 'Instant calculation of speed, accuracy, and stamina without manual paper scoring.'
+                  : 'Nilai tes langsung keluar otomatis. Mengukur kecepatan hitung, ketelitian, dan konsistensi kerja tanpa repot koreksi kertas manual.'}
               </p>
             </div>
 
@@ -309,9 +318,13 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
               <div className="w-10 h-10 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 flex items-center justify-center font-bold">
                 <ShieldCheck className="w-5 h-5 text-amber-600" />
               </div>
-              <h3 className="font-extrabold text-base text-slate-900">Validasi K3 Kemnaker</h3>
+              <h3 className="font-extrabold text-base text-slate-900">
+                {isEn ? 'K3 Kemnaker Verification' : 'Pemeriksaan Sertifikat K3'}
+              </h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Verifikasi keaslian SIO Forklift, sertifikat Ahli K3 Umum, dan SMK3 PP No. 50/2012 secara real-time.
+                {isEn
+                  ? 'Verifies authenticity of SIO Forklift and K3 safety licenses directly from uploaded files.'
+                  : 'Memeriksa keaslian lisensi SIO Forklift, sertifikat Ahli K3 Umum, dan keahlian las resmi langsung dari dokumen pelamar.'}
               </p>
             </div>
 
@@ -319,9 +332,13 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
               <div className="w-10 h-10 rounded-2xl bg-blue-50 border border-blue-200 text-blue-800 flex items-center justify-center font-bold">
                 <Cpu className="w-5 h-5 text-blue-600" />
               </div>
-              <h3 className="font-extrabold text-base text-slate-900">AI Stream OCR CV</h3>
+              <h3 className="font-extrabold text-base text-slate-900">
+                {isEn ? 'Technical Skill Matching' : 'Pencocokan Keahlian CV'}
+              </h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Deteksi otomatis 11 kamus kompetensi manufaktur (PLC Siemens, CNC, 7 QC Tools) dalam hitungan &lt; 1.2 detik.
+                {isEn
+                  ? 'Reads manufacturing skills (PLC, CNC machinery, QC inspection) directly from your resume.'
+                  : 'Sistem membaca berkas CV dan mencocokkan keahlian teknis (PLC, mesin CNC, 7 QC Tools) dengan syarat lowongan pabrik.'}
               </p>
             </div>
 
@@ -329,28 +346,32 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
               <div className="w-10 h-10 rounded-2xl bg-purple-50 border border-purple-200 text-purple-800 flex items-center justify-center font-bold">
                 <Clock className="w-5 h-5 text-purple-600" />
               </div>
-              <h3 className="font-extrabold text-base text-slate-900">Mitigasi Kelelahan Shift</h3>
+              <h3 className="font-extrabold text-base text-slate-900">
+                {isEn ? 'Shift Work Readiness' : 'Kesiapan Kerja Shift'}
+              </h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Evaluasi kesiapan ritme sirkadian kerja malam untuk menekan angka kecelakaan kerja pabrik.
+                {isEn
+                  ? 'Helps candidates prepare for rotating 3-shift factory schedules and endurance requirements.'
+                  : 'Membantu menilai kesiapan fisik dan stamina calon pekerja untuk pola jadwal kerja bergilir (3 shift pagi, sore, dan malam).'}
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4. JOB BOARD SECTION (Pilar A) */}
+      {/* 4. JOB BOARD SECTION */}
       <section id="jobs" className="py-20 bg-slate-50/70 border-b border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
             <div>
               <span className="text-xs font-mono font-semibold text-amber-800 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">
-                {t.jobsSection.badge}
+                {isEn ? 'LATEST OPENINGS' : 'LOWONGAN TERBARU'}
               </span>
               <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-950 mt-3">
-                {t.jobsSection.title}
+                {isEn ? 'Open Factory Positions' : 'Lowongan Kerja Pabrik Terbuka'}
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-xl">
-                {t.jobsSection.subtitle}
+                {isEn ? 'Select a role that matches your skills and location.' : 'Pilih posisi yang sesuai dengan keahlian dan lokasi Anda.'}
               </p>
             </div>
             <Link href="/jobs">
@@ -372,7 +393,7 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                 <p className="text-xs text-slate-500 max-w-sm mt-1 leading-relaxed">
                   {isEn
                     ? 'Check back shortly or create a candidate profile to receive automatic vacancy updates.'
-                    : 'Silakan cek kembali beberapa saat lagi atau lengkapi profil kandidat untuk notifikasi lowongan industri otomatis.'}
+                    : 'Silakan cek kembali beberapa saat lagi atau lengkapi profil Anda untuk mendapatkan pemberitahuan lowongan baru.'}
                 </p>
               </div>
             ) : (
@@ -389,11 +410,11 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                       <div className="flex items-center justify-between gap-2 mb-3.5">
                         <span className="inline-flex items-center gap-1.5 text-xs text-slate-600 font-medium">
                           <Building2 className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                          <span className="truncate max-w-[180px]">{job.expand?.employer_id?.company_name || 'Mitra Industri Plant'}</span>
+                          <span className="truncate max-w-[180px]">{job.expand?.employer_id?.company_name || 'Mitra Industri Pabrik'}</span>
                         </span>
                         {job.is_featured && (
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 font-semibold">
-                            {t.jobsSection.featured}
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 font-bold">
+                            ★ REKOMENDASI PABRIK
                           </span>
                         )}
                       </div>
@@ -406,17 +427,15 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                         {job.description?.replace(/<[^>]+>/g, '')}
                       </p>
 
-                      {/* Location & Salary Tags */}
-                      <div className="flex flex-wrap items-center gap-2 mb-4 text-[11px] font-mono text-slate-500">
-                        <span className="flex items-center gap-1 bg-slate-50 border border-slate-200 px-2 py-0.5 rounded-lg">
-                          <MapPin className="w-3 h-3 text-slate-400" />
-                          {job.location || 'Kawasan Industri'}
-                        </span>
-                        {job.salary && (
-                          <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-lg font-semibold">
-                            {job.salary}
-                          </span>
-                        )}
+                      {/* Location & Salary */}
+                      <div className="grid grid-cols-2 gap-2 text-[11px] font-mono mb-4">
+                        <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-xl text-slate-600 truncate">
+                          <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                          <span className="truncate">{job.location || 'Kawasan Industri'}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-xl text-emerald-800 font-bold truncate">
+                          <span className="truncate">{job.salary || 'Sesuai UMK'}</span>
+                        </div>
                       </div>
 
                       {keywords.length > 0 && (
@@ -436,14 +455,14 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                     <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                       <span className="text-[11px] font-mono text-emerald-700 flex items-center gap-1 font-semibold">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                        Aktif Menerima
+                        Menerima Lamaran
                       </span>
                       <Link href={`/jobs/${job.id}`}>
                         <Button
                           size="sm"
                           className="rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold h-8 px-3.5 transition-all cursor-pointer shadow-2xs"
                         >
-                          {t.jobsSection.applyNow}
+                          Lamar Sekarang
                           <ArrowRight className="w-3 h-3 ml-1" />
                         </Button>
                       </Link>
@@ -456,19 +475,19 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
         </div>
       </section>
 
-      {/* 5. SERVICES CATALOG (Pilar B & C) */}
+      {/* 5. SERVICES CATALOG */}
       <section id="services" className="py-20 bg-white border-b border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
             <div>
               <span className="text-xs font-mono font-semibold text-amber-800 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">
-                {t.servicesSection.badge}
+                {isEn ? 'ASSESSMENT & SERVICES' : 'LAYANAN ASESMEN & MUTU'}
               </span>
               <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-950 mt-3">
-                {t.servicesSection.title}
+                {isEn ? 'Industrial Services & Certification' : 'Layanan Asesmen & Sertifikasi Kerja'}
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-xl">
-                {t.servicesSection.subtitle}
+                {isEn ? 'Mass psychometric testing for plants, K3 certification, and ergonomics evaluation.' : 'Layanan tes Kraepelin massal untuk pabrik, klinik verifikasi sertifikasi K3, dan evaluasi shift kerja.'}
               </p>
             </div>
 
@@ -477,7 +496,7 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
               <Search className="w-3.5 h-3.5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
-                placeholder={t.jobsSection.searchPlaceholder}
+                placeholder={isEn ? 'Search service...' : 'Cari layanan asesmen...'}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-8 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white shadow-2xs transition-all"
@@ -498,10 +517,10 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
           {/* Filter Pills */}
           <div className="flex flex-wrap gap-2 mb-8">
             {[
-              { id: 'all', label: t.servicesSection.allTab },
-              { id: 'pilar a', label: t.servicesSection.pilarA },
-              { id: 'pilar b', label: t.servicesSection.pilarB },
-              { id: 'pilar c', label: t.servicesSection.pilarC },
+              { id: 'all', label: isEn ? 'All Services' : 'Semua Layanan' },
+              { id: 'pilar a', label: isEn ? 'Pillar A: Factory B2B' : 'Pilar A: Layanan B2B Pabrik' },
+              { id: 'pilar b', label: isEn ? 'Pillar B: K3 Certification' : 'Pilar B: Sertifikasi K3 & Mutu' },
+              { id: 'pilar c', label: isEn ? 'Pillar C: Psychometrics' : 'Pilar C: Asesmen Kraepelin' },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -528,9 +547,7 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                   {isEn ? 'No services found' : 'Layanan tidak ditemukan'}
                 </h3>
                 <p className="text-xs text-slate-500 max-w-sm mt-1 mb-4 leading-relaxed">
-                  {isEn
-                    ? 'We could not find any services matching your filter. Try adjusting your search term or select another pillar.'
-                    : 'Tidak ada layanan yang sesuai dengan kriteria filter Anda. Coba ubah kata kunci atau pilih pilar lain.'}
+                  {isEn ? 'Try adjusting your search term.' : 'Coba ubah kata kunci atau pilih pilar layanan lain.'}
                 </p>
                 <Button
                   variant="outline"
@@ -566,7 +583,7 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                   <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
                     <div>
                       <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider block font-medium">
-                        {t.servicesSection.sessionFee}
+                        Biaya Layanan:
                       </span>
                       <span className="text-base font-extrabold font-mono text-slate-950">
                         Rp {Number(svc.price).toLocaleString('id-ID')}
@@ -578,7 +595,7 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                         size="sm"
                         className="rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold px-4 h-8 transition-colors duration-150 touch-manipulation cursor-pointer shadow-2xs"
                       >
-                        {t.servicesSection.bookSession}
+                        Pesan Layanan
                       </Button>
                     </Link>
                   </div>
@@ -589,7 +606,7 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
         </div>
       </section>
 
-      {/* 6. INTERACTIVE FAQ SECTION (Informative Clarity) */}
+      {/* 6. FAQ SECTION */}
       <section className="py-20 bg-slate-50/70 border-b border-slate-200/80">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10 space-y-3">
@@ -598,10 +615,10 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
               PERTANYAAN UMUM
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-950 tracking-tight">
-              Panduan &amp; FAQ Rekrutmen Industri
+              Tanya Jawab Seputar Tes &amp; Lowongan Kerja
             </h2>
             <p className="text-xs sm:text-sm text-slate-600">
-              Informasi lengkap seputar metode penilaian Kraepelin, validasi sertifikasi K3, dan alur kerja platform.
+              Penjelasan mudah tentang cara penilaian tes Kraepelin, keaslian sertifikat K3, dan proses rekrutmen.
             </p>
           </div>
 
@@ -624,7 +641,7 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                     </span>
                   </button>
                   {isOpen && (
-                    <div className="px-4 sm:px-5 pb-5 pt-0 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+                    <div className="px-4 sm:px-5 pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
                       {faq.a}
                     </div>
                   )}
@@ -635,7 +652,7 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
         </div>
       </section>
 
-      {/* 7. HIGH-CONVERTING BOTTOM CTA BANNER */}
+      {/* 7. BOTTOM CTA BANNER */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="relative rounded-3xl bg-slate-950 text-white p-8 sm:p-14 overflow-hidden border border-slate-800 shadow-2xl">
@@ -646,13 +663,13 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
             <div className="relative z-10 max-w-2xl space-y-5 text-left">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-amber-400 text-xs font-mono font-semibold">
                 <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                EKOSISTEM HR TECH INDUSTRI
+                LOWONGAN KERJA &amp; TES KRAEPELIN PABRIK
               </span>
               <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
-                Siap Melangkah Menuju Standar Rekrutmen Presisi?
+                Siap Memulai Langkah Karir di Pabrik Impianmu?
               </h2>
               <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-xl">
-                Bergabunglah bersama ribuan operator teruji dan puluhan pabrik terkemuka di kawasan industri Jababeka, MM2100, KIIC, dan seluruh Indonesia.
+                Daftar sekarang, ikuti latihan tes Kraepelin gratis, dan temukan lowongan kerja di pabrik kawasan industri Cikarang, Karawang, dan sekitarnya.
               </p>
 
               <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -672,7 +689,7 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                     className="h-11 px-6 rounded-2xl border-slate-700 bg-slate-900/80 hover:bg-slate-800 text-white text-xs font-bold active:scale-98 transition-all cursor-pointer flex items-center gap-2"
                   >
                     <Building2 className="w-4 h-4 text-emerald-400" />
-                    Daftar Sebagai Pabrik / HR
+                    Pasang Lowongan Pabrik
                   </Button>
                 </Link>
               </div>

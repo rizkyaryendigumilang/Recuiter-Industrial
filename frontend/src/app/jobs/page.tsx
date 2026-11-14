@@ -97,15 +97,15 @@ export default function JobsPage() {
           <div className="relative z-10 space-y-2">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-xs font-mono font-semibold">
               <Briefcase className="w-3.5 h-3.5 text-amber-600" />
-              <span>{isEn ? 'VERIFIED INDUSTRIAL CAREERS' : 'BURSA LOWONGAN KERJA PABRIK TERVERIFIKASI'}</span>
+              <span>{isEn ? 'OFFICIAL INDUSTRIAL VACANCIES' : 'LOWONGAN KERJA PABRIK RESMI'}</span>
             </div>
             <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-950 tracking-tight">
-              {isEn ? 'Precision Manufacturing & Plant Openings' : 'Papan Lowongan Kerja Manufaktur & Pabrik'}
+              {isEn ? 'Manufacturing & Plant Openings' : 'Papan Lowongan Kerja Pabrik & Industri'}
             </h1>
             <p className="text-xs sm:text-sm text-slate-600 max-w-2xl leading-relaxed">
               {isEn
-                ? 'Discover verified openings across industrial corridors: Karawang, Cikarang, Jababeka, MM2100, and EJIP with AI Skill Matching.'
-                : 'Temukan lowongan terverifikasi di kawasan industri terkemuka (Cikarang, Karawang, Banten, Jawa Timur) dengan seleksi psikometri Kraepelin berstandar HIMPSI.'}
+                ? 'Discover verified plant openings across Karawang, Cikarang, Jababeka, MM2100, and EJIP with transparent skill matching.'
+                : 'Temukan lowongan kerja resmi di kawasan industri Cikarang, Karawang, Banten, dan sekitarnya lengkap dengan simulasi tes ketelitian dan syarat K3.'}
             </p>
           </div>
         </div>
@@ -193,11 +193,11 @@ export default function JobsPage() {
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-500 font-mono">
             <span>
-              Menampilkan <strong className="text-slate-900">{filteredJobs.length}</strong> lowongan kerja aktif
+              {isEn ? 'Showing ' : 'Menampilkan '}<strong className="text-slate-900">{filteredJobs.length}</strong>{isEn ? ' active jobs' : ' lowongan kerja aktif'}
             </span>
             <Link href="/candidate/practice" className="text-amber-700 hover:text-amber-800 underline underline-offset-2 font-semibold flex items-center gap-1.5">
               <Activity className="w-3.5 h-3.5 text-amber-600" />
-              <span>Latihan tes Kraepelin gratis sebelum melamar</span>
+              <span>{isEn ? 'Practice free Kraepelin test before applying' : 'Latihan tes Kraepelin gratis sebelum melamar'}</span>
             </Link>
           </div>
 

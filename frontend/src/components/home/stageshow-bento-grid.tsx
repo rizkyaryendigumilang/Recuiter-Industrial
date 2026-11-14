@@ -30,73 +30,75 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
   const [activeCorridor, setActiveCorridor] = useState<string>('cikarang');
 
   const KRAEPELIN_COLUMNS = [
-    { col: 1, val: 38, label: 'K-1', pace: 'Pemanasan' },
-    { col: 2, val: 44, label: 'K-2', pace: 'Akselerasi' },
-    { col: 3, val: 48, label: 'K-3', pace: 'Konstan' },
-    { col: 4, val: 53, label: 'K-4', pace: 'Puncak Prima' },
-    { col: 5, val: 56, label: 'K-5', pace: 'Stamina Tinggi' },
-    { col: 6, val: 54, label: 'K-6', pace: 'Stabil' },
-    { col: 7, val: 55, label: 'K-7', pace: 'Stamina Terjaga' },
-    { col: 8, val: 52, label: 'K-8', pace: 'Finis Prima' },
+    { col: 1, val: 38, label: 'K-1', pace: isEn ? 'Warmup' : 'Pemanasan' },
+    { col: 2, val: 44, label: 'K-2', pace: isEn ? 'Acceleration' : 'Meningkat' },
+    { col: 3, val: 48, label: 'K-3', pace: isEn ? 'Constant' : 'Stabil' },
+    { col: 4, val: 53, label: 'K-4', pace: isEn ? 'Peak Speed' : 'Kecepatan Puncak' },
+    { col: 5, val: 56, label: 'K-5', pace: isEn ? 'High Stamina' : 'Stamina Tinggi' },
+    { col: 6, val: 54, label: 'K-6', pace: isEn ? 'Steady' : 'Konsisten' },
+    { col: 7, val: 55, label: 'K-7', pace: isEn ? 'Maintained' : 'Terjaga' },
+    { col: 8, val: 52, label: 'K-8', pace: isEn ? 'Solid Finish' : 'Selesai Prima' },
   ];
 
   return (
     <section className="py-20 bg-slate-50/70 text-slate-900 relative overflow-hidden border-y border-slate-200/80">
-      {/* Ambient Radial Glow Lighting */}
+      {/* Ambient Lighting */}
       <div className="absolute top-0 left-1/4 w-[500px] h-[300px] bg-amber-400/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-[500px] h-[300px] bg-emerald-400/10 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
-        {/* Section Header with High Visual Contrast */}
+        {/* Section Header */}
         <div className="max-w-3xl mb-12 text-left">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 text-xs font-mono font-semibold text-slate-800 mb-3 shadow-2xs">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-mono font-semibold text-slate-800 mb-3 shadow-2xs">
             <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
-            <span>{isEn ? 'PRECISION INDUSTRIAL ATS ARCHITECTURE' : 'ARSITEKTUR SELEKSI OPERATOR PRESISE'}</span>
+            <span>{isEn ? 'FACTORY SELECTION STANDARDS' : 'STANDAR SELEKSI KERJA PABRIK'}</span>
           </div>
           <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-950 leading-[1.2]">
             {isEn
-              ? 'Calibrated for High-Volume Plant Recruitment & K3 Standards.'
-              : 'Standar Terpadu Seleksi Tenaga Teknis, Kalibrasi Psikometri & Mutu K3.'}
+              ? 'Integrated Psychometrics, Technical Skills & K3 Safety Standards.'
+              : 'Seleksi Tenaga Kerja Pabrik dengan Tes Kraepelin & Sertifikasi K3 Resmi.'}
           </h2>
           <p className="text-sm sm:text-base text-slate-600 mt-3 leading-relaxed">
             {isEn
-              ? 'A 4-pillar technological framework engineered to eliminate skill mismatch, fatigue incidents, and turnover in modern factory floors.'
-              : 'Empat pilar teknologi industri terpadu untuk memangkas resiko turnover, kecelakaan kerja 3-shift, dan ketidaksesuaian kompetensi operator mesin.'}
+              ? 'A practical system to help manufacturing plants find accurate, dependable, and shift-ready operators and technicians.'
+              : 'Sistem praktis untuk membantu pabrik menemukan calon pekerja dan teknisi yang teliti, terampil, serta siap bekerja dalam sistem shift.'}
           </p>
         </div>
 
-        {/* Bento Grid (8+4 / 4+8 Layout) */}
+        {/* Bento Grid Layout */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          {/* Tile 1: Large Feature Card (8 Cols) - Psychometric Test Engine */}
+          {/* Tile 1: Large Card (8 Cols) - Kraepelin Test Engine */}
           <div className="md:col-span-8 bg-white border border-slate-200/90 hover:border-emerald-500/60 rounded-3xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden transition-all duration-300 shadow-xs hover:shadow-xl group">
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-xs font-mono px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-2xs">
                   <Activity className="w-3.5 h-3.5 text-emerald-600" />
-                  Pilar C &bull; Norma HIMPSI 2026
+                  {isEn ? 'Pillar C • HIMPSI Norms' : 'Tes Kraepelin & Pauli • Penilaian Otomatis'}
                 </span>
                 <span className="text-xs font-mono text-slate-500 flex items-center gap-1">
                   <Zap className="w-3.5 h-3.5 text-amber-500" />
-                  Auto-Scoring Realtime
+                  {isEn ? 'Instant Scoring' : 'Hasil Keluar Otomatis'}
                 </span>
               </div>
 
               <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 mb-2 group-hover:text-emerald-700 transition-colors">
-                Simulasi Kraepelin &amp; Pauli Kalibrasi Industri
+                {isEn ? 'Automated Kraepelin & Pauli Test' : 'Tes Kraepelin & Pauli untuk Seleksi Kerja Pabrik'}
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-xl mb-6">
-                Uji psikofisik terukur: laju kerja (<strong className="text-slate-900">Panker</strong>), akurasi toleransi nol kesalahan (<strong className="text-slate-900">Tianker</strong>), kurva ketahanan (<strong className="text-slate-900">Hanker</strong>), dan stabilitas emosi (<strong className="text-slate-900">Janker</strong>).
+                {isEn
+                  ? 'Measures addition speed (Panker), zero-mistake accuracy (Tianker), endurance stamina (Hanker), and emotional stability (Janker) objectively.'
+                  : 'Mengukur kecepatan berhitung (Panker), ketelitian kerja (Tianker), daya tahan fisik (Hanker), dan kestabilan ritme kerja (Janker) tanpa perlu memeriksa kertas manual.'}
               </p>
 
-              {/* Interactive Visual Kraepelin Columns */}
+              {/* Interactive Visual Columns */}
               <div className="bg-slate-50/90 border border-slate-200/90 rounded-2xl p-4 sm:p-5">
                 <div className="flex items-center justify-between border-b border-slate-200 pb-2.5 mb-3 text-xs font-mono">
                   <span className="text-slate-700 font-semibold flex items-center gap-1.5">
                     <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
-                    Kurva Output Per Menit (Arahkan Kursor ke Kolom)
+                    {isEn ? 'Output Curve Per Minute (Hover Columns)' : 'Kurva Jumlah Jawaban Per Menit (Arahkan Kursor)'}
                   </span>
                   <span className="text-emerald-800 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200">
-                    Akurasi 98.4% (Grade A QC)
+                    {isEn ? 'Accuracy: 98.4% (Grade A)' : 'Ketelitian: 98.4% (Sangat Baik)'}
                   </span>
                 </div>
 
@@ -135,8 +137,8 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
                 {/* Column Detail Callout */}
                 {hoveredColumn !== null && (
                   <div className="mt-3 pt-2.5 border-t border-slate-200 flex items-center justify-between text-xs font-mono text-slate-600">
-                    <span>Status Fase: <strong className="text-amber-700">{KRAEPELIN_COLUMNS[hoveredColumn].pace}</strong></span>
-                    <span>Tingkat Ketahanan: <strong className="text-emerald-700">Tinggi (SOP 8 Jam Kerja Pabrik)</strong></span>
+                    <span>Fase Kerja: <strong className="text-amber-700">{KRAEPELIN_COLUMNS[hoveredColumn].pace}</strong></span>
+                    <span>Daya Tahan: <strong className="text-emerald-700">Tinggi (Siap Kerja 8 Jam)</strong></span>
                   </div>
                 )}
               </div>
@@ -144,53 +146,54 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
 
             <div className="mt-6 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
               <span className="text-xs font-mono text-slate-500">
-                Toleransi Kesalahan: <strong className="text-slate-900">&lt; 3% (Standar QC &amp; Teknisi CNC)</strong>
+                Standar Kelulusan: <strong className="text-slate-900">Ketelitian &ge; 90% (Posisi Operator &amp; QC)</strong>
               </span>
               <Link href="/candidate/practice">
                 <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white font-mono text-xs font-bold gap-1.5 shadow-sm rounded-xl">
-                  Mulai Simulasi Kraepelin
+                  {isEn ? 'Try Kraepelin Test' : 'Mulai Latihan Kraepelin'}
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Button>
               </Link>
             </div>
           </div>
 
-          {/* Tile 2: Compact Feature Card (4 Cols) - Smart Resume OCR Scanner */}
+          {/* Tile 2: Compact Card (4 Cols) - CV Skill Scanner */}
           <div className="md:col-span-4 bg-white border border-slate-200/90 hover:border-amber-500/60 rounded-3xl p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden transition-all duration-300 shadow-xs hover:shadow-xl group">
             <div>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-xs font-mono px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-2xs">
                   <Cpu className="w-3.5 h-3.5 text-amber-600" />
-                  Pilar B &bull; K3 &amp; Lisensi
+                  {isEn ? 'Skill Verification' : 'Pemeriksaan Keahlian Otomatis'}
                 </span>
                 <Sparkles className="w-4 h-4 text-amber-500" />
               </div>
 
               <h3 className="text-xl font-extrabold text-slate-900 mb-2 group-hover:text-amber-700 transition-colors">
-                Smart CV OCR Scanner
+                {isEn ? 'Automatic CV Scanner' : 'Pemeriksaan CV & Keahlian Pabrik'}
               </h3>
               <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                Ekstraksi otomatis 11 kamus kompetensi manufaktur langsung saat pelamar mengunggah berkas CV.
+                {isEn
+                  ? 'Automatically reads technical manufacturing competencies directly from uploaded resumes.'
+                  : 'Mengenali keahlian teknis pabrik (PLC, mesin CNC, bubut, sertifikat K3) secara otomatis langsung dari berkas lamaran.'}
               </p>
 
-              {/* Faux Scanner Document Preview with Laser Scanline */}
+              {/* Faux Scanner Document Preview */}
               <div className="bg-slate-50/90 border border-slate-200/90 rounded-2xl p-3.5 relative overflow-hidden">
-                {/* Laser scan animation line */}
                 <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-amber-500 to-transparent animate-pulse shadow-sm" />
 
                 <div className="flex items-center justify-between mb-2 text-[10px] font-mono text-slate-500">
-                  <span>BERKAS: CV_BUDI_SANTOSO.PDF</span>
-                  <span className="text-emerald-700 font-bold">100% PARSED</span>
+                  <span>BERKAS: CV_PELAMAR.PDF</span>
+                  <span className="text-emerald-700 font-bold">100% TERBACA</span>
                 </div>
 
                 <div className="space-y-2 font-mono text-xs">
                   <div className="flex items-center justify-between p-2 rounded-xl bg-white border border-slate-200 shadow-2xs">
                     <span className="text-slate-900 font-medium flex items-center gap-1.5">
                       <Check className="w-3.5 h-3.5 text-emerald-600" />
-                      PLC Siemens &amp; SCADA
+                      PLC Siemens &amp; Otomasi
                     </span>
                     <span className="text-[10px] text-amber-800 font-bold bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">
-                      Advanced
+                      Tingkat Mahir
                     </span>
                   </div>
 
@@ -200,7 +203,7 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
                       Ahli K3 Umum Kemnaker
                     </span>
                     <span className="text-[10px] text-emerald-800 font-bold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
-                      Verified
+                      Terverifikasi
                     </span>
                   </div>
 
@@ -210,7 +213,7 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
                       SIO Forklift Kemnaker
                     </span>
                     <span className="text-[10px] text-emerald-800 font-bold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
-                      Kelas 1
+                      Kelas 1 Aktif
                     </span>
                   </div>
                 </div>
@@ -218,79 +221,83 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
             </div>
 
             <div className="mt-5 pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs font-mono text-slate-500">
-              <span>Validasi Barcode Kemnaker:</span>
+              <span>Validasi Lisensi Kemnaker:</span>
               <span className="text-emerald-700 font-bold flex items-center gap-1">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                Aktif &bull; Resmi
+                Resmi &bull; Terdaftar
               </span>
             </div>
           </div>
 
-          {/* Tile 3: Compact Feature Card (4 Cols) - 3-Shift Plant Mitigation */}
+          {/* Tile 3: Compact Card (4 Cols) - Shift Work Assessment */}
           <div className="md:col-span-4 bg-white border border-slate-200/90 hover:border-blue-500/60 rounded-3xl p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden transition-all duration-300 shadow-xs hover:shadow-xl group">
             <div>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-xs font-mono px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-800 font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-2xs">
                   <Clock className="w-3.5 h-3.5 text-blue-600" />
-                  Pilar A &bull; B2B Plant Retainer
+                  {isEn ? 'Shift Readiness' : 'Kesiapan Kerja 3-Shift'}
                 </span>
                 <ShieldCheck className="w-4 h-4 text-blue-600" />
               </div>
 
               <h3 className="text-xl font-extrabold text-slate-900 mb-2 group-hover:text-blue-700 transition-colors">
-                Mitigasi Kelelahan 3-Shift
+                {isEn ? 'Shift Fatigue Assessment' : 'Pemeriksaan Kesiapan Shift Kerja'}
               </h3>
               <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                Audit beban kerja psikofisik shift malam untuk menekan insiden kecelakaan kerja di lantai manufaktur.
+                {isEn
+                  ? 'Evaluates worker stamina for night and rotating shifts to prevent workplace fatigue and incidents.'
+                  : 'Mengevaluasi kesiapan stamina dan ketahanan fisik untuk jadwal kerja bergilir (3 shift) agar mencegah risiko kecelakaan kerja.'}
               </p>
 
               {/* Shift Schedule indicators */}
               <div className="space-y-2 font-mono text-xs">
                 <div className="flex items-center justify-between p-2.5 border border-slate-200 rounded-xl bg-slate-50">
-                  <span className="text-slate-700">Shift 1 (07:00 - 15:00)</span>
+                  <span className="text-slate-700">Shift 1 (Pagi: 07.00 - 15.00)</span>
                   <span className="text-emerald-800 font-bold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded text-[10px]">
-                    Alertness 98%
+                    Kesiapan 98%
                   </span>
                 </div>
                 <div className="flex items-center justify-between p-2.5 border border-slate-200 rounded-xl bg-slate-50">
-                  <span className="text-slate-700">Shift 2 (15:00 - 23:00)</span>
+                  <span className="text-slate-700">Shift 2 (Sore: 15.00 - 23.00)</span>
                   <span className="text-emerald-800 font-bold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded text-[10px]">
-                    Alertness 94%
+                    Kesiapan 94%
                   </span>
                 </div>
                 <div className="flex items-center justify-between p-2.5 border border-amber-300 rounded-xl bg-amber-50/50">
-                  <span className="text-amber-900 font-medium">Shift 3 (23:00 - 07:00)</span>
+                  <span className="text-amber-900 font-medium">Shift 3 (Malam: 23.00 - 07.00)</span>
                   <span className="text-amber-800 font-bold bg-amber-100 border border-amber-300 px-2 py-0.5 rounded text-[10px]">
-                    Monitoring K3
+                    Pengawasan K3
                   </span>
                 </div>
               </div>
             </div>
 
             <div className="mt-5 pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs font-mono text-slate-500">
-              <span>Standar Kepatuhan:</span>
+              <span>Standar Keselamatan:</span>
               <span className="text-blue-700 font-bold">SMK3 PP 50/2012</span>
             </div>
           </div>
 
-          {/* Tile 4: Large Feature Card (8 Cols) - National Industrial Corridor Network */}
+          {/* Tile 4: Large Card (8 Cols) - Industrial Corridor Network */}
           <div className="md:col-span-8 bg-white border border-slate-200/90 hover:border-amber-500/60 rounded-3xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden transition-all duration-300 shadow-xs hover:shadow-xl group">
             <div>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-xs font-mono px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-800 font-semibold uppercase flex items-center gap-1.5 shadow-2xs">
                   <Building2 className="w-3.5 h-3.5 text-amber-600" />
-                  Kawasan Industri Terintegrasi
+                  {isEn ? 'Industrial Hub Network' : 'Pusat Kawasan Industri'}
                 </span>
                 <span className="text-xs font-mono text-emerald-700 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                  14 KAWASAN AKTIF
+                  {isEn ? '14 ACTIVE ZONES' : '14 KAWASAN AKTIF'}
                 </span>
               </div>
 
               <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 mb-2 group-hover:text-amber-700 transition-colors">
-                Klaster Pabrik Cikarang, Karawang &amp; Jawa Timur
+                {isEn ? 'Manufacturing Hubs in Cikarang, Karawang & East Java' : 'Lowongan di Kawasan Industri Cikarang, Karawang & Sekitarnya'}
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-xl mb-6">
-                Akses langsung ke ratusan pabrik otomotif, semikonduktor, dan fabrikasi logam dengan penempatan cepat terkalibrasi.
+                {isEn
+                  ? 'Direct access to verified positions across automotive, electronics, and precision metal fabrication plants.'
+                  : 'Peluang kerja di pabrik otomotif, elektronik, dan manufaktur logam dengan proses seleksi yang cepat dan terpercaya.'}
               </p>
 
               {/* Interactive Corridor Cards */}
@@ -304,7 +311,7 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
                   }`}
                 >
                   <p className="font-bold text-slate-900 text-sm mb-1 flex items-center justify-between">
-                    Cikarang Hub
+                    Cikarang
                     <MapPin className="w-3.5 h-3.5 text-amber-600" />
                   </p>
                   <p className="text-[11px] text-slate-500 mb-2">MM2100 &bull; GIIC &bull; Jababeka</p>
@@ -322,7 +329,7 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
                   }`}
                 >
                   <p className="font-bold text-slate-900 text-sm mb-1 flex items-center justify-between">
-                    Karawang Hub
+                    Karawang
                     <MapPin className="w-3.5 h-3.5 text-amber-600" />
                   </p>
                   <p className="text-[11px] text-slate-500 mb-2">KIIC &bull; Surya Cipta &bull; KIM</p>
@@ -340,10 +347,10 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
                   }`}
                 >
                   <p className="font-bold text-slate-900 text-sm mb-1 flex items-center justify-between">
-                    Jawa Timur Hub
+                    Jawa Timur
                     <MapPin className="w-3.5 h-3.5 text-amber-600" />
                   </p>
-                  <p className="text-[11px] text-slate-500 mb-2">Rungkut &bull; PIER &bull; JIIPE</p>
+                  <p className="text-[11px] text-slate-500 mb-2">Surabaya &bull; PIER &bull; JIIPE</p>
                   <span className="inline-block text-[10px] text-emerald-800 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                     64+ Lowongan Aktif
                   </span>
@@ -353,11 +360,12 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
 
             <div className="mt-6 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
               <span className="text-xs font-mono text-slate-500">
-                Rata-rata Waktu Penempatan: <strong className="text-amber-700">48 Jam Pasca Uji Asesmen</strong>
+                {isEn ? 'Average Hiring Cycle: ' : 'Waktu Proses: '}
+                <strong className="text-amber-700">{isEn ? '48 Hours post-assessment' : 'Rata-rata 2 hari kerja setelah tes'}</strong>
               </span>
               <Link href="/jobs">
                 <Button size="sm" className="bg-slate-900 hover:bg-slate-800 text-white font-mono text-xs font-bold gap-1 shadow-sm rounded-xl">
-                  Jelajahi Lowongan Pabrik
+                  {isEn ? 'Browse Factory Openings' : 'Lihat Lowongan Pabrik'}
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Button>
               </Link>

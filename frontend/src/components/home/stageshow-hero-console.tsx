@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { triggerHaptic } from '@/lib/haptics';
@@ -11,7 +11,6 @@ import {
   Award,
   Sparkles,
   Zap,
-  Maximize2,
   Cpu,
   BarChart3,
   TrendingUp,
@@ -65,7 +64,7 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
   return (
     <div className="relative w-full max-w-lg mx-auto lg:max-w-none">
       {/* Decorative Glow Ambient Layer */}
-      <div className="absolute -inset-1.5 rounded-3xl bg-gradient-to-r from-amber-500/20 via-emerald-500/15 to-blue-500/20 blur-xl opacity-70 pointer-events-none" />
+      <div className="absolute -inset-1.5 rounded-3xl bg-gradient-to-r from-amber-500/15 via-emerald-500/15 to-blue-500/15 blur-xl opacity-70 pointer-events-none" />
 
       {/* 1. Main High-Tech Industrial Instrument Chassis */}
       <div className="relative z-10 bg-slate-950 text-white border border-slate-800 rounded-3xl shadow-2xl overflow-hidden transition-all duration-300">
@@ -78,7 +77,7 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-xs animate-pulse" />
             <span className="ml-2 font-mono text-[11px] font-semibold text-slate-400 tracking-wider flex items-center gap-1.5">
               <Cpu className="w-3.5 h-3.5 text-amber-400" />
-              ENGINE // HIMPSI-2026.CAL
+              {isEn ? 'KRAEPELIN SIMULATOR' : 'SIMULATOR TES KRAEPELIN'}
             </span>
           </div>
 
@@ -86,7 +85,7 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950 border border-emerald-500/40 text-[10px] font-mono font-bold text-emerald-400">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-              ONLINE CALIBRATED
+              {isEn ? 'STANDARDS VERIFIED' : 'STANDAR RESMI'}
             </span>
           </div>
         </div>
@@ -103,7 +102,7 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
             }`}
           >
             <Activity className="w-3.5 h-3.5 text-amber-500" />
-            Kraepelin Live Beat
+            {isEn ? '1. Kraepelin Test' : '1. Tes Kraepelin'}
           </button>
           <button
             type="button"
@@ -115,7 +114,7 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
             }`}
           >
             <BarChart3 className="w-3.5 h-3.5 text-emerald-400" />
-            DISC &amp; QC Match
+            {isEn ? '2. QC Match' : '2. Kecocokan Posisi QC'}
           </button>
           <button
             type="button"
@@ -127,7 +126,7 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
             }`}
           >
             <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
-            K3 Kemnaker Barcode
+            {isEn ? '3. K3 License' : '3. Sertifikat K3'}
           </button>
         </div>
 
@@ -140,10 +139,10 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
                 <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-3">
                   <span className="flex items-center gap-1.5 font-bold tracking-wider text-amber-400">
                     <Zap className="w-3.5 h-3.5" />
-                    {isEn ? 'TACTILE ADDITION PULSE' : 'UJI PENJUMLAHAN BERUNTUN'}
+                    {isEn ? 'QUICK ADDITION PRACTICE' : 'LATIHAN PENJUMLAHAN CEPAT'}
                   </span>
                   <span className="text-emerald-400 font-bold bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/30">
-                    Kolom #{completedColumns} {streak > 2 && `🔥 ${streak}x`}
+                    Kolom {completedColumns} {streak > 2 && `(Benar ${streak}x)`}
                   </span>
                 </div>
 
@@ -172,16 +171,16 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
 
                 <p className="text-center text-[11px] font-mono text-slate-400 mt-2.5">
                   {feedback === 'correct' ? (
-                    <span className="text-emerald-400 font-semibold tracking-wide">✓ Akurat! Kecepatan meningkat</span>
+                    <span className="text-emerald-400 font-semibold tracking-wide">✓ Benar! Jawaban tepat</span>
                   ) : feedback === 'wrong' ? (
-                    <span className="text-red-400 font-semibold tracking-wide">✗ Coba lagi, ambil angka satuan</span>
+                    <span className="text-red-400 font-semibold tracking-wide">✗ Kurang tepat, pilih angka satuannya</span>
                   ) : (
-                    <span>{isEn ? 'Tap unit digit below (7+8=15 -> tap 5)' : 'Pilih angka satuan di bawah (7+8=15 -> pilih 5)'}</span>
+                    <span>{isEn ? 'Tap the unit digit below (7+8=15 -> tap 5)' : 'Pilih angka satuan hasil tambah (contoh: 7 + 8 = 15, pilih 5)'}</span>
                   )}
                 </p>
               </div>
 
-              {/* Tactile High-Tech Keypad */}
+              {/* Tactile Keypad */}
               <div className="grid grid-cols-5 gap-2 mb-4">
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((num) => (
                   <button
@@ -195,18 +194,18 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
                 ))}
               </div>
 
-              {/* Real-time Work Curve Telemetry & Sparkline */}
+              {/* Work Curve Readout */}
               <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-3 mb-3.5 flex items-center justify-between">
                 <div>
                   <span className="text-[10px] font-mono text-slate-400 block tracking-wider uppercase">
-                    KURVA STAMINA (HANKER)
+                    {isEn ? 'STAMINA & ENDURANCE (HANKER)' : 'KETAHANAN KERJA (HANKER)'}
                   </span>
                   <span className="text-xs font-mono font-bold text-emerald-400 flex items-center gap-1">
                     <TrendingUp className="w-3.5 h-3.5" />
-                    Tren Meningkat (+8.4% Stabil)
+                    {isEn ? 'Steady & Consistent Pace' : 'Ritme Kerja Stabil & Konsisten'}
                   </span>
                 </div>
-                {/* Glowing SVG Sparkline */}
+                {/* SVG Sparkline */}
                 <div className="w-28 h-8 relative">
                   <svg className="w-full h-full overflow-visible" viewBox="0 0 100 30">
                     <defs>
@@ -236,17 +235,21 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
               {/* Readout Gauges */}
               <div className="grid grid-cols-2 gap-2.5 text-left mb-3">
                 <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800">
-                  <span className="text-[10px] font-mono text-slate-400 block uppercase">LAJU KERJA (PANKER)</span>
+                  <span className="text-[10px] font-mono text-slate-400 block uppercase">
+                    {isEn ? 'SPEED (PANKER)' : 'KECEPATAN HITUNG'}
+                  </span>
                   <span className="text-base font-mono font-bold text-amber-400">{pankerSpeed} <span className="text-xs text-slate-400 font-normal">angka/mnt</span></span>
                 </div>
                 <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800">
-                  <span className="text-[10px] font-mono text-slate-400 block uppercase">AKURASI (TIANKER)</span>
-                  <span className="text-base font-mono font-bold text-emerald-400">{tiankerAccuracy}% <span className="text-xs text-emerald-500/80 font-normal">(Grade A)</span></span>
+                  <span className="text-[10px] font-mono text-slate-400 block uppercase">
+                    {isEn ? 'ACCURACY (TIANKER)' : 'TINGKAT KETELITIAN'}
+                  </span>
+                  <span className="text-base font-mono font-bold text-emerald-400">{tiankerAccuracy}% <span className="text-xs text-emerald-500/80 font-normal">(Sangat Baik)</span></span>
                 </div>
               </div>
 
               <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-400">
-                <span>Norma HIMPSI 2026: Terpenuhi</span>
+                <span>Standar HIMPSI: Terpenuhi</span>
                 <Link href="/candidate/practice" className="text-amber-400 hover:text-amber-300 font-semibold flex items-center gap-1 transition-colors">
                   Buka Latihan Lengkap
                   <ArrowRight className="w-3 h-3" />
@@ -259,15 +262,15 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
             <div className="py-2 space-y-3">
               <div className="p-3.5 bg-slate-900 border border-slate-800 rounded-2xl">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-mono font-bold text-white">PROFIL PRESISE QC INSPECTOR</span>
+                  <span className="text-xs font-mono font-bold text-white">ANALISIS KECOCOKAN POSISI QC</span>
                   <span className="text-[10px] font-mono bg-emerald-950 text-emerald-400 border border-emerald-500/40 px-2 py-0.5 rounded font-bold">
-                    FIT: 96.4%
+                    Cocok: 96.4%
                   </span>
                 </div>
                 <div className="space-y-2 text-xs font-mono">
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-slate-400">Compliance (Disiplin SOP)</span>
+                      <span className="text-slate-400">Kepatuhan Standar SOP</span>
                       <span className="font-bold text-amber-400">95%</span>
                     </div>
                     <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
@@ -277,7 +280,7 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
 
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-slate-400">Steadiness (Daya Tahan Monoton)</span>
+                      <span className="text-slate-400">Daya Tahan Kerja Rutin</span>
                       <span className="font-bold text-emerald-400">92%</span>
                     </div>
                     <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
@@ -289,12 +292,12 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
 
               <div className="grid grid-cols-2 gap-2 text-xs font-mono">
                 <div className="p-2.5 border border-slate-800 rounded-xl bg-slate-900">
-                  <span className="text-[10px] text-slate-400 block">7 QC Tools</span>
-                  <span className="font-bold text-white">Ishikawa &amp; Pareto</span>
+                  <span className="text-[10px] text-slate-400 block">Metode Mutu</span>
+                  <span className="font-bold text-white">7 QC Tools</span>
                 </div>
                 <div className="p-2.5 border border-slate-800 rounded-xl bg-slate-900">
-                  <span className="text-[10px] text-slate-400 block">Metrologi Presisi</span>
-                  <span className="font-bold text-white">Caliper 0.01mm</span>
+                  <span className="text-[10px] text-slate-400 block">Alat Ukur Presisi</span>
+                  <span className="font-bold text-white">Jangka Sorong (Caliper)</span>
                 </div>
               </div>
 
@@ -312,16 +315,16 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
             <div className="py-2 space-y-3">
               <div className="p-3.5 bg-slate-900 border border-slate-800 rounded-2xl">
                 <span className="text-[10px] font-mono uppercase text-amber-300 bg-amber-950/80 border border-amber-500/40 px-2 py-0.5 rounded font-bold inline-block mb-2">
-                  Kemnaker RI Verified
+                  Terverifikasi Kemnaker RI
                 </span>
                 <p className="text-sm font-mono font-bold text-white mb-1">
-                  Surat Izin Operator (SIO) Forklift Kelas 1
+                  Surat Izin Operator (SIO) Forklift
                 </p>
                 <p className="text-xs font-mono text-slate-400 mb-2">
-                  No. Reg: REG-K3-2026-09881 / Kawasan MM2100
+                  No. Registrasi: REG-K3-2026-09881
                 </p>
                 <div className="p-2 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
-                  <span className="text-[11px] font-mono text-slate-300">Status Validasi Fisik:</span>
+                  <span className="text-[11px] font-mono text-slate-300">Status Lisensi:</span>
                   <span className="text-[11px] font-mono font-bold text-emerald-400 flex items-center gap-1">
                     <CheckCircle2 className="w-3 h-3" />
                     Asli &bull; Aktif 2028
@@ -331,17 +334,17 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
 
               <div className="p-3 border border-slate-800 rounded-2xl bg-slate-900/60 text-xs font-mono text-slate-400 space-y-1">
                 <div className="flex justify-between">
-                  <span>Modul SMK3:</span>
-                  <span className="text-white font-bold">PP No. 50 Th 2012</span>
+                  <span>Standar K3:</span>
+                  <span className="text-white font-bold">PP No. 50 Tahun 2012</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Inspeksi APD:</span>
-                  <span className="text-emerald-400 font-bold">Safety Shoes &amp; Helmet</span>
+                  <span>Kelengkapan APD:</span>
+                  <span className="text-emerald-400 font-bold">Sepatu &amp; Helm Safety</span>
                 </div>
               </div>
 
               <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-400">
-                <span>Verifikasi Berkas Otomatis</span>
+                <span>Pemeriksaan Dokumen Otomatis</span>
                 <Link href="/candidate" className="text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1 transition-colors">
                   Unggah Dokumen K3
                   <ArrowRight className="w-3 h-3" />
