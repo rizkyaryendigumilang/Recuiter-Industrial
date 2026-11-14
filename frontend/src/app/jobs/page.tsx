@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/language-context';
 import { pb } from '@/lib/pocketbase';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -16,11 +16,14 @@ import {
   MapPin, 
   DollarSign, 
   Clock, 
-  Building, 
+  Building2, 
   Filter, 
   Sparkles,
   CheckCircle2,
-  AlertCircle
+  ArrowRight,
+  Activity,
+  Layers,
+  X,
 } from 'lucide-react';
 
 export default function JobsPage() {
@@ -32,8 +35,8 @@ export default function JobsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('all');
   const [selectedType, setSelectedType] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
-  // Fallback demo jobs for industrial recruitment
   const demoJobs = FALLBACK_INDUSTRIAL_JOBS;
 
   useEffect(() => {
@@ -50,7 +53,7 @@ export default function JobsPage() {
         } else {
           setJobs(demoJobs);
         }
-      } catch (err) {
+      } catch {
         setJobs(demoJobs);
       } finally {
         setLoading(false);
@@ -75,42 +78,84 @@ export default function JobsPage() {
       (selectedType === 'fulltime' && job.job_type?.toLowerCase().includes('full')) ||
       (selectedType === 'kontrak' && job.job_type?.toLowerCase().includes('kontrak'));
 
-    return titleMatch && locationMatch && typeMatch;
+    const categoryMatch = selectedCategory === 'all' ||
+      (selectedCategory === 'operator' && (job.title?.toLowerCase().includes('operator') || job.description?.toLowerCase().includes('operator'))) ||
+      (selectedCategory === 'teknisi' && (job.title?.toLowerCase().includes('teknisi') || job.title?.toLowerCase().includes('maintenance') || job.title?.toLowerCase().includes('plc'))) ||
+      (selectedCategory === 'qc' && (job.title?.toLowerCase().includes('qc') || job.title?.toLowerCase().includes('qa') || job.title?.toLowerCase().includes('k3'))) ||
+      (selectedCategory === 'gudang' && (job.title?.toLowerCase().includes('gudang') || job.title?.toLowerCase().includes('forklift') || job.title?.toLowerCase().includes('ppic')));
+
+    return titleMatch && locationMatch && typeMatch && categoryMatch;
   });
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto space-y-6">
+    <div className="min-h-screen bg-[#FAFAFA] py-10 px-4 sm:px-6 lg:px-8 text-slate-900">
+      <div className="max-w-7xl mx-auto space-y-8">
 
-        {/* Header Title */}
-        <div className="text-center sm:text-left space-y-2 border-b border-[#E8E8EC] pb-4">
-          <Badge className="bg-[#F6F8FA] text-[#0D1117] border-[#E1E4E8] text-xs py-1 px-3 font-mono">
-            <Briefcase className="w-3.5 h-3.5 mr-1 text-amber-600" />
-            {isEn ? 'INDUSTRIAL JOB BOARD 2026' : 'BURSA LOWONGAN KERJA INDUSTRI 2026'}
-          </Badge>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0A0A0A] tracking-tight">
-            {isEn ? 'Industrial & Manufacturing Careers' : 'Papan Lowongan Kerja Manufaktur'}
-          </h1>
-          <p className="text-xs sm:text-sm text-[#6B6B6B] max-w-2xl">
-            {isEn
-              ? 'Discover verified openings across industrial corridors: Karawang, Cikarang, Jababeka, MM2100, and EJIP with AI Skill Matching.'
-              : 'Temukan lowongan terverifikasi di kawasan industri terkemuka dengan pencocokan otomatis kualifikasi dan asesmen psikotes langsung.'}
-          </p>
+        {/* Modern Header Banner */}
+        <div className="p-8 sm:p-10 bg-white border border-slate-200/90 rounded-3xl shadow-xs space-y-3 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="relative z-10 space-y-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-xs font-mono font-semibold">
+              <Briefcase className="w-3.5 h-3.5 text-amber-600" />
+              <span>{isEn ? 'VERIFIED INDUSTRIAL CAREERS' : 'BURSA LOWONGAN KERJA PABRIK TERVERIFIKASI'}</span>
+            </div>
+            <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-950 tracking-tight">
+              {isEn ? 'Precision Manufacturing & Plant Openings' : 'Papan Lowongan Kerja Manufaktur & Pabrik'}
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-600 max-w-2xl leading-relaxed">
+              {isEn
+                ? 'Discover verified openings across industrial corridors: Karawang, Cikarang, Jababeka, MM2100, and EJIP with AI Skill Matching.'
+                : 'Temukan lowongan terverifikasi di kawasan industri terkemuka (Cikarang, Karawang, Banten, Jawa Timur) dengan seleksi psikometri Kraepelin berstandar HIMPSI.'}
+            </p>
+          </div>
         </div>
 
-        {/* Search & Filter Bar */}
-        <div className="p-4 bg-white border border-[#E8E8EC] rounded-2xl shadow-sm space-y-3">
+        {/* Quick Category Tabs */}
+        <div className="flex flex-wrap gap-2">
+          {[
+            { id: 'all', label: isEn ? 'All Positions' : 'Semua Posisi' },
+            { id: 'operator', label: isEn ? 'Machine Operators' : 'Operator Produksi' },
+            { id: 'teknisi', label: isEn ? 'Technician & PLC' : 'Teknisi & Maintenance' },
+            { id: 'qc', label: isEn ? 'QA / QC & K3' : 'QA / QC & Ahli K3' },
+            { id: 'gudang', label: isEn ? 'Warehouse & Forklift' : 'Gudang & SIO Forklift' },
+          ].map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.id)}
+              className={`px-4 py-2 rounded-2xl text-xs font-mono font-semibold transition-all cursor-pointer ${
+                selectedCategory === cat.id
+                  ? 'bg-slate-900 text-white shadow-2xs'
+                  : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Search & Location Filter Bar */}
+        <div className="p-4 sm:p-5 bg-white border border-slate-200/90 rounded-3xl shadow-xs space-y-3">
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
             {/* Search Input */}
             <div className="sm:col-span-6 relative">
-              <Search className="w-4 h-4 absolute left-3 top-3 text-[#86868B]" />
+              <Search className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" />
               <Input
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder={isEn ? 'Search position, skills, company...' : 'Cari posisi (Operator, QC, Teknisi), nama PT...'}
+                placeholder={isEn ? 'Search position, skills, company...' : 'Cari posisi (Operator, QC, PLC Siemens), nama PT...'}
                 aria-label={isEn ? 'Search job position or company' : 'Cari posisi lowongan atau nama perusahaan'}
-                className="pl-9 rounded-xl text-xs border-[#E8E8EC] focus:border-[#0D1117] h-10"
+                className="pl-10 pr-9 rounded-2xl text-xs border-slate-200 focus:border-slate-900 h-11 bg-slate-50/70"
               />
+              {searchTerm && (
+                <button
+                  type="button"
+                  onClick={() => setSearchTerm('')}
+                  aria-label={isEn ? 'Clear search' : 'Hapus pencarian'}
+                  className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-900 cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
             </div>
 
             {/* Location Filter */}
@@ -119,22 +164,22 @@ export default function JobsPage() {
                 value={selectedLocation}
                 onChange={(e) => setSelectedLocation(e.target.value)}
                 aria-label={isEn ? 'Filter by industrial zone' : 'Filter kawasan industri'}
-                className="w-full h-10 px-3 rounded-xl text-xs border border-[#E8E8EC] bg-white text-[#0A0A0A] focus:border-[#0D1117] focus:outline-none"
+                className="w-full h-11 px-3.5 rounded-2xl text-xs border border-slate-200 bg-slate-50/70 text-slate-900 focus:border-slate-900 focus:bg-white focus:outline-none cursor-pointer"
               >
                 <option value="all">{isEn ? 'All Industrial Zones' : 'Semua Kawasan Industri'}</option>
                 <option value="cikarang">Cikarang (MM2100, Jababeka, GIIC)</option>
                 <option value="karawang">Karawang (KIIC, Suryacipta)</option>
-                <option value="lainnya">{isEn ? 'Banten & Other Cities' : 'Banten & Kota Lainnya'}</option>
+                <option value="lainnya">{isEn ? 'Banten & Other Hubs' : 'Banten & Kota Lainnya'}</option>
               </select>
             </div>
 
-            {/* Type Filter */}
+            {/* Contract Type Filter */}
             <div className="sm:col-span-3">
               <select
                 value={selectedType}
                 onChange={(e) => setSelectedType(e.target.value)}
                 aria-label={isEn ? 'Filter by employment type' : 'Filter tipe kontrak kerja'}
-                className="w-full h-10 px-3 rounded-xl text-xs border border-[#E8E8EC] bg-white text-[#0A0A0A] focus:border-[#0D1117] focus:outline-none"
+                className="w-full h-11 px-3.5 rounded-2xl text-xs border border-slate-200 bg-slate-50/70 text-slate-900 focus:border-slate-900 focus:bg-white focus:outline-none cursor-pointer"
               >
                 <option value="all">{isEn ? 'All Contract Types' : 'Semua Tipe Kontrak'}</option>
                 <option value="kontrak">{isEn ? 'Factory Contract' : 'Kontrak Pabrik'}</option>
@@ -146,91 +191,111 @@ export default function JobsPage() {
 
         {/* Jobs List Grid */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between text-xs text-[#6B6B6B]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-500 font-mono">
             <span>
-              {isEn ? (
-                <>Showing <strong>{filteredJobs.length}</strong> active openings</>
-              ) : (
-                <>Menampilkan <strong>{filteredJobs.length}</strong> lowongan kerja aktif</>
-              )}
+              Menampilkan <strong className="text-slate-900">{filteredJobs.length}</strong> lowongan kerja aktif
             </span>
-            <Link href="/candidate/practice" className="text-amber-800 hover:text-amber-900 underline underline-offset-2 font-semibold flex items-center gap-1 font-mono">
-              <span>{isEn ? 'Practice Kraepelin test before applying' : 'Latihan tes Kraepelin sebelum melamar'}</span>
+            <Link href="/candidate/practice" className="text-amber-700 hover:text-amber-800 underline underline-offset-2 font-semibold flex items-center gap-1.5">
+              <Activity className="w-3.5 h-3.5 text-amber-600" />
+              <span>Latihan tes Kraepelin gratis sebelum melamar</span>
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {filteredJobs.map((job) => (
-              <Card
-                key={job.id}
-                className="border-[#E8E8EC] hover:border-neutral-400 shadow-sm hover:shadow-md transition-all bg-white rounded-2xl flex flex-col justify-between content-visibility-auto gpu-layer will-animate"
-              >
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        {job.is_featured && (
-                          <Badge className="bg-amber-100 text-amber-800 border-amber-200 text-[10px] font-bold">
-                            {isEn ? '★ FEATURED FACTORY' : '★ REKOMENDASI PABRIK'}
-                          </Badge>
-                        )}
-                        <Badge variant="outline" className="text-[10px] bg-[#F5F5F7] text-[#4B5563]">
-                          {job.job_type || 'Full-time'}
-                        </Badge>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {filteredJobs.length === 0 ? (
+              <div className="col-span-full py-16 px-6 bg-white border border-slate-200 rounded-3xl text-center flex flex-col items-center justify-center shadow-xs">
+                <div className="w-14 h-14 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 mb-3">
+                  <Briefcase className="w-6 h-6 text-slate-500" />
+                </div>
+                <h3 className="text-base font-bold text-slate-900">
+                  {isEn ? 'No positions match your search criteria' : 'Tidak ada lowongan yang sesuai kriteria pencarian'}
+                </h3>
+                <p className="text-xs text-slate-500 max-w-sm mt-1 mb-4 leading-relaxed">
+                  Coba ubah kata kunci pencarian, pilih kawasan industri lain, atau reset filter untuk melihat semua lowongan.
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => { setSearchTerm(''); setSelectedLocation('all'); setSelectedType('all'); setSelectedCategory('all'); }}
+                  className="rounded-xl text-xs border-slate-300 text-slate-900 hover:bg-slate-50"
+                >
+                  Reset Semua Filter
+                </Button>
+              </div>
+            ) : (
+              filteredJobs.map((job) => (
+                <div
+                  key={job.id}
+                  className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          {job.is_featured && (
+                            <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 font-bold">
+                              ★ REKOMENDASI PABRIK
+                            </span>
+                          )}
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
+                            {job.job_type || 'Full-time'}
+                          </span>
+                        </div>
+                        <h2 className="text-lg font-extrabold text-slate-900 leading-snug group-hover:text-amber-700 transition-colors pt-1">
+                          {job.title}
+                        </h2>
+                        <p className="text-xs font-semibold text-slate-600 flex items-center gap-1.5">
+                          <Building2 className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                          <span>{job.company_name || 'PT Industri Mitra Terverifikasi'}</span>
+                        </p>
                       </div>
-                      <CardTitle className="text-base font-bold text-[#0A0A0A] leading-snug">
-                        {job.title}
-                      </CardTitle>
-                      <p className="text-xs font-semibold text-[#0D1117] flex items-center gap-1">
-                        <Building className="w-3.5 h-3.5 text-neutral-600" />
-                        <span>{job.company_name || 'PT Industri Mitra Terverifikasi'}</span>
-                      </p>
                     </div>
+
+                    <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                      {job.description}
+                    </p>
+
+                    {/* Location & Wage Strip */}
+                    <div className="grid grid-cols-2 gap-2 text-[11px] font-mono pt-1">
+                      <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-xl text-slate-600 truncate">
+                        <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                        <span className="truncate">{job.location || 'Kawasan Industri'}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-xl text-emerald-800 font-bold truncate">
+                        <DollarSign className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                        <span className="truncate">{job.salary_range || 'Sesuai UMK + Tunjangan'}</span>
+                      </div>
+                    </div>
+
+                    {/* Competency Tags */}
+                    {job.requirements && Array.isArray(job.requirements) && (
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {job.requirements.slice(0, 3).map((req: string, i: number) => (
+                          <span key={i} className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200">
+                            {req}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                </CardHeader>
 
-                <CardContent className="space-y-4 text-xs">
-                  <p className="text-[#6B6B6B] line-clamp-2 leading-relaxed">
-                    {job.description}
-                  </p>
-
-                  <div className="grid grid-cols-2 gap-2 text-[11px] text-[#4B5563] pt-1">
-                    <div className="flex items-center gap-1.5 truncate">
-                      <MapPin className="w-3.5 h-3.5 text-[#86868B] flex-shrink-0" />
-                      <span className="truncate">{job.location || 'Kawasan Industri'}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 truncate font-semibold text-[#0A0A0A]">
-                      <DollarSign className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
-                      <span className="truncate">{job.salary_range || (isEn ? 'Standard Wage' : 'Sesuai UMK')}</span>
-                    </div>
-                  </div>
-
-                  {job.requirements && Array.isArray(job.requirements) && (
-                    <div className="flex flex-wrap gap-1.5 pt-1">
-                      {job.requirements.slice(0, 3).map((req: string, i: number) => (
-                        <span key={i} className="text-[10px] px-2 py-0.5 rounded-md bg-[#F5F5F7] text-[#4B5563] border border-[#E8E8EC]">
-                          {req}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="flex items-center gap-2 pt-2 border-t border-[#F5F5F7]">
+                  <div className="flex items-center gap-2 pt-5 mt-4 border-t border-slate-100">
                     <Link href={`/jobs/${job.id}`} className="flex-1">
-                      <Button variant="outline" size="sm" className="w-full text-xs font-semibold rounded-xl border-[#E8E8EC] h-9">
+                      <Button variant="outline" size="sm" className="w-full text-xs font-semibold rounded-2xl border-slate-200 h-9.5 hover:bg-slate-50">
                         {isEn ? 'Position Details' : 'Detail Posisi'}
                       </Button>
                     </Link>
 
                     <Link href={`/apply/${job.id}`} className="flex-1">
-                      <Button size="sm" className="w-full text-xs font-semibold rounded-xl bg-[#0D1117] hover:bg-[#21262D] text-white h-9 gap-1 shadow-sm">
+                      <Button size="sm" className="w-full text-xs font-bold rounded-2xl bg-slate-900 hover:bg-slate-800 text-white h-9.5 gap-1 shadow-2xs">
                         <span>{isEn ? 'Apply Now' : 'Lamar Sekarang'}</span>
+                        <ArrowRight className="w-3.5 h-3.5 ml-1" />
                       </Button>
                     </Link>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
+                </div>
+              ))
+            )}
           </div>
         </div>
 

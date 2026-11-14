@@ -46,10 +46,10 @@ function NavContent() {
           <Link
             key={l.href}
             href={l.href}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-medium active:scale-95 transition-transform duration-100 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs active:scale-95 transition-all duration-150 cursor-pointer ${
               isActive(l.href)
-                ? 'bg-[#1D1D1F] text-white shadow-sm'
-                : 'text-[#6B6B6B] hover:text-[#0A0A0A] hover:bg-[#F5F5F7]'
+                ? 'bg-slate-900 text-white shadow-xs font-semibold'
+                : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100 font-medium'
             }`}
           >
             {l.label}
@@ -58,13 +58,22 @@ function NavContent() {
       </nav>
 
       {/* Language Switcher & Auth Actions (Desktop) */}
-      <div className="hidden lg:flex items-center gap-2.5">
+      <div className="hidden lg:flex items-center gap-2">
+        {/* Live Active Openings Badge */}
+        <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-[10px] font-medium text-emerald-800 font-mono">
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+          </span>
+          <span>84 Lowongan</span>
+        </div>
+
         {/* Helpdesk SSO JIT Handoff Button */}
         <Button
           variant="outline"
           size="sm"
           onClick={() => openHelpdesk()}
-          className="rounded-full text-xs font-semibold border-amber-300/80 bg-amber-50/70 hover:bg-amber-100 text-amber-900 h-8 px-3 active:scale-95 transition-all gap-1.5 cursor-pointer shadow-2xs"
+          className="rounded-xl text-xs font-semibold border-amber-300/80 bg-amber-50/70 hover:bg-amber-100 text-amber-900 h-8 px-3 active:scale-95 transition-all gap-1.5 cursor-pointer shadow-2xs"
           title="Bantuan & Laporkan Kendala (SSO VPS Helpdesk)"
         >
           <LifeBuoy className="w-3.5 h-3.5 text-amber-600" />
@@ -75,18 +84,18 @@ function NavContent() {
         <LanguageSwitcher variant="dropdown" />
 
         {isLoggedIn ? (
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] font-mono text-[#52525B] font-medium bg-[#F5F5F7] px-3 py-1.5 rounded-full truncate max-w-[170px] border border-[#E8E8EC]">
+          <div className="flex items-center gap-1.5">
+            <span className="text-[11px] font-mono text-slate-700 font-medium bg-slate-100 px-2.5 py-1 rounded-xl truncate max-w-[150px] border border-slate-200">
               {user?.email}
             </span>
             <Link href="/settings">
               <Button
                 variant="outline"
                 size="sm"
-                className={`rounded-full h-8 w-8 min-h-[32px] min-w-[32px] p-0 border-[#E8E8EC] active:scale-90 transition-transform cursor-pointer ${
+                className={`rounded-xl h-8 w-8 min-h-[32px] min-w-[32px] p-0 border-slate-200 active:scale-90 transition-transform cursor-pointer ${
                   isActive('/settings')
-                    ? 'bg-[#1D1D1F] text-white hover:bg-[#1D1D1F]'
-                    : 'text-[#6B6B6B] hover:text-[#0A0A0A] hover:bg-[#F5F5F7]'
+                    ? 'bg-slate-900 text-white hover:bg-slate-900'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 }`}
                 title={t.nav.settings}
                 aria-label={t.nav.settings}
@@ -98,19 +107,19 @@ function NavContent() {
               variant="outline"
               size="sm"
               onClick={logout}
-              className="rounded-full text-xs font-medium border-[#E8E8EC] text-[#1D1D1F] hover:bg-[#F5F5F7] h-8 px-3 active:scale-95 transition-transform cursor-pointer"
+              className="rounded-xl text-xs font-medium border-slate-200 text-slate-900 hover:bg-slate-100 h-8 px-2.5 active:scale-95 transition-transform cursor-pointer"
             >
-              <LogOut className="w-3.5 h-3.5 mr-1 text-[#52525B]" />
+              <LogOut className="w-3.5 h-3.5 mr-1 text-slate-500" />
               {t.nav.logout}
             </Button>
           </div>
         ) : (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <Link href="/login">
               <Button
                 variant="ghost"
                 size="sm"
-                className="rounded-full text-xs font-medium text-[#1D1D1F] hover:bg-[#F5F5F7] h-8 px-3.5"
+                className="rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-950 hover:bg-slate-100 h-8 px-3"
               >
                 {t.nav.login}
               </Button>
@@ -118,7 +127,7 @@ function NavContent() {
             <Link href="/register">
               <Button
                 size="sm"
-                className="rounded-full text-xs font-medium bg-[#0D1117] hover:bg-[#21262D] text-white shadow-xs h-8 px-4 transition-all"
+                className="rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white shadow-xs h-8 px-3.5 transition-all"
               >
                 {t.nav.register}
               </Button>
@@ -218,17 +227,23 @@ function NavContent() {
 
 export function Navbar() {
   return (
-    <header className="sticky top-0 z-50 bg-[#FFFFFF]/85 backdrop-blur-xl border-b border-[#E8E8EC] pt-[env(safe-area-inset-top,0px)]">
-      <div className="container mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 group">
-          <span className="w-7 h-7 rounded-md bg-[#0D1117] text-white flex items-center justify-center font-bold text-xs tracking-wider shadow-xs group-hover:bg-amber-600 transition-colors">
-            RI
-          </span>
-          <span className="font-bold text-base tracking-tight text-[#0A0A0A]">
-            Recruiter <span className="font-mono text-xs text-amber-600 font-semibold px-1.5 py-0.5 rounded bg-amber-50 border border-amber-200">IND</span>
-          </span>
+    <header className="sticky top-2 sm:top-3 z-50 px-3 sm:px-6 max-w-7xl mx-auto w-full pt-[env(safe-area-inset-top,0px)]">
+      <div className="bg-white/92 backdrop-blur-xl border border-slate-200/90 shadow-xs hover:shadow-sm transition-all rounded-2xl px-4 sm:px-5 h-14 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 text-white flex items-center justify-center font-bold text-xs tracking-wider shadow-sm group-hover:scale-105 transition-transform border border-slate-700/50">
+            <span className="text-amber-400 font-black">R</span>
+            <span className="text-white font-black">I</span>
+          </div>
+          <div className="flex flex-col">
+            <span className="font-extrabold text-sm sm:text-base tracking-tight text-slate-900 leading-none">
+              Recruiter <span className="text-amber-600 font-black">Industrial</span>
+            </span>
+            <span className="text-[9px] font-mono text-slate-400 tracking-wider uppercase mt-0.5 hidden sm:block">
+              HIMPSI &bull; K3 Kemnaker
+            </span>
+          </div>
         </Link>
-        <Suspense fallback={<div className="h-7 w-20 bg-[#F5F5F7] rounded-full animate-pulse" />}>
+        <Suspense fallback={<div className="h-7 w-20 bg-slate-100 rounded-full animate-pulse" />}>
           <NavContent />
         </Suspense>
       </div>
