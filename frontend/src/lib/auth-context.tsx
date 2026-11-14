@@ -87,11 +87,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       else if (userRole === 'employer') router.push('/employer');
       else router.push('/candidate');
     } catch (err) {
-      // Jika PB offline atau user memakai kredensial demo default
-      if (email === 'admin@hrtech.id' && password === 'Admin@hrtech123') {
-        loginAsDemo('admin');
-        return;
-      }
       throw err;
     }
   };

@@ -159,8 +159,8 @@ export default function SettingsPage() {
   const [apiKey, setApiKey] = useState('rec_live_8f9c73a1e4b52d9847e112bc90a');
   const [showApiKey, setShowApiKey] = useState(false);
   const [apiKeyCopied, setApiKeyCopied] = useState(false);
-  const [webhookUrl, setWebhookUrl] = useState('https://webhook.site/recruiter-dispatch');
-  const [webhookSecret] = useState('whsec_7d8e9f2a4b1c3e5d6a8b0c2e4f6a8b0c');
+  const [webhookUrl, setWebhookUrl] = useState('');
+  const [webhookSecret, setWebhookSecret] = useState('');
   const [webhookTestStatus, setWebhookTestStatus] = useState<string | null>(null);
   const [webhookTesting, setWebhookTesting] = useState(false);
 
@@ -296,22 +296,8 @@ export default function SettingsPage() {
       domicile: domicile || 'Cikarang, Jawa Barat',
       expectedSalary: expectedSalary || '6.500.000',
       portfolioUrl: portfolioUrl || '',
-      detectedSkills: detectedSkills.length > 0 ? detectedSkills : [
-        'Pengoperasian Mesin CNC',
-        'Pembacaan Gambar Teknik (CAD/CAM)',
-        'Sertifikasi K3 Umum Industri',
-        'Alat Ukur Presisi (Mikrometer & Dial Gauge)',
-      ],
-      kraepelinScores: kraepelinScores || {
-        testCode: 'PSI-KRAEPELIN-LATEST',
-        panker: 52,
-        tianker: 96,
-        hanker: 'Stabil',
-        janker: 90,
-        grade: 'Sangat Teliti',
-        recommendation: 'Direkomendasikan untuk Penempatan Manufaktur Presisi',
-        testDate: new Date().toLocaleDateString('id-ID'),
-      },
+      detectedSkills: detectedSkills,
+      kraepelinScores: kraepelinScores || undefined,
       preferences: {
         language,
         timezone,

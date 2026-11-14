@@ -9,7 +9,7 @@
 import { pb } from '@/lib/pocketbase';
 
 export const HELPDESK_CONFIG = {
-  BASE_URL: 'https://43.156.236.102/helpdesk/handoff',
+  BASE_URL: (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_HELPDESK_URL) || 'https://43.156.236.102/helpdesk/handoff',
   APP_SLUG: 'recruiter',
 } as const;
 

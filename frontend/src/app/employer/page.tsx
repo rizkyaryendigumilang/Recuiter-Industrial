@@ -35,6 +35,7 @@ import {
   Calendar,
   CheckSquare,
   Square,
+  Plus,
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import type { PsikogramData } from '@/components/assessment/psikogram-modal';
@@ -66,6 +67,9 @@ export default function EmployerDashboard() {
 
   // View state: 'kanban' or 'list'
   const [pipelineView, setPipelineView] = useState<'kanban' | 'list'>('kanban');
+
+  // Tab navigation state
+  const [activeTab, setActiveTab] = useState('candidates');
 
   // Drag and drop state
   const [draggedAppId, setDraggedAppId] = useState<string | null>(null);
@@ -147,19 +151,21 @@ export default function EmployerDashboard() {
               expand: 'job_id,candidate_id.user_id',
               sort: '-created',
             });
-            setApplications(apps.length > 0 ? apps : SAMPLE_APPLICATIONS);
+            setApplications(apps);
           } else {
-            setApplications(SAMPLE_APPLICATIONS);
+            setApplications([]);
           }
         } else {
-          setApplications(SAMPLE_APPLICATIONS);
+          setApplications([]);
         }
       } else {
-        setApplications(SAMPLE_APPLICATIONS);
+        const isDemo = typeof window !== 'undefined' && localStorage.getItem('demo_role') === 'employer';
+        setApplications(isDemo ? SAMPLE_APPLICATIONS : []);
       }
     } catch (err) {
       console.error('Error load employer data:', err);
-      setApplications(SAMPLE_APPLICATIONS);
+      const isDemo = typeof window !== 'undefined' && localStorage.getItem('demo_role') === 'employer';
+      setApplications(isDemo ? SAMPLE_APPLICATIONS : []);
     } finally {
       setLoading(false);
     }
@@ -578,7 +584,7 @@ export default function EmployerDashboard() {
         </div>
 
         {/* Tabs Navigation */}
-        <Tabs defaultValue="candidates">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="mb-6 bg-white border border-[#E8E8EC] p-1 rounded-xl shadow-xs flex flex-wrap h-auto gap-1">
             <TabsTrigger
               value="candidates"
@@ -658,8 +664,25 @@ export default function EmployerDashboard() {
               </div>
 
               {applications.length === 0 ? (
-                <div className="py-12 text-center text-xs text-[#86868B]">
-                  Belum ada kandidat yang melamar pada lowongan Anda.
+                <div className="py-16 px-6 text-center border border-dashed border-[#D0D7DE] bg-[#F6F8FA] rounded-2xl flex flex-col items-center justify-center space-y-3">
+                  <div className="w-12 h-12 rounded-xl bg-white border border-[#D0D7DE] flex items-center justify-center shadow-xs text-[#57606A]">
+                    <Users className="w-6 h-6 text-neutral-400" />
+                  </div>
+                  <div className="space-y-1 max-w-sm">
+                    <p className="text-sm font-bold text-[#0D1117]">Belum Ada Pelamar Masuk</p>
+                    <p className="text-xs text-[#57606A] leading-relaxed">
+                      Kandidat yang menyelesaikan tes psikometri Kraepelin dan mendaftar pada lowongan Anda akan langsung tersinkronisasi ke papan pipeline ATS ini.
+                    </p>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setActiveTab('create')}
+                    className="text-xs font-mono border-[#D0D7DE] text-[#0D1117] hover:bg-white gap-1.5 mt-2"
+                  >
+                    <Plus className="w-3.5 h-3.5 text-amber-600" />
+                    <span>Pasang Lowongan Baru</span>
+                  </Button>
                 </div>
               ) : pipelineView === 'kanban' ? (
                 /* ==================================================================== */

@@ -223,7 +223,8 @@ export default function AdminDashboard() {
     }
   }
 
-  const displayApplications = applications.length > 0 ? applications : SAMPLE_APPLICATIONS;
+  const isDemoAdminUser = typeof window !== 'undefined' && localStorage.getItem('demo_role') === 'admin';
+  const displayApplications = applications.length > 0 ? applications : (isDemoAdminUser ? SAMPLE_APPLICATIONS : []);
 
   async function updateCandidateStatus(app: any, newStatus: string) {
     try {

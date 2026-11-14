@@ -13,8 +13,8 @@ import { ShieldCheck, ChevronLeft, KeyRound } from 'lucide-react';
 
 export default function AdminLoginPage() {
   const isProduction = process.env.NODE_ENV === 'production';
-  const [email, setEmail] = useState(isProduction ? '' : 'admin@hrtech.id');
-  const [password, setPassword] = useState(isProduction ? '' : 'Admin@hrtech123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -30,8 +30,11 @@ export default function AdminLoginPage() {
     try {
       await login(email, password);
     } catch {
-      // Jika offline, fallback ke demo admin
-      loginAsDemo('admin');
+      setError(
+        language === 'en'
+          ? 'Invalid admin credentials or server unreachable.'
+          : 'Email atau kata sandi administrator salah, atau server tidak dapat dijangkau.'
+      );
     } finally {
       setLoading(false);
     }

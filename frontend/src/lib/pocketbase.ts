@@ -7,7 +7,7 @@ function getPocketBaseUrl(): string {
   if (typeof window !== 'undefined') {
     return '/recruiter-pb';
   }
-  return process.env.PB_INTERNAL_URL || 'http://127.0.0.1:8093';
+  return process.env.PB_INTERNAL_URL || 'http://127.0.0.1:8090';
 }
 
 export const pb = new PocketBase(getPocketBaseUrl());
@@ -43,7 +43,7 @@ export const isCandidate = () => {
 export const getUserRole = (): string | null => {
   if (pb.authStore.isValid && pb.authStore.record) return pb.authStore.record.role || null;
   if (typeof window !== 'undefined') {
-    return localStorage.getItem('demo_role') || (localStorage.getItem('admin_auth') === 'true' ? 'admin' : null);
+    return localStorage.getItem('demo_role') || null;
   }
   return null;
 };

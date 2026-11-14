@@ -208,25 +208,46 @@ export function PsychTestContent() {
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, [submitted, jobId]);
 
-  // Calculate radar chart scores based on answers
+  // Calculate radar chart scores based on answers dynamically
   const calculateDimensions = () => {
     let totalScore = 0;
-    questions.forEach((q) => {
+    const dimKeys = ['D', 'I', 'S', 'C', 'ES'];
+    const dimBuckets: Record<string, { sum: number; count: number }> = {
+      D: { sum: 0, count: 0 },
+      I: { sum: 0, count: 0 },
+      S: { sum: 0, count: 0 },
+      C: { sum: 0, count: 0 },
+      ES: { sum: 0, count: 0 },
+    };
+
+    questions.forEach((q, idx) => {
       const selected = answers[q.id];
-      if (selected && q.scoring_weight) {
-        const weight = q.scoring_weight[selected] ?? 3;
-        totalScore += weight;
+      const weight = selected && q.scoring_weight ? (q.scoring_weight[selected] ?? 3) : 3;
+      totalScore += weight;
+
+      const targetDim = ((q as any).dimension as string) || dimKeys[idx % dimKeys.length];
+      if (dimBuckets[targetDim]) {
+        dimBuckets[targetDim].sum += weight;
+        dimBuckets[targetDim].count += 1;
       }
     });
 
     const baseNormalized = Math.min(95, Math.max(65, Math.round((totalScore / (questions.length * 5 || 1)) * 100)));
 
+    const getDimScore = (key: string, baseBonus = 0) => {
+      const bucket = dimBuckets[key];
+      if (!bucket || bucket.count === 0) return Math.min(95, baseNormalized + baseBonus);
+      const avgWeight = bucket.sum / bucket.count;
+      const scaled = Math.round((avgWeight / 5) * 100);
+      return Math.min(98, Math.max(55, Math.round((baseNormalized + scaled) / 2)));
+    };
+
     const computedDims = [
-      { label: 'Dominance (Ketegasan)', key: 'D', score: Math.min(96, baseNormalized + (answers[questions[0]?.id] === 'A' ? 12 : 2)), description: 'Ketegasan dan inisiatif taktis' },
-      { label: 'Influence (Komunikasi)', key: 'I', score: Math.min(95, baseNormalized + (answers[questions[1]?.id] === 'A' ? 10 : -4)), description: 'Koordinasi tim & persuasi ide' },
-      { label: 'Steadiness (Daya Tahan)', key: 'S', score: Math.min(98, baseNormalized + (answers[questions[2]?.id] === 'A' ? 14 : 4)), description: 'Konsistensi kerja rutin & shift' },
-      { label: 'Compliance (Ketelitian)', key: 'C', score: Math.min(94, baseNormalized + (answers[questions[3]?.id] === 'A' ? 15 : 0)), description: 'Kepatuhan SOP ISO 9001 & presisi' },
-      { label: 'Stability (Regulasi Diri)', key: 'ES', score: Math.min(92, baseNormalized + (answers[questions[4]?.id] === 'A' ? 11 : -3)), description: 'Stabilitas emosi di bawah target' },
+      { label: 'Dominance (Ketegasan)', key: 'D', score: getDimScore('D', 2), description: 'Ketegasan dan inisiatif taktis' },
+      { label: 'Influence (Komunikasi)', key: 'I', score: getDimScore('I', -1), description: 'Koordinasi tim & persuasi ide' },
+      { label: 'Steadiness (Daya Tahan)', key: 'S', score: getDimScore('S', 3), description: 'Konsistensi kerja rutin & shift' },
+      { label: 'Compliance (Ketelitian)', key: 'C', score: getDimScore('C', 2), description: 'Kepatuhan SOP ISO 9001 & presisi' },
+      { label: 'Stability (Regulasi Diri)', key: 'ES', score: getDimScore('ES', 0), description: 'Stabilitas emosi di bawah target' },
     ];
 
     setDimensions(computedDims);

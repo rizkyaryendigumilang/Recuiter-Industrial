@@ -100,7 +100,11 @@ function performBackup() {
   }
 
   // Generate cryptographic manifest for backup audit verification
-  const encKey = process.env.BACKUP_ENCRYPTION_KEY || (process.argv.includes('--encrypt') ? 'default_vault_secret' : null);
+  let encKey = process.env.BACKUP_ENCRYPTION_KEY || null;
+  if (process.argv.includes('--encrypt') && !encKey) {
+    console.error('[ERROR] The --encrypt flag requires BACKUP_ENCRYPTION_KEY environment variable to be set.');
+    process.exit(1);
+  }
   const dataDbPath = path.join(targetDir, 'data.db');
   let dataBytes = Buffer.from([]);
   if (fs.existsSync(dataDbPath)) {
