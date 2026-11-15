@@ -41,7 +41,7 @@ export function MobileBottomNav() {
 
   return (
     <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 pb-[env(safe-area-inset-bottom,0px)] [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.9),0_-4px_16px_rgba(15,23,42,0.04)]">
-      <nav className="flex items-center justify-around h-15 px-2">
+      <nav className="flex items-center justify-around h-15 px-1" aria-label="Navigasi Bawah">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.href);
@@ -50,7 +50,8 @@ export function MobileBottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl transition-transform duration-140 [transition-timing-function:var(--ease-ignara)] ignara-btn-press touch-manipulation cursor-pointer ${
+              aria-current={active ? 'page' : undefined}
+              className={`flex flex-col items-center justify-center flex-1 h-full min-h-[48px] py-1 px-1 rounded-xl transition-transform duration-140 [transition-timing-function:var(--ease-ignara)] ignara-btn-press touch-manipulation select-none cursor-pointer ${
                 active ? 'text-slate-950 font-bold' : 'text-slate-500 hover:text-slate-900 font-medium'
               }`}
             >

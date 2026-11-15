@@ -410,6 +410,8 @@ export default function LoginPage() {
                   autoCapitalize="none"
                   autoCorrect="off"
                   spellCheck={false}
+                  inputMode="email"
+                  enterKeyHint="next"
                   required
                 />
               </div>
@@ -430,7 +432,7 @@ export default function LoginPage() {
                     setResetSuccess(false);
                     setForgotModalOpen(true);
                   }}
-                  className="text-[11px] text-amber-800 hover:text-amber-950 hover:underline font-medium cursor-pointer"
+                  className="text-[11px] text-amber-800 hover:text-amber-950 hover:underline font-medium cursor-pointer touch-manipulation min-h-[36px] flex items-center"
                 >
                   {t.auth.forgotPassword}
                 </button>
@@ -446,18 +448,19 @@ export default function LoginPage() {
                   placeholder={t.auth.passwordPlaceholder}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-9 pr-10 rounded-xl border-[#D0D7DE] text-xs h-10.5 bg-white text-[#0D1117] placeholder:text-[#8C959F] focus:border-[#0D1117] focus:ring-1 focus:ring-[#0D1117]"
+                  className="pl-9 pr-11 rounded-xl border-[#D0D7DE] text-xs h-10.5 bg-white text-[#0D1117] placeholder:text-[#8C959F] focus:border-[#0D1117] focus:ring-1 focus:ring-[#0D1117]"
                   autoComplete="current-password"
+                  enterKeyHint="done"
                   required
                 />
-                {/* Tombol Show/Hide Password */}
+                {/* Tombol Show/Hide Password with 44px min touch zone */}
                 <button
                   type="button"
                   onClick={() => {
                     setShowPassword(!showPassword);
                     triggerHaptic.light();
                   }}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-[#57606A] hover:text-[#0D1117] transition-colors cursor-pointer"
+                  className="absolute inset-y-0 right-0 w-11 h-full flex items-center justify-center text-[#57606A] hover:text-[#0D1117] transition-colors cursor-pointer touch-manipulation min-w-[44px]"
                   aria-label={showPassword ? t.auth.hidePassword : t.auth.showPassword}
                   title={showPassword ? t.auth.hidePassword : t.auth.showPassword}
                 >

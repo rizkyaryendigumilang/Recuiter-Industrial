@@ -786,7 +786,7 @@ export default function EmployerDashboard() {
                     <span className="font-medium text-neutral-700">{applications.length} Total Kandidat</span>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3.5 overflow-x-auto pb-4">
+                  <div className="flex md:grid overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none md:grid-cols-2 lg:grid-cols-5 gap-3.5 pb-4 mask-fade-x md:[mask-image:none] smooth-scroll-touch">
                     {STAGES.map((stage, stageIdx) => {
                       const stageApps = applications.filter((a) => (a.status || 'applied') === stage.key);
 
@@ -795,7 +795,7 @@ export default function EmployerDashboard() {
                           key={stage.key}
                           onDragOver={handleDragOver}
                           onDrop={(e) => handleDrop(e, stage.key)}
-                          className={`flex flex-col rounded-2xl border border-[#E8E8EC] bg-[#FAFAFA] min-h-[500px] transition-colors p-3 ${stage.dropBg}`}
+                          className={`flex flex-col rounded-2xl border border-[#E8E8EC] bg-[#FAFAFA] min-h-[460px] w-[84vw] sm:w-[320px] md:w-auto shrink-0 md:shrink snap-center transition-colors p-3.5 ${stage.dropBg}`}
                         >
                           {/* Column Header */}
                           <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#E8E8EC]">
@@ -838,25 +838,25 @@ export default function EmployerDashboard() {
                                             e.stopPropagation();
                                             toggleSelectApp(app.id);
                                           }}
-                                          className="rounded border-neutral-300 text-amber-600 focus:ring-amber-500 h-3.5 w-3.5 cursor-pointer shrink-0"
+                                          className="rounded border-neutral-300 text-amber-600 focus:ring-amber-500 h-4 w-4 cursor-pointer shrink-0"
                                         />
                                         <h4 className="font-bold text-xs text-neutral-900 leading-tight truncate">
                                           {cName}
                                         </h4>
                                       </div>
                                     </div>
-                                    <p className="text-[11px] text-neutral-600 truncate mt-0.5 font-medium pl-5">
+                                    <p className="text-[11px] text-neutral-600 truncate mt-0.5 font-medium pl-6">
                                       {jTitle}
                                     </p>
                                   </div>
 
                                   {/* Score Badges & AI Insights */}
-                                  <div className="flex items-center gap-1.5 text-[10px] pl-5 flex-wrap">
+                                  <div className="flex items-center gap-1.5 text-[10px] pl-6 flex-wrap">
                                     <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded-md border border-blue-200 font-mono font-semibold">
-                                      OCR: {app.match_score ? `${app.match_score}%` : 'N/A'}
+                                      Kecocokan: {app.match_score ? `${app.match_score}%` : 'N/A'}
                                     </span>
                                     <span className="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-md border border-emerald-200 font-mono font-semibold">
-                                      Tes: {app.test_score ?? 'N/A'}
+                                      Kraepelin: {app.test_score ?? 'N/A'}
                                     </span>
                                     <button
                                       type="button"
@@ -864,52 +864,52 @@ export default function EmployerDashboard() {
                                         e.stopPropagation();
                                         setSelectedAiApp(app);
                                       }}
-                                      className="inline-flex items-center gap-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-1.5 py-0.5 rounded-md font-mono text-[9px] transition-colors cursor-pointer"
+                                      className="inline-flex items-center gap-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-2 py-1 rounded-md font-mono text-[9px] transition-colors cursor-pointer touch-manipulation min-h-[28px]"
                                       title="Lihat Analisis Kecocokan AI"
                                     >
                                       <Sparkles className="w-2.5 h-2.5 text-amber-600" />
-                                      <span>AI Insights</span>
+                                      <span>Analisis AI</span>
                                     </button>
                                   </div>
 
-                                  {/* Quick Stage Controls with enlarged 36px touch targets */}
+                                  {/* Quick Stage Controls with ergonomic 36px touch targets */}
                                   <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px]">
                                     {stageIdx > 0 ? (
                                       <button
                                         onClick={() => updateCandidateStatus(app, STAGES[stageIdx - 1].key)}
                                         title="Pindah ke tahap sebelumnya"
-                                        className="h-8 w-8 rounded-lg flex items-center justify-center hover:bg-neutral-100 text-neutral-600 hover:text-neutral-900 active:scale-90 transition-transform cursor-pointer"
+                                        className="h-9 w-9 rounded-lg flex items-center justify-center hover:bg-neutral-100 text-neutral-600 hover:text-neutral-900 active:scale-90 transition-transform cursor-pointer touch-manipulation"
                                       >
-                                        <ArrowLeft className="w-3.5 h-3.5" />
+                                        <ArrowLeft className="w-4 h-4" />
                                       </button>
-                                    ) : <span className="w-8" />}
+                                    ) : <span className="w-9" />}
 
                                     <div className="flex items-center gap-1">
                                       {/* Interview Scheduler Button */}
                                       <button
                                         onClick={() => openInterviewModal(app)}
                                         title="Jadwalkan Wawancara"
-                                        className="h-8 w-8 rounded-lg flex items-center justify-center bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 active:scale-90 transition-transform cursor-pointer"
+                                        className="h-9 w-9 rounded-lg flex items-center justify-center bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 active:scale-90 transition-transform cursor-pointer touch-manipulation"
                                       >
-                                        <Calendar className="w-3.5 h-3.5" />
+                                        <Calendar className="w-4 h-4" />
                                       </button>
 
                                       {/* Psikogram Button */}
                                       <button
                                         onClick={() => openPsikogram(app)}
                                         title="Unduh Psikogram PDF"
-                                        className="h-8 w-8 rounded-lg flex items-center justify-center bg-[#F6F8FA] hover:bg-[#E1E4E8] text-[#0D1117] border border-[#D0D7DE] active:scale-90 transition-transform cursor-pointer"
+                                        className="h-9 w-9 rounded-lg flex items-center justify-center bg-[#F6F8FA] hover:bg-[#E1E4E8] text-[#0D1117] border border-[#D0D7DE] active:scale-90 transition-transform cursor-pointer touch-manipulation"
                                       >
-                                        <FileText className="w-3.5 h-3.5" />
+                                        <FileText className="w-4 h-4" />
                                       </button>
 
                                       {/* WhatsApp Notification Button */}
                                       <button
                                         onClick={() => openNotificationModal(app)}
-                                        title="Kirim Notifikasi WA"
-                                        className="h-8 w-8 rounded-lg flex items-center justify-center bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 active:scale-90 transition-transform cursor-pointer"
+                                        title="Kirim Undangan WhatsApp"
+                                        className="h-9 w-9 rounded-lg flex items-center justify-center bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 active:scale-90 transition-transform cursor-pointer touch-manipulation"
                                       >
-                                        <MessageCircle className="w-3.5 h-3.5" />
+                                        <MessageCircle className="w-4 h-4" />
                                       </button>
                                     </div>
 
@@ -917,11 +917,11 @@ export default function EmployerDashboard() {
                                       <button
                                         onClick={() => updateCandidateStatus(app, STAGES[stageIdx + 1].key)}
                                         title="Loloskan ke tahap berikutnya"
-                                        className="h-8 w-8 rounded-lg flex items-center justify-center hover:bg-neutral-100 text-neutral-600 hover:text-neutral-900 active:scale-90 transition-transform cursor-pointer"
+                                        className="h-9 w-9 rounded-lg flex items-center justify-center hover:bg-neutral-100 text-neutral-600 hover:text-neutral-900 active:scale-90 transition-transform cursor-pointer touch-manipulation"
                                       >
-                                        <ArrowRight className="w-3.5 h-3.5" />
+                                        <ArrowRight className="w-4 h-4" />
                                       </button>
-                                    ) : <span className="w-8" />}
+                                    ) : <span className="w-9" />}
                                   </div>
                                 </div>
                               );

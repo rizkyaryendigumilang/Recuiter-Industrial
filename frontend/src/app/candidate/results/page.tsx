@@ -173,7 +173,7 @@ export default function CandidateResultsPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-3 border-b border-[#E8E8EC] print:hidden">
           <div className="flex items-center gap-3">
             <Link href="/candidate">
-              <Button variant="ghost" size="sm" className="rounded-full text-xs gap-1.5 text-[#6B6B6B]">
+              <Button variant="ghost" size="sm" className="rounded-xl text-xs gap-1.5 text-[#6B6B6B] min-h-[44px] touch-manipulation hover:bg-slate-100">
                 <ArrowLeft className="w-4 h-4" />
                 <span>{isEn ? 'Back to Portal' : 'Kembali ke Portal'}</span>
               </Button>
@@ -185,14 +185,14 @@ export default function CandidateResultsPage() {
 
           <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
             <Link href="/candidate/practice" className="w-full sm:w-auto">
-              <Button variant="outline" size="sm" className="w-full sm:w-auto rounded-xl text-xs gap-1.5 border-[#E8E8EC] h-9 touch-manipulation">
-                <Play className="w-3.5 h-3.5" />
+              <Button variant="outline" size="sm" className="w-full sm:w-auto rounded-xl text-xs gap-1.5 border-[#E8E8EC] min-h-[44px] touch-manipulation font-semibold">
+                <Play className="w-3.5 h-3.5 text-amber-600" />
                 <span>{isEn ? 'Retake Practice' : 'Ulangi Tryout Kraepelin'}</span>
               </Button>
             </Link>
             <Button
               onClick={handlePrint}
-              className="w-full sm:w-auto bg-[#0D1117] hover:bg-[#21262D] text-white rounded-xl text-xs font-semibold h-9 px-4 gap-2 shadow-sm touch-manipulation"
+              className="w-full sm:w-auto bg-[#0D1117] hover:bg-[#21262D] text-white rounded-xl text-xs font-semibold min-h-[44px] px-4 gap-2 shadow-sm touch-manipulation cursor-pointer"
             >
               <Printer className="w-3.5 h-3.5" />
               <span>{isEn ? 'Print / Download PDF' : 'Cetak / Unduh Psikogram PDF'}</span>
@@ -464,13 +464,13 @@ export default function CandidateResultsPage() {
             </div>
 
             {/* Role Switcher Tabs (Hidden when printing) */}
-            <div className="flex flex-wrap gap-1.5 pt-1 print:hidden">
+            <div className="mask-fade-x overflow-x-auto flex items-center gap-1.5 pt-1 pb-1 print:hidden smooth-scroll-touch no-scrollbar">
               {Object.values(INDUSTRIAL_ROLE_BENCHMARKS).map((bench) => (
                 <button
                   key={bench.id}
                   type="button"
                   onClick={() => setSelectedRole(bench.id)}
-                  className={`text-[11px] px-2.5 py-1 rounded-lg font-medium transition-colors border ${
+                  className={`text-[11px] px-3 py-2 rounded-xl font-medium transition-colors border shrink-0 min-h-[36px] flex items-center justify-center touch-manipulation cursor-pointer ${
                     selectedRole === bench.id
                       ? 'bg-[#0D1117] text-white border-[#0D1117] shadow-sm'
                       : 'bg-white text-slate-700 border-[#E1E4E8] hover:bg-slate-50'

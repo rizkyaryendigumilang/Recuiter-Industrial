@@ -255,7 +255,23 @@
 @media (hover: none) and (pointer: coarse) {
   *:hover {
     -webkit-transform: none !important;
+    transform: none !important;
   }
+}
+
+/* Touch Ergonomics & Apple HIG / WCAG 2.5.5 Min Touch Target Target */
+.touch-target-44 {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Momentum scroll for iOS Safari & Android Chrome */
+.smooth-scroll-touch {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 @layer utilities {
@@ -265,6 +281,13 @@
   }
   .safe-pb {
     padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Mobile Bottom Sheet Drawer layout */
+  .mobile-drawer-sheet {
+    max-height: calc(90dvh - env(safe-area-inset-bottom, 0px));
+    border-top-left-radius: 1.5rem;
+    border-top-right-radius: 1.5rem;
   }
 
   /* GPU Compositing & 60-120fps Hardware Acceleration */

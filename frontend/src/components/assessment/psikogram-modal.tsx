@@ -120,34 +120,40 @@ export function PsikogramModal({ isOpen, onClose, data }: PsikogramModalProps) {
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 print:p-0 print:bg-white print:static animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 print:p-0 print:bg-white print:static animate-in fade-in duration-150"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-4xl max-h-[calc(100dvh-2rem)] flex flex-col my-auto bg-white rounded-3xl shadow-2xl border border-neutral-200 overflow-hidden print:max-h-none print:shadow-none print:border-none print:max-w-none print:rounded-none animate-in zoom-in-95 duration-200 ease-out gpu-layer will-animate"
+        className="relative w-full max-w-4xl max-h-[92dvh] sm:max-h-[calc(100dvh-2rem)] flex flex-col bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl border-t sm:border border-neutral-200 overflow-hidden print:max-h-none print:shadow-none print:border-none print:max-w-none print:rounded-none animate-in slide-in-from-bottom-6 sm:zoom-in-95 duration-200 ease-out gpu-layer will-animate"
       >
+        {/* Mobile Swipe-to-Dismiss Visual Handle */}
+        <div className="sm:hidden w-full pt-2.5 pb-1 flex justify-center bg-neutral-50 border-b border-neutral-200/50 cursor-pointer" onClick={onClose}>
+          <div className="w-12 h-1.5 bg-neutral-300 rounded-full" />
+        </div>
+
         {/* Top Control Bar (Hidden on Print) */}
-        <div className="flex-shrink-0 flex items-center justify-between px-6 py-4 bg-neutral-50 border-b border-neutral-200 print:hidden">
+        <div className="flex-shrink-0 flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 bg-neutral-50 border-b border-neutral-200 print:hidden">
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold uppercase tracking-wider text-neutral-600">
               {t.psikogram.headerTitle}
             </span>
-            <Badge variant="outline" className="text-[10px] font-mono">
+            <Badge variant="outline" className="hidden sm:inline-flex text-[10px] font-mono">
               {isEn ? 'Standard A4 1-Page Layout' : 'Format Standar 1 Lembar A4'}
             </Badge>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <Button
               onClick={handlePrint}
               size="sm"
-              className="rounded-full bg-[#1D1D1F] hover:bg-[#000000] text-white text-xs h-8 px-4 shadow-sm"
+              className="rounded-xl bg-[#1D1D1F] hover:bg-[#000000] text-white text-xs h-9 px-3.5 shadow-xs touch-manipulation cursor-pointer"
             >
               <Printer className="w-3.5 h-3.5 mr-1.5" />
-              {t.psikogram.printBtn}
+              <span>{t.psikogram.printBtn}</span>
             </Button>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-full hover:bg-neutral-200 text-neutral-500 hover:text-neutral-900 transition-colors"
+              className="h-10 w-10 flex items-center justify-center rounded-xl hover:bg-neutral-200 text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer touch-manipulation"
+              aria-label="Tutup jendela psikogram"
             >
               <X className="w-5 h-5" />
             </button>
@@ -155,7 +161,7 @@ export function PsikogramModal({ isOpen, onClose, data }: PsikogramModalProps) {
         </div>
 
         {/* 1-PAGE PRINTABLE PSIKOGRAM SHEET */}
-        <div className="p-8 sm:p-10 print:p-6 print:m-0 space-y-6 text-[#1D1D1F] bg-white font-sans overflow-y-auto flex-1 overscroll-contain">
+        <div className="p-5 sm:p-10 print:p-6 print:m-0 space-y-6 text-[#1D1D1F] bg-white font-sans overflow-y-auto flex-1 overscroll-contain smooth-scroll-touch">
           {/* Header Report */}
           <div className="flex items-start justify-between border-b-2 border-neutral-900 pb-5">
             <div>

@@ -70,7 +70,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <PwaRegistrar />
               <PwaInstallBanner />
               <Navbar />
-              <main className="flex-1 pb-16 sm:pb-0">{children}</main>
+              <main className="flex-1 pb-[calc(5rem+env(safe-area-inset-bottom,0px))] sm:pb-0">{children}</main>
               <SiteFooter />
               <MobileBottomNav />
             </HelpdeskProvider>

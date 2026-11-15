@@ -111,7 +111,7 @@ export default function JobsPage() {
         </div>
 
         {/* Quick Category Tabs with Ignara Horizontal Edge Mask */}
-        <div className="mask-fade-x overflow-x-auto pb-1 flex sm:flex-wrap items-center gap-2 no-scrollbar">
+        <div className="mask-fade-x overflow-x-auto pb-1 flex sm:flex-wrap items-center gap-2 no-scrollbar smooth-scroll-touch">
           {[
             { id: 'all', label: isEn ? 'All Positions' : 'Semua Posisi' },
             { id: 'operator', label: isEn ? 'Machine Operators' : 'Operator Produksi' },
@@ -122,7 +122,7 @@ export default function JobsPage() {
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`shrink-0 px-4 py-2 rounded-2xl text-xs font-mono font-semibold transition-all duration-180 ignara-btn-press cursor-pointer ${
+              className={`shrink-0 px-4 py-2.5 rounded-2xl text-xs font-mono font-semibold transition-all duration-180 ignara-btn-press touch-manipulation select-none cursor-pointer min-h-[40px] flex items-center justify-center ${
                 selectedCategory === cat.id
                   ? 'bg-slate-900 text-white shadow-2xs [box-shadow:var(--shadow-ignara-sm),inset_0_1px_0_0_rgba(255,255,255,0.2)]'
                   : 'bg-white text-slate-600 border border-slate-200/90 hover:bg-slate-50 [box-shadow:var(--ignara-top-light)]'
@@ -138,20 +138,23 @@ export default function JobsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
             {/* Search Input */}
             <div className="sm:col-span-6 relative">
-              <Search className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" />
+              <Search className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400 pointer-events-none" />
               <Input
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder={isEn ? 'Search position, skills, company...' : 'Cari posisi (Operator, QC, PLC Siemens), nama PT...'}
                 aria-label={isEn ? 'Search job position or company' : 'Cari posisi lowongan atau nama perusahaan'}
-                className="pl-10 pr-9 rounded-2xl text-xs border-slate-200 focus:border-slate-900 h-11 bg-slate-50/70"
+                inputMode="search"
+                enterKeyHint="search"
+                autoComplete="off"
+                className="pl-10 pr-11 rounded-2xl text-xs border-slate-200 focus:border-slate-900 h-11 bg-slate-50/70"
               />
               {searchTerm && (
                 <button
                   type="button"
                   onClick={() => setSearchTerm('')}
                   aria-label={isEn ? 'Clear search' : 'Hapus pencarian'}
-                  className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-900 cursor-pointer"
+                  className="absolute right-0 top-0 h-11 w-11 flex items-center justify-center text-slate-400 hover:text-slate-900 cursor-pointer touch-manipulation"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -164,7 +167,7 @@ export default function JobsPage() {
                 value={selectedLocation}
                 onChange={(e) => setSelectedLocation(e.target.value)}
                 aria-label={isEn ? 'Filter by industrial zone' : 'Filter kawasan industri'}
-                className="w-full h-11 px-3.5 rounded-2xl text-xs border border-slate-200 bg-slate-50/70 text-slate-900 focus:border-slate-900 focus:bg-white focus:outline-none cursor-pointer"
+                className="w-full h-11 px-3.5 rounded-2xl text-xs border border-slate-200 bg-slate-50/70 text-slate-900 focus:border-slate-900 focus:bg-white focus:outline-none cursor-pointer touch-manipulation"
               >
                 <option value="all">{isEn ? 'All Industrial Zones' : 'Semua Kawasan Industri'}</option>
                 <option value="cikarang">Cikarang (MM2100, Jababeka, GIIC)</option>
@@ -179,7 +182,7 @@ export default function JobsPage() {
                 value={selectedType}
                 onChange={(e) => setSelectedType(e.target.value)}
                 aria-label={isEn ? 'Filter by employment type' : 'Filter tipe kontrak kerja'}
-                className="w-full h-11 px-3.5 rounded-2xl text-xs border border-slate-200 bg-slate-50/70 text-slate-900 focus:border-slate-900 focus:bg-white focus:outline-none cursor-pointer"
+                className="w-full h-11 px-3.5 rounded-2xl text-xs border border-slate-200 bg-slate-50/70 text-slate-900 focus:border-slate-900 focus:bg-white focus:outline-none cursor-pointer touch-manipulation"
               >
                 <option value="all">{isEn ? 'All Contract Types' : 'Semua Tipe Kontrak'}</option>
                 <option value="kontrak">{isEn ? 'Factory Contract' : 'Kontrak Pabrik'}</option>
@@ -193,16 +196,38 @@ export default function JobsPage() {
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-500 font-mono">
             <span>
-              {isEn ? 'Showing ' : 'Menampilkan '}<strong className="text-slate-900">{filteredJobs.length}</strong>{isEn ? ' active jobs' : ' lowongan kerja aktif'}
+              {isEn ? 'Showing ' : 'Menampilkan '}<strong className="text-slate-900">{loading ? '...' : filteredJobs.length}</strong>{isEn ? ' active jobs' : ' lowongan kerja aktif'}
             </span>
-            <Link href="/candidate/practice" className="text-amber-700 hover:text-amber-800 underline underline-offset-2 font-semibold flex items-center gap-1.5">
+            <Link href="/candidate/practice" className="text-amber-700 hover:text-amber-800 underline underline-offset-2 font-semibold flex items-center gap-1.5 touch-manipulation">
               <Activity className="w-3.5 h-3.5 text-amber-600" />
               <span>{isEn ? 'Practice free Kraepelin test before applying' : 'Latihan tes Kraepelin gratis sebelum melamar'}</span>
             </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {filteredJobs.length === 0 ? (
+            {loading ? (
+              Array.from({ length: 4 }).map((_, idx) => (
+                <div
+                  key={`job-skeleton-${idx}`}
+                  className="bg-white border border-slate-200/90 rounded-3xl p-6 space-y-4 animate-pulse"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="h-5 w-24 bg-slate-200 rounded-full" />
+                    <div className="h-5 w-16 bg-slate-100 rounded-full" />
+                  </div>
+                  <div className="h-6 w-3/4 bg-slate-200 rounded-lg" />
+                  <div className="h-4 w-1/2 bg-slate-100 rounded" />
+                  <div className="space-y-2 pt-2">
+                    <div className="h-3 w-full bg-slate-100 rounded" />
+                    <div className="h-3 w-4/5 bg-slate-100 rounded" />
+                  </div>
+                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                    <div className="h-4 w-28 bg-slate-200 rounded" />
+                    <div className="h-9 w-24 bg-slate-200 rounded-xl" />
+                  </div>
+                </div>
+              ))
+            ) : filteredJobs.length === 0 ? (
               <div className="col-span-full py-16 px-6 bg-white border border-slate-200 rounded-3xl text-center flex flex-col items-center justify-center shadow-xs">
                 <div className="w-14 h-14 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 mb-3">
                   <Briefcase className="w-6 h-6 text-slate-500" />
@@ -217,7 +242,7 @@ export default function JobsPage() {
                   variant="outline"
                   size="sm"
                   onClick={() => { setSearchTerm(''); setSelectedLocation('all'); setSelectedType('all'); setSelectedCategory('all'); }}
-                  className="rounded-xl text-xs border-slate-300 text-slate-900 hover:bg-slate-50"
+                  className="rounded-xl text-xs border-slate-300 text-slate-900 hover:bg-slate-50 min-h-[44px] px-5 touch-manipulation cursor-pointer"
                 >
                   Reset Semua Filter
                 </Button>

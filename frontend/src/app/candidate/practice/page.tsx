@@ -43,13 +43,13 @@ export default function CandidatePracticePage() {
 
           <div className="flex items-center gap-2">
             <Link href="/help">
-              <Button variant="outline" size="sm" className="border-[#D0D7DE] text-xs font-mono h-9 gap-1.5 cursor-pointer">
+              <Button variant="outline" size="sm" className="border-[#D0D7DE] text-xs font-mono min-h-[44px] gap-1.5 cursor-pointer touch-manipulation rounded-xl">
                 <HelpCircle className="w-3.5 h-3.5 text-amber-600" />
                 <span>{isEn ? 'Guide' : 'Panduan'}</span>
               </Button>
             </Link>
             <Link href="/candidate/results">
-              <Button size="sm" className="bg-[#0D1117] hover:bg-[#21262D] text-white text-xs font-mono h-9 gap-1.5 shadow-xs cursor-pointer">
+              <Button size="sm" className="bg-[#0D1117] hover:bg-[#21262D] text-white text-xs font-mono min-h-[44px] gap-1.5 shadow-xs cursor-pointer touch-manipulation rounded-xl">
                 <Award className="w-3.5 h-3.5 text-amber-500" />
                 <span>{isEn ? 'My Results' : 'Hasil Saya'}</span>
               </Button>

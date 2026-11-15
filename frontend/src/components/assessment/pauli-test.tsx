@@ -562,13 +562,13 @@ export function PauliTest({
           </div>
 
           {/* Ergonomic 3-Column Calculator Numpad (Optimized for Mobile Thumbs) */}
-          <div className="grid grid-cols-3 gap-2.5 max-w-sm mx-auto">
+          <div className="grid grid-cols-3 gap-2.5 sm:gap-3 max-w-sm mx-auto select-none">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((d) => (
               <button
                 key={`btn-digit-${d}`}
                 type="button"
                 onClick={() => handleDigitInput(d)}
-                className="h-14 sm:h-16 rounded-lg bg-[#FAFAFA] border border-[#D0D7DE] hover:border-amber-500 hover:text-amber-800 active:bg-[#0D1117] active:text-white text-[#0D1117] font-mono font-bold text-2xl sm:text-3xl shadow-xs active:scale-95 transition-all duration-75 touch-manipulation select-none flex items-center justify-center cursor-pointer"
+                className="h-14 sm:h-16 rounded-2xl bg-white border-2 border-slate-200 hover:border-slate-400 active:border-slate-900 active:bg-slate-900 active:text-white text-slate-900 font-mono font-bold text-2xl sm:text-3xl shadow-xs active:scale-95 transition-all duration-75 touch-manipulation select-none flex items-center justify-center cursor-pointer [box-shadow:var(--ignara-top-light)]"
               >
                 {d}
               </button>
@@ -576,7 +576,7 @@ export function PauliTest({
             <button
               type="button"
               onClick={() => handleDigitInput(0)}
-              className="col-span-3 h-14 sm:h-16 rounded-lg bg-[#FAFAFA] border border-[#D0D7DE] hover:border-amber-500 hover:text-amber-800 active:bg-[#0D1117] active:text-white text-[#0D1117] font-mono font-bold text-2xl sm:text-3xl shadow-xs active:scale-95 transition-all duration-75 touch-manipulation select-none flex items-center justify-center cursor-pointer"
+              className="col-span-3 h-14 sm:h-16 rounded-2xl bg-white border-2 border-slate-200 hover:border-slate-400 active:border-slate-900 active:bg-slate-900 active:text-white text-slate-900 font-mono font-bold text-2xl sm:text-3xl shadow-xs active:scale-95 transition-all duration-75 touch-manipulation select-none flex items-center justify-center cursor-pointer [box-shadow:var(--ignara-top-light)]"
             >
               0
             </button>
