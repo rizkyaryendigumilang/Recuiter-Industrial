@@ -169,7 +169,9 @@ export default function ServicesPage() {
                   </span>
                 </div>
                 <CardTitle className="text-lg font-bold text-[#0A0A0A] mt-2">
-                  {srv.title}
+                  <Link href={`/services/${srv.id}`} className="hover:text-primary transition-colors">
+                    {srv.title}
+                  </Link>
                 </CardTitle>
                 <CardDescription className="text-xs text-[#6B6B6B] leading-relaxed">
                   {srv.description}
@@ -191,7 +193,7 @@ export default function ServicesPage() {
                   </div>
                 )}
 
-                <div className="flex items-center justify-between pt-2 border-t border-[#F5F5F7]">
+                <div className="flex items-center justify-between pt-2 border-t border-[#F5F5F7] gap-2">
                   <div>
                     <p className="text-[10px] text-[#86868B] uppercase font-semibold">Biaya Layanan</p>
                     <p className="text-lg font-black text-[#0A0A0A] font-mono">
@@ -199,12 +201,19 @@ export default function ServicesPage() {
                     </p>
                   </div>
 
-                  <Link href={`/booking/${srv.id}`}>
-                    <Button className="bg-[#0D1117] hover:bg-[#21262D] text-white rounded-xl text-xs font-semibold h-10 px-4 gap-1.5 shadow-sm">
-                      <Calendar className="w-3.5 h-3.5 text-amber-400" />
-                      <span>Pesan Sesi</span>
-                    </Button>
-                  </Link>
+                  <div className="flex items-center gap-2">
+                    <Link href={`/services/${srv.id}`}>
+                      <Button variant="ghost" size="sm" className="text-xs h-10 px-3 text-muted-foreground hover:text-foreground">
+                        Detail
+                      </Button>
+                    </Link>
+                    <Link href={`/booking/${srv.id}`}>
+                      <Button className="bg-[#0D1117] hover:bg-[#21262D] text-white rounded-xl text-xs font-semibold h-10 px-4 gap-1.5 shadow-sm">
+                        <Calendar className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Pesan Sesi</span>
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
               </CardContent>
             </Card>

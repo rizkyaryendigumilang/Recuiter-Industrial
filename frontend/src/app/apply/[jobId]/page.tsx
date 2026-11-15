@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { pb } from '@/lib/pocketbase';
 import { useAuth } from '@/lib/auth-context';
 import { useLanguage } from '@/lib/language-context';
+import { getFallbackJobById } from '@/lib/mock-data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -49,7 +50,12 @@ function ApplyJobContent() {
         const j = await pb.collection('job_postings').getOne(jobId, { expand: 'employer_id' });
         setJob(j);
       } catch {
-        setError(isEn ? 'Job position not found.' : 'Lowongan tidak ditemukan.');
+        const fallback = getFallbackJobById(jobId);
+        if (fallback) {
+          setJob(fallback);
+        } else {
+          setError(isEn ? 'Job position not found.' : 'Lowongan tidak ditemukan.');
+        }
       } finally {
         setLoading(false);
       }

@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { pb } from '@/lib/pocketbase';
 import { useLanguage } from '@/lib/language-context';
+import { getFallbackJobById } from '@/lib/mock-data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -52,7 +53,10 @@ function JobDetailContent() {
         const j = await pb.collection('job_postings').getOne(id, { expand: 'employer_id' });
         setJob(j);
       } catch {
-        // not found
+        const fallback = getFallbackJobById(id);
+        if (fallback) {
+          setJob(fallback);
+        }
       } finally {
         setLoading(false);
       }

@@ -164,7 +164,7 @@ export async function saveUploadedFile(
     const localFilePath = path.join(uploadDir, safeFilename);
     await writeFile(localFilePath, buffer);
 
-    const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '/recruiter';
+    const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
     const cleanBasePath = basePath === '' ? '' : (basePath.startsWith('/') ? basePath : `/${basePath}`);
     const relativeUrl = `${cleanBasePath}/uploads/${safeFolder}/${safeFilename}`.replace(/\/+/g, '/');
 

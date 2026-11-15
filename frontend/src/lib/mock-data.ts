@@ -193,3 +193,155 @@ export const DUMMY_SCHEDULES = [
   },
 ];
 
+export const FALLBACK_SERVICES_CATALOG: Record<string, any> = {
+  // Services dari services/page.tsx
+  'srv-01': {
+    id: 'srv-01',
+    title: 'Konseling Karir Individu & Pengelolaan Stres Kerja',
+    category: 'Pilar C: Psikologi Terapan & Konseling',
+    price: 150000,
+    description: 'Sesi privat 60 menit bersama Psikolog Klinis/Industri berlisensi SIPP untuk mengatasi burnout, kecemasan interview, dan navigasi karir.',
+    duration: '60 Menit',
+    is_active: true,
+    features: ['Konsultasi 1-on-1 via Google Meet', 'Asesmen Inventori Burnout', 'Ringkasan Catatan Psikolog'],
+    collectionId: 'services_catalog',
+    collectionName: 'services_catalog',
+  },
+  'srv-02': {
+    id: 'srv-02',
+    title: 'Paket Asesmen Psikometri Massal Karyawan Pabrik',
+    category: 'Pilar A: Bulk Test Credit & Assessment',
+    price: 350000,
+    description: 'Asesmen lengkap Kraepelin/Pauli, DISC, dan tes ketelitian kerja untuk kandidat operator dan staf lini produksi pabrik.',
+    duration: 'Online / On-site',
+    is_active: true,
+    features: ['Engine Tes Kraepelin Digital', 'Laporan Psikogram 1 Lembar PDF', 'Radar Chart Rekomendasi HR'],
+    collectionId: 'services_catalog',
+    collectionName: 'services_catalog',
+  },
+  'srv-03': {
+    id: 'srv-03',
+    title: 'Simulasi Wawancara Kerja & Bedah CV Industri',
+    category: 'Pilar B: Klinik Karier & Audit Resume',
+    price: 125000,
+    description: 'Review resume berstandar ATS industri manufaktur dan simulasi wawancara user dengan mantan HRD pabrik multinasional.',
+    duration: '45 Menit',
+    is_active: true,
+    features: ['Koreksi Format Resume ATS', 'Mock Interview STAR Method', 'Feedback Langsung'],
+    collectionId: 'services_catalog',
+    collectionName: 'services_catalog',
+  },
+  'srv-04': {
+    id: 'srv-04',
+    title: 'Konsultasi Ergonomi & Beban Kerja Mental Shift',
+    category: 'Pilar C: Evaluasi Ergonomi & Beban Kerja',
+    price: 750000,
+    description: 'Audit beban kerja psikososial untuk manajemen pabrik yang ingin menekan angka absensi dan turnover operator shift malam.',
+    duration: 'Sesi B2B Khusus',
+    is_active: true,
+    features: ['Analisis NASA-TLX', 'Rekomendasi Ergonomi Kognitif', 'Sertifikat Audit'],
+    collectionId: 'services_catalog',
+    collectionName: 'services_catalog',
+  },
+  // Services dari home-view.tsx
+  'fb-1': {
+    id: 'fb-1',
+    category: 'Pilar C: Asesmen Psikometri',
+    title: 'Asesmen Massal Kraepelin & Ketahanan Kerja Operator',
+    description: 'Uji psikotes Kraepelin/Pauli massal untuk seleksi operator pabrik dan teknisi perakitan presisi.',
+    price: 150000,
+    duration: '60 Menit',
+    is_active: true,
+    features: ['Engine Tes Kraepelin Digital', 'Laporan Psikogram PDF', 'Skor HIMPSI'],
+  },
+  'fb-2': {
+    id: 'fb-2',
+    category: 'Pilar C: Evaluasi Ergonomi',
+    title: 'Pemeriksaan Kesiapan Kerja & Regulasi Shift Malam',
+    description: 'Evaluasi kesiapan fisik dan daya tahan kerja shift malam untuk mencegah kelelahan dan risiko kecelakaan kerja.',
+    price: 275000,
+    duration: '60 Menit',
+    is_active: true,
+    features: ['Uji Regulasi Sirkadian', 'Audit Pola Tidur & Stamina', 'Konseling Pencegahan Fatigue'],
+  },
+  'fb-3': {
+    id: 'fb-3',
+    category: 'Pilar B: Sertifikasi K3 & Mutu',
+    title: 'Verifikasi Sertifikat Ahli K3 Umum & SIO Kemnaker',
+    description: 'Pemeriksaan kelengkapan berkas lisensi K3, SIO Forklift, dan standar SMK3 PP No. 50/2012 sebelum penempatan kerja.',
+    price: 250000,
+    duration: '1-2 Hari Kerja',
+    is_active: true,
+    features: ['Verifikasi Keaslian Lisensi', 'Pemeriksaan Masa Berlaku SKP', 'Badge Terverifikasi'],
+  },
+  'fb-4': {
+    id: 'fb-4',
+    category: 'Pilar B: Pemetaan Kompetensi',
+    title: 'Uji Ketelitian 7 QC Tools & Alat Ukur Presisi',
+    description: 'Simulasi pengukuran jangka sorong (caliper), micrometer, dan pemahaman diagram kendali mutu ISO 9001:2015.',
+    price: 200000,
+    duration: '45 Menit',
+    is_active: true,
+    features: ['Simulasi Alat Ukur Digital', 'Soal Diagram Pareto & Ishikawa', 'Sertifikat Kompetensi QC'],
+  },
+  'fb-5': {
+    id: 'fb-5',
+    category: 'Pilar A: Layanan B2B Plant',
+    title: 'Layanan Rekrutmen Tenaga Teknis Pabrik (HR Retainer)',
+    description: 'Penyediaan operator dan teknisi siap kerja: seleksi berkas otomatis, tes Kraepelin, dan orientasi kerja.',
+    price: 2500000,
+    duration: 'Bulanan (Retainer)',
+    is_active: true,
+    features: ['Akses Penuh ATS Kanban', 'Kandidat Pengganti Garansi 30 Hari', 'Laporan Bulanan'],
+  },
+  'fb-6': {
+    id: 'fb-6',
+    category: 'Pilar A: Layanan B2B Plant',
+    title: 'Audit Keselamatan Kerja & Evaluasi Lini Produksi',
+    description: 'Pemantauan kepatuhan SOP 5S, tingkat kelelahan operator, dan rekomendasi rotasi meja kerja pabrik.',
+    price: 3200000,
+    duration: 'Audit Lapangan',
+    is_active: true,
+    features: ['Inspeksi Bahaya Ergonomi', 'Evaluasi SOP 5S', 'Laporan Rekomendasi Manajemen'],
+  },
+  // Services dari booking page
+  'b2b-retainer': {
+    id: 'b2b-retainer',
+    category: 'Pilar A: B2B Layanan HR Pabrik',
+    title: 'Paket Retainer HR & Rekrutmen Pabrik Bulanan',
+    price: 3500000,
+    description: 'Pendampingan rekrutmen operator pabrik, evaluasi kepatuhan K3/ISO, dan konsultasi hubungan industrial.',
+    duration: 'Bulanan',
+    is_active: true,
+  },
+  'career-clinic': {
+    id: 'career-clinic',
+    category: 'Pilar B: Klinik Karier & Audit Resume',
+    title: 'Audit Resume & Simulasi Wawancara HR Pabrik',
+    price: 150000,
+    description: 'Sesi privat 60 menit perbaikan resume teknik, latihan pertanyaan user industri, dan strategi nego gaji.',
+    duration: '60 Menit',
+    is_active: true,
+  },
+  'counseling': {
+    id: 'counseling',
+    category: 'Pilar C: Psikologi Terapan & Konseling',
+    title: 'Sesi Konseling Kerja & Manajemen Stres Shift',
+    price: 250000,
+    description: 'Konseling privat bersama psikolog berlisensi untuk mengatasi burnout, stres kerja shift malam, dan dinamika tim.',
+    duration: '60 Menit',
+    is_active: true,
+  },
+};
+
+export function getFallbackServiceById(id: string): any | null {
+  if (!id) return null;
+  return FALLBACK_SERVICES_CATALOG[id] || null;
+}
+
+export function getFallbackJobById(id: string): RecordModel | null {
+  if (!id) return null;
+  return FALLBACK_INDUSTRIAL_JOBS.find((j) => j.id === id) || null;
+}
+
+

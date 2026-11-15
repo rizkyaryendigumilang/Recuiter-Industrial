@@ -1,10 +1,11 @@
 'use client';
 
 import { Suspense, useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { pb } from '@/lib/pocketbase';
 import { useLanguage } from '@/lib/language-context';
+import { getFallbackServiceById } from '@/lib/mock-data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -29,6 +30,7 @@ export default function ServiceDetailPage() {
 
 function ServiceDetailContent() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const { t, language } = useLanguage();
   const isEn = language === 'en';
 
@@ -41,7 +43,10 @@ function ServiceDetailContent() {
         const s = await pb.collection('services_catalog').getOne(id);
         setService(s);
       } catch {
-        // not found
+        const fallback = getFallbackServiceById(id);
+        if (fallback) {
+          setService(fallback as unknown as RecordModel);
+        }
       } finally {
         setLoading(false);
       }
@@ -68,18 +73,33 @@ function ServiceDetailContent() {
         <p className="text-muted-foreground mb-6">
           {isEn ? 'The service you requested is not available or has been archived.' : 'Layanan yang Anda cari tidak tersedia atau telah dihapus.'}
         </p>
-        <Link href="/">
-          <Button>{t.auth.backToHome}</Button>
-        </Link>
+        <div className="flex items-center justify-center gap-3">
+          <Link href="/services">
+            <Button variant="outline">{t.common.back}</Button>
+          </Link>
+          <Link href="/">
+            <Button>{t.auth.backToHome}</Button>
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl">
-      <Link href="/" className="text-sm text-muted-foreground hover:text-foreground">
+      <button
+        type="button"
+        onClick={() => {
+          if (typeof window !== 'undefined' && window.history.length > 1) {
+            router.back();
+          } else {
+            router.push('/services');
+          }
+        }}
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-4 min-h-[44px] cursor-pointer"
+      >
         &larr; {t.common.back}
-      </Link>
+      </button>
 
       <Card className="mt-4">
         <CardHeader>

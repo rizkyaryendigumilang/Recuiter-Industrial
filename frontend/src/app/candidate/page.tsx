@@ -25,6 +25,7 @@ import {
   Percent,
 } from "lucide-react";
 import { parseIndustrialResume, ParsedCompetencyResult } from "@/lib/industrial-parser";
+import { FALLBACK_INDUSTRIAL_JOBS } from "@/lib/mock-data";
 
 export default function CandidatePortal() {
   const router = useRouter();
@@ -111,8 +112,14 @@ export default function CandidatePortal() {
           expand: 'employer_id',
           sort: '-created',
         });
-        setRecommendedJobs(jobs.slice(0, 4));
-      } catch {}
+        if (jobs.length > 0) {
+          setRecommendedJobs(jobs.slice(0, 4));
+        } else {
+          setRecommendedJobs(FALLBACK_INDUSTRIAL_JOBS.slice(0, 4));
+        }
+      } catch {
+        setRecommendedJobs(FALLBACK_INDUSTRIAL_JOBS.slice(0, 4));
+      }
     } catch (err) {
       console.error('Error load candidate data:', err);
     } finally {
@@ -509,7 +516,7 @@ export default function CandidatePortal() {
                 <div>
                   <h3 className="font-bold text-sm text-neutral-900">{j.title}</h3>
                   <p className="text-xs text-neutral-500 mt-0.5">
-                    {j.expand?.employer_id?.company_name || 'Mitra Industri & Pabrik'}
+                    {j.company_name || j.expand?.employer_id?.company_name || 'Mitra Industri & Pabrik'}
                   </p>
                 </div>
                 <Link href={`/jobs/${j.id}`}>

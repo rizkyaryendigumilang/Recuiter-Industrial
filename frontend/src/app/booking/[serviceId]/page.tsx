@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/lib/language-context";
+import { getFallbackServiceById } from "@/lib/mock-data";
 import {
   CheckCircle2,
   Clock,
@@ -88,8 +89,9 @@ function BookingContent() {
       .getOne(serviceId)
       .then(setService)
       .catch(() => {
-        // Fallback service
-        const found = FALLBACK_SERVICES[serviceId] || {
+        // Fallback service lookup from centralized mock data
+        const fallbackFromCatalog = getFallbackServiceById(serviceId);
+        const found = fallbackFromCatalog || FALLBACK_SERVICES[serviceId] || {
           id: serviceId,
           category: 'Konsultasi & Asesmen Terapan',
           title: 'Sesi Konsultasi & Asesmen Rekrutmen Industri',
