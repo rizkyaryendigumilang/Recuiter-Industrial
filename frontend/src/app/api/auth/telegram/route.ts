@@ -28,7 +28,12 @@ function verifyTelegramAuth(data: Record<string, any>, botToken: string): boolea
     return false;
   }
 
-  return calculatedHash === hash;
+  // Proteksi Timing Attack: Gunakan crypto.timingSafeEqual alih-alih operator === biasa
+  if (typeof hash !== 'string') return false;
+  const bufCalculated = Buffer.from(calculatedHash);
+  const bufHash = Buffer.from(hash);
+  if (bufCalculated.length !== bufHash.length) return false;
+  return crypto.timingSafeEqual(bufCalculated, bufHash);
 }
 
 export async function POST(req: NextRequest) {

@@ -66,12 +66,17 @@ const BACKUP_SNAPSHOT_STORAGE_KEY = 'recruiter_latest_backup_snapshot';
 const AUTO_SYNC_ENABLED_KEY = 'recruiter_backup_auto_sync_enabled';
 
 /**
- * Escape a string for CSV cell (RFC 4180)
+ * Escape a string for CSV cell (RFC 4180) with CSV Formula Injection protection (CWE-1236)
  */
 function escapeCsv(val: any): string {
   if (val === null || val === undefined) return '""';
-  const str = String(val).replace(/"/g, '""');
-  return `"${str}"`;
+  let str = String(val);
+  // Proteksi CSV / Excel Formula Injection (CWE-1236): netralkan karakter formula jika di awal cell
+  if (/^[=+\-@\t\r%]/.test(str) && str !== '-') {
+    str = `'${str}`;
+  }
+  const escaped = str.replace(/"/g, '""');
+  return `"${escaped}"`;
 }
 
 /**

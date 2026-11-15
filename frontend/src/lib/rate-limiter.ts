@@ -89,13 +89,22 @@ export function checkRateLimit(
 
 /**
  * Helper to extract client IP from Next.js request headers.
+ * Memprioritaskan header terpercaya dari reverse proxy / edge (Cloudflare) untuk mencegah IP spoofing.
  */
 export function getClientIp(req: Request): string {
+  // 1. Cloudflare proxy connecting IP (kebal header spoofing klien)
+  const cfIp = req.headers.get('cf-connecting-ip');
+  if (cfIp) return cfIp.trim();
+
+  // 2. Nginx / reverse proxy real IP
+  const realIp = req.headers.get('x-real-ip');
+  if (realIp) return realIp.trim();
+
+  // 3. X-Forwarded-For (ambil IP paling kiri)
   const forwarded = req.headers.get('x-forwarded-for');
   if (forwarded) {
     return forwarded.split(',')[0].trim();
   }
-  const realIp = req.headers.get('x-real-ip');
-  if (realIp) return realIp.trim();
+
   return '127.0.0.1';
 }

@@ -153,7 +153,7 @@ migrate((app) => {
             type: "base",
             listRule: "@request.auth.role = 'admin' || candidate_id.user_id = @request.auth.id || job_id.employer_id.user_id = @request.auth.id",
             viewRule: "@request.auth.role = 'admin' || candidate_id.user_id = @request.auth.id || job_id.employer_id.user_id = @request.auth.id",
-            createRule: "@request.auth.role = 'admin' || (@request.auth.role = 'candidate' && candidate_id.user_id = @request.auth.id)",
+            createRule: "@request.auth.role = 'admin' || (@request.auth.role = 'candidate' && candidate_id.user_id = @request.auth.id && (@request.data.status = 'applied' || @request.data.status = 'testing' || @request.data.status = ''))",
             updateRule: "@request.auth.role = 'admin' || job_id.employer_id.user_id = @request.auth.id",
             fields: [
                 { name: "job_id", type: "relation", required: true, collectionId: jobsId, maxSelect: 1 },

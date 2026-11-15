@@ -1,6 +1,7 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'node:crypto';
 import { pb } from '@/lib/pocketbase';
+import { checkRateLimit, getClientIp } from '@/lib/rate-limiter';
 
 function safeCompare(a: string | null, b: string): boolean {
   if (!a) return false;
@@ -21,12 +22,22 @@ function escapeICS(str: string): string {
   return str.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
 }
 
+// Security: Hanya gunakan token server-side murni untuk mencegah kebocoran secret ke bundle publik
 const VALID_CALENDAR_TOKEN =
   process.env.CALENDAR_FEED_SECRET ||
-  process.env.NEXT_PUBLIC_CALENDAR_TOKEN ||
   (process.env.NODE_ENV !== 'production' ? 'dev_calendar_secret_local' : '');
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
+  // 0. Rate limiting: Cegah brute force token kalender (max 30 req/min per IP)
+  const clientIp = getClientIp(request);
+  const rateCheck = checkRateLimit(`calendar_feed:${clientIp}`, 30, 60 * 1000);
+  if (!rateCheck.allowed) {
+    return NextResponse.json(
+      { error: 'Terlalu banyak permintaan feed kalender. Harap coba lagi nanti.' },
+      { status: 429, headers: { 'Retry-After': String(rateCheck.retryAfterSeconds) } }
+    );
+  }
+
   if (!VALID_CALENDAR_TOKEN) {
     return NextResponse.json(
       { error: 'Server misconfiguration: CALENDAR_FEED_SECRET is not configured.' },

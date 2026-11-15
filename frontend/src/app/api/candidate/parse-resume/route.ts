@@ -1,10 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { extractTextFromPdfBuffer, detectIndustrialCompetencies } from '@/lib/pdf-parser';
+import { checkRateLimit, getClientIp } from '@/lib/rate-limiter';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {
+    // 0. Rate limiting: Cegah DoS exhaust CPU/Memory (max 15 request per 5 menit per IP)
+    const clientIp = getClientIp(req);
+    const rateCheck = checkRateLimit(`parse_resume:${clientIp}`, 15, 5 * 60 * 1000);
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        { error: `Terlalu banyak permintaan pemindaian resume. Harap tunggu ${rateCheck.retryAfterSeconds} detik lagi.` },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': String(rateCheck.retryAfterSeconds),
+          },
+        }
+      );
+    }
+
     const formData = await req.formData();
     const file = formData.get('resume');
 

@@ -69,11 +69,11 @@ export async function flushOfflineAssessments(): Promise<{ syncedCount: number; 
 
       // 1. Coba sync via API endpoint /api/submit-test
       try {
-        const response = await fetch(`${pb.baseUrl}/api/submit-test`, {
+        const response = await fetch('/api/submit-test', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            ...(pb.authStore.token ? { Authorization: pb.authStore.token } : {}),
+            ...(pb.authStore.token ? { Authorization: `Bearer ${pb.authStore.token}` } : {}),
           },
           body: JSON.stringify({
             application_id: item.applicationId,

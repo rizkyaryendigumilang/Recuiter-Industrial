@@ -56,9 +56,10 @@ export function extractTextFromPdfBuffer(buffer: Buffer | Uint8Array): string {
     const streamSlice = buf.subarray(payloadStart, streamEnd);
 
     // Attempt decompression if zlib FlateDecode was used
+    // Proteksi Decompression Bomb (OWASP LLM01 / ASI01): batasi output dekompresi maks 2MB per stream
     let decompressed: Buffer | null = null;
     try {
-      decompressed = zlib.inflateSync(streamSlice);
+      decompressed = zlib.inflateSync(streamSlice, { maxOutputLength: 2 * 1024 * 1024 });
     } catch {
       decompressed = streamSlice;
     }

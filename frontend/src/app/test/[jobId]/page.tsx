@@ -337,18 +337,18 @@ export function PsychTestContent() {
           }
         }
 
-        // 3. Try custom backend route if live
+        // 3. Panggil API secure backend untuk validasi & sinkronisasi hasil asesmen
         try {
           const formattedAnswers = Object.entries(answers).map(([qId, opt]) => ({
             question_id: qId,
             selected_option: opt,
           }));
 
-          await fetch(`${pb.baseUrl}/api/submit-test`, {
+          await fetch('/api/submit-test', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              Authorization: pb.authStore.token,
+              Authorization: pb.authStore.token ? `Bearer ${pb.authStore.token}` : '',
             },
             body: JSON.stringify({
               application_id: applicationId,
