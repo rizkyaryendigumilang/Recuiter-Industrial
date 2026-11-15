@@ -76,14 +76,14 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
       <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-amber-500/10 via-emerald-500/10 to-blue-500/10 blur-lg opacity-60 pointer-events-none hardware-accelerated" />
 
       {/* 1. Main High-Tech Industrial Instrument Chassis */}
-      <div className="relative z-10 bg-slate-950 text-white border border-slate-800 rounded-3xl shadow-2xl overflow-hidden transition-all duration-300">
+      <div className="relative z-10 bg-slate-950 text-white border border-slate-800 rounded-3xl shadow-2xl [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.12),0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden transition-all duration-300">
         {/* Top Instrument Bezel & Telemetry Status */}
-        <div className="h-11 bg-slate-900/90 border-b border-slate-800 px-4 flex items-center justify-between select-none">
+        <div className="h-11 bg-slate-900/90 border-b border-slate-800 px-4 flex items-center justify-between select-none [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.08)]">
           {/* Hardware Status LEDs */}
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-red-500/80 shadow-xs" />
             <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80 shadow-xs" />
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-xs animate-pulse" />
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-xs ignara-glow-emerald" />
             <span className="ml-2 font-mono text-[11px] font-semibold text-slate-400 tracking-wider flex items-center gap-1.5">
               <Cpu className="w-3.5 h-3.5 text-amber-400" />
               {isEn ? 'KRAEPELIN SIMULATOR' : 'SIMULATOR TES KRAEPELIN'}
@@ -92,7 +92,7 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
 
           {/* Active Calibration Badge */}
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950 border border-emerald-500/40 text-[10px] font-mono font-bold text-emerald-400">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950 border border-emerald-500/40 text-[10px] font-mono font-bold text-emerald-400 [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.1)]">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
               {isEn ? 'STANDARDS VERIFIED' : 'STANDAR RESMI'}
             </span>
@@ -104,7 +104,7 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
           <button
             type="button"
             onClick={() => setActiveTab('kraepelin')}
-            className={`px-3.5 py-2 font-mono text-xs font-semibold rounded-t-xl transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`px-3.5 py-2 font-mono text-xs font-semibold rounded-t-xl transition-all duration-180 [transition-timing-function:var(--ease-ignara)] ignara-btn-press cursor-pointer flex items-center gap-1.5 ${
               activeTab === 'kraepelin'
                 ? 'bg-slate-950 text-white border-t-2 border-amber-500 shadow-sm'
                 : 'text-slate-400 hover:text-white hover:bg-slate-900'
@@ -116,7 +116,7 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
           <button
             type="button"
             onClick={() => setActiveTab('radar')}
-            className={`px-3.5 py-2 font-mono text-xs font-semibold rounded-t-xl transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`px-3.5 py-2 font-mono text-xs font-semibold rounded-t-xl transition-all duration-180 [transition-timing-function:var(--ease-ignara)] ignara-btn-press cursor-pointer flex items-center gap-1.5 ${
               activeTab === 'radar'
                 ? 'bg-slate-950 text-white border-t-2 border-emerald-500 shadow-sm'
                 : 'text-slate-400 hover:text-white hover:bg-slate-900'
@@ -128,7 +128,7 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
           <button
             type="button"
             onClick={() => setActiveTab('k3')}
-            className={`px-3.5 py-2 font-mono text-xs font-semibold rounded-t-xl transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`px-3.5 py-2 font-mono text-xs font-semibold rounded-t-xl transition-all duration-180 [transition-timing-function:var(--ease-ignara)] ignara-btn-press cursor-pointer flex items-center gap-1.5 ${
               activeTab === 'k3'
                 ? 'bg-slate-950 text-white border-t-2 border-blue-500 shadow-sm'
                 : 'text-slate-400 hover:text-white hover:bg-slate-900'
@@ -196,7 +196,7 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
                     key={num}
                     type="button"
                     onClick={() => handleDigitInput(num)}
-                    className="h-10 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 hover:border-amber-500 active:bg-amber-500 active:text-black font-mono font-bold text-lg text-white shadow-xs active:scale-95 transition-all cursor-pointer touch-manipulation flex items-center justify-center"
+                    className="h-10 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 hover:border-amber-500 active:bg-amber-500 active:text-black font-mono font-bold text-lg text-white shadow-xs [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.08)] active:scale-[0.93] transition-all duration-140 [transition-timing-function:var(--ease-ignara)] cursor-pointer touch-manipulation flex items-center justify-center select-none"
                   >
                     {num}
                   </button>
@@ -204,7 +204,7 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
               </div>
 
               {/* Work Curve Readout */}
-              <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-3 mb-3.5 flex items-center justify-between">
+              <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-3 mb-3.5 flex items-center justify-between [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.06)]">
                 <div>
                   <span className="text-[10px] font-mono text-slate-400 block tracking-wider uppercase">
                     {isEn ? 'STAMINA & ENDURANCE (HANKER)' : 'KETAHANAN KERJA (HANKER)'}
@@ -243,17 +243,17 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
 
               {/* Readout Gauges */}
               <div className="grid grid-cols-2 gap-2.5 text-left mb-3">
-                <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800">
+                <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.06)]">
                   <span className="text-[10px] font-mono text-slate-400 block uppercase">
                     {isEn ? 'SPEED (PANKER)' : 'KECEPATAN HITUNG'}
                   </span>
-                  <span className="text-base font-mono font-bold text-amber-400">{pankerSpeed} <span className="text-xs text-slate-400 font-normal">angka/mnt</span></span>
+                  <span className="text-base font-mono font-bold text-amber-400 tabular-nums">{pankerSpeed} <span className="text-xs text-slate-400 font-normal">angka/mnt</span></span>
                 </div>
-                <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800">
+                <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.06)]">
                   <span className="text-[10px] font-mono text-slate-400 block uppercase">
                     {isEn ? 'ACCURACY (TIANKER)' : 'TINGKAT KETELITIAN'}
                   </span>
-                  <span className="text-base font-mono font-bold text-emerald-400">{tiankerAccuracy}% <span className="text-xs text-emerald-500/80 font-normal">(Sangat Baik)</span></span>
+                  <span className="text-base font-mono font-bold text-emerald-400 tabular-nums">{tiankerAccuracy}% <span className="text-xs text-emerald-500/80 font-normal">(Sangat Baik)</span></span>
                 </div>
               </div>
 

@@ -68,10 +68,10 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
         {/* Bento Grid Layout */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           {/* Tile 1: Large Card (8 Cols) - Kraepelin Test Engine */}
-          <div className="md:col-span-8 bg-white border border-slate-200/90 hover:border-emerald-500/60 rounded-3xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden transition-all duration-300 shadow-xs hover:shadow-xl group">
+          <div className="md:col-span-8 ignara-card ignara-card-hover bg-white border border-slate-200/90 hover:border-emerald-500/60 rounded-3xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden group">
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-xs font-mono px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-2xs">
+                <span className="text-xs font-mono px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-2xs [box-shadow:var(--ignara-top-light)]">
                   <Activity className="w-3.5 h-3.5 text-emerald-600" />
                   {isEn ? 'Pillar C • HIMPSI Norms' : 'Tes Kraepelin & Pauli • Penilaian Otomatis'}
                 </span>
@@ -91,13 +91,13 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
               </p>
 
               {/* Interactive Visual Columns */}
-              <div className="bg-slate-50/90 border border-slate-200/90 rounded-2xl p-4 sm:p-5">
+              <div className="bg-slate-50/90 border border-slate-200/90 rounded-2xl p-4 sm:p-5 [box-shadow:var(--ignara-top-light)]">
                 <div className="flex items-center justify-between border-b border-slate-200 pb-2.5 mb-3 text-xs font-mono">
                   <span className="text-slate-700 font-semibold flex items-center gap-1.5">
                     <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
                     {isEn ? 'Output Curve Per Minute (Hover Columns)' : 'Kurva Jumlah Jawaban Per Menit (Arahkan Kursor)'}
                   </span>
-                  <span className="text-emerald-800 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200">
+                  <span className="text-emerald-800 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200 tabular-nums">
                     {isEn ? 'Accuracy: 98.4% (Grade A)' : 'Ketelitian: 98.4% (Sangat Baik)'}
                   </span>
                 </div>
@@ -111,14 +111,14 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
                       <div
                         key={idx}
                         onMouseEnter={() => setHoveredColumn(idx)}
-                        className="flex flex-col items-center gap-1.5 group/col cursor-pointer"
+                        className="flex flex-col items-center gap-1.5 group/col cursor-pointer ignara-btn-press"
                       >
-                        <span className={`text-[10px] font-mono font-bold transition-all ${isHovered ? 'text-amber-600 -translate-y-0.5' : 'text-slate-500'}`}>
+                        <span className={`text-[10px] font-mono font-bold transition-all tabular-nums ${isHovered ? 'text-amber-600 -translate-y-0.5' : 'text-slate-500'}`}>
                           {col.val}
                         </span>
-                        <div className="w-full bg-slate-200/80 rounded-t-md h-20 flex items-end p-0.5">
+                        <div className="w-full bg-slate-200/80 rounded-t-md h-20 flex items-end p-0.5 [box-shadow:var(--ignara-top-light)]">
                           <div
-                            className={`w-full rounded-t-sm transition-all duration-300 ${
+                            className={`w-full rounded-t-sm transition-all duration-200 [transition-timing-function:var(--ease-ignara)] ${
                               isHovered
                                 ? 'bg-gradient-to-t from-amber-500 to-amber-300 shadow-sm'
                                 : 'bg-gradient-to-t from-emerald-600 to-emerald-400'
@@ -149,7 +149,7 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
                 Standar Kelulusan: <strong className="text-slate-900">Ketelitian &ge; 90% (Posisi Operator &amp; QC)</strong>
               </span>
               <Link href="/candidate/practice">
-                <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white font-mono text-xs font-bold gap-1.5 shadow-sm rounded-xl">
+                <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white font-mono text-xs font-bold gap-1.5 shadow-sm rounded-xl ignara-btn-press cursor-pointer">
                   {isEn ? 'Try Kraepelin Test' : 'Mulai Latihan Kraepelin'}
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Button>
@@ -158,10 +158,10 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
           </div>
 
           {/* Tile 2: Compact Card (4 Cols) - CV Skill Scanner */}
-          <div className="md:col-span-4 bg-white border border-slate-200/90 hover:border-amber-500/60 rounded-3xl p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden transition-all duration-300 shadow-xs hover:shadow-xl group">
+          <div className="md:col-span-4 ignara-card ignara-card-hover bg-white border border-slate-200/90 hover:border-amber-500/60 rounded-3xl p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden group">
             <div>
               <div className="flex items-center justify-between mb-4">
-                <span className="text-xs font-mono px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-2xs">
+                <span className="text-xs font-mono px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-2xs [box-shadow:var(--ignara-top-light)]">
                   <Cpu className="w-3.5 h-3.5 text-amber-600" />
                   {isEn ? 'Skill Verification' : 'Pemeriksaan Keahlian Otomatis'}
                 </span>
@@ -178,16 +178,16 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
               </p>
 
               {/* Faux Scanner Document Preview */}
-              <div className="bg-slate-50/90 border border-slate-200/90 rounded-2xl p-3.5 relative overflow-hidden">
+              <div className="bg-slate-50/90 border border-slate-200/90 rounded-2xl p-3.5 relative overflow-hidden [box-shadow:var(--ignara-top-light)]">
                 <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-amber-500 to-transparent animate-pulse shadow-sm" />
 
                 <div className="flex items-center justify-between mb-2 text-[10px] font-mono text-slate-500">
                   <span>BERKAS: CV_PELAMAR.PDF</span>
-                  <span className="text-emerald-700 font-bold">100% TERBACA</span>
+                  <span className="text-emerald-700 font-bold tabular-nums">100% TERBACA</span>
                 </div>
 
                 <div className="space-y-2 font-mono text-xs">
-                  <div className="flex items-center justify-between p-2 rounded-xl bg-white border border-slate-200 shadow-2xs">
+                  <div className="flex items-center justify-between p-2 rounded-xl bg-white border border-slate-200 shadow-2xs [box-shadow:var(--ignara-top-light)]">
                     <span className="text-slate-900 font-medium flex items-center gap-1.5">
                       <Check className="w-3.5 h-3.5 text-emerald-600" />
                       PLC Siemens &amp; Otomasi
@@ -197,7 +197,7 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between p-2 rounded-xl bg-white border border-slate-200 shadow-2xs">
+                  <div className="flex items-center justify-between p-2 rounded-xl bg-white border border-slate-200 shadow-2xs [box-shadow:var(--ignara-top-light)]">
                     <span className="text-slate-900 font-medium flex items-center gap-1.5">
                       <Check className="w-3.5 h-3.5 text-emerald-600" />
                       Ahli K3 Umum Kemnaker
@@ -207,7 +207,7 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between p-2 rounded-xl bg-white border border-slate-200 shadow-2xs">
+                  <div className="flex items-center justify-between p-2 rounded-xl bg-white border border-slate-200 shadow-2xs [box-shadow:var(--ignara-top-light)]">
                     <span className="text-slate-900 font-medium flex items-center gap-1.5">
                       <Check className="w-3.5 h-3.5 text-emerald-600" />
                       SIO Forklift Kemnaker
@@ -230,10 +230,10 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
           </div>
 
           {/* Tile 3: Compact Card (4 Cols) - Shift Work Assessment */}
-          <div className="md:col-span-4 bg-white border border-slate-200/90 hover:border-blue-500/60 rounded-3xl p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden transition-all duration-300 shadow-xs hover:shadow-xl group">
+          <div className="md:col-span-4 ignara-card ignara-card-hover bg-white border border-slate-200/90 hover:border-blue-500/60 rounded-3xl p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden group">
             <div>
               <div className="flex items-center justify-between mb-4">
-                <span className="text-xs font-mono px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-800 font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-2xs">
+                <span className="text-xs font-mono px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-800 font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-2xs [box-shadow:var(--ignara-top-light)]">
                   <Clock className="w-3.5 h-3.5 text-blue-600" />
                   {isEn ? 'Shift Readiness' : 'Kesiapan Kerja 3-Shift'}
                 </span>
@@ -251,19 +251,19 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
 
               {/* Shift Schedule indicators */}
               <div className="space-y-2 font-mono text-xs">
-                <div className="flex items-center justify-between p-2.5 border border-slate-200 rounded-xl bg-slate-50">
+                <div className="flex items-center justify-between p-2.5 border border-slate-200 rounded-xl bg-slate-50 [box-shadow:var(--ignara-top-light)]">
                   <span className="text-slate-700">Shift 1 (Pagi: 07.00 - 15.00)</span>
-                  <span className="text-emerald-800 font-bold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded text-[10px]">
+                  <span className="text-emerald-800 font-bold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded text-[10px] tabular-nums">
                     Kesiapan 98%
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-2.5 border border-slate-200 rounded-xl bg-slate-50">
+                <div className="flex items-center justify-between p-2.5 border border-slate-200 rounded-xl bg-slate-50 [box-shadow:var(--ignara-top-light)]">
                   <span className="text-slate-700">Shift 2 (Sore: 15.00 - 23.00)</span>
-                  <span className="text-emerald-800 font-bold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded text-[10px]">
+                  <span className="text-emerald-800 font-bold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded text-[10px] tabular-nums">
                     Kesiapan 94%
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-2.5 border border-amber-300 rounded-xl bg-amber-50/50">
+                <div className="flex items-center justify-between p-2.5 border border-amber-300 rounded-xl bg-amber-50/50 [box-shadow:var(--ignara-top-light)]">
                   <span className="text-amber-900 font-medium">Shift 3 (Malam: 23.00 - 07.00)</span>
                   <span className="text-amber-800 font-bold bg-amber-100 border border-amber-300 px-2 py-0.5 rounded text-[10px]">
                     Pengawasan K3
@@ -279,10 +279,10 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
           </div>
 
           {/* Tile 4: Large Card (8 Cols) - Industrial Corridor Network */}
-          <div className="md:col-span-8 bg-white border border-slate-200/90 hover:border-amber-500/60 rounded-3xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden transition-all duration-300 shadow-xs hover:shadow-xl group">
+          <div className="md:col-span-8 ignara-card ignara-card-hover bg-white border border-slate-200/90 hover:border-amber-500/60 rounded-3xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden group">
             <div>
               <div className="flex items-center justify-between mb-4">
-                <span className="text-xs font-mono px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-800 font-semibold uppercase flex items-center gap-1.5 shadow-2xs">
+                <span className="text-xs font-mono px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-800 font-semibold uppercase flex items-center gap-1.5 shadow-2xs [box-shadow:var(--ignara-top-light)]">
                   <Building2 className="w-3.5 h-3.5 text-amber-600" />
                   {isEn ? 'Industrial Hub Network' : 'Pusat Kawasan Industri'}
                 </span>
@@ -304,9 +304,9 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 font-mono text-xs">
                 <div
                   onClick={() => setActiveCorridor('cikarang')}
-                  className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
+                  className={`p-3.5 rounded-2xl border transition-all duration-180 [transition-timing-function:var(--ease-ignara)] cursor-pointer ignara-btn-press [box-shadow:var(--ignara-top-light)] ${
                     activeCorridor === 'cikarang'
-                      ? 'bg-amber-50/60 border-amber-400 shadow-sm scale-[1.02]'
+                      ? 'bg-amber-50/70 border-amber-400 shadow-sm scale-[1.02]'
                       : 'bg-slate-50 border-slate-200 hover:border-slate-300'
                   }`}
                 >
@@ -315,16 +315,16 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
                     <MapPin className="w-3.5 h-3.5 text-amber-600" />
                   </p>
                   <p className="text-[11px] text-slate-500 mb-2">MM2100 &bull; GIIC &bull; Jababeka</p>
-                  <span className="inline-block text-[10px] text-emerald-800 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  <span className="inline-block text-[10px] text-emerald-800 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 tabular-nums">
                     120+ Lowongan Aktif
                   </span>
                 </div>
 
                 <div
                   onClick={() => setActiveCorridor('karawang')}
-                  className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
+                  className={`p-3.5 rounded-2xl border transition-all duration-180 [transition-timing-function:var(--ease-ignara)] cursor-pointer ignara-btn-press [box-shadow:var(--ignara-top-light)] ${
                     activeCorridor === 'karawang'
-                      ? 'bg-amber-50/60 border-amber-400 shadow-sm scale-[1.02]'
+                      ? 'bg-amber-50/70 border-amber-400 shadow-sm scale-[1.02]'
                       : 'bg-slate-50 border-slate-200 hover:border-slate-300'
                   }`}
                 >
@@ -333,16 +333,16 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
                     <MapPin className="w-3.5 h-3.5 text-amber-600" />
                   </p>
                   <p className="text-[11px] text-slate-500 mb-2">KIIC &bull; Surya Cipta &bull; KIM</p>
-                  <span className="inline-block text-[10px] text-emerald-800 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  <span className="inline-block text-[10px] text-emerald-800 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 tabular-nums">
                     85+ Lowongan Aktif
                   </span>
                 </div>
 
                 <div
                   onClick={() => setActiveCorridor('jatim')}
-                  className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
+                  className={`p-3.5 rounded-2xl border transition-all duration-180 [transition-timing-function:var(--ease-ignara)] cursor-pointer ignara-btn-press [box-shadow:var(--ignara-top-light)] ${
                     activeCorridor === 'jatim'
-                      ? 'bg-amber-50/60 border-amber-400 shadow-sm scale-[1.02]'
+                      ? 'bg-amber-50/70 border-amber-400 shadow-sm scale-[1.02]'
                       : 'bg-slate-50 border-slate-200 hover:border-slate-300'
                   }`}
                 >
@@ -351,7 +351,7 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
                     <MapPin className="w-3.5 h-3.5 text-amber-600" />
                   </p>
                   <p className="text-[11px] text-slate-500 mb-2">Surabaya &bull; PIER &bull; JIIPE</p>
-                  <span className="inline-block text-[10px] text-emerald-800 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  <span className="inline-block text-[10px] text-emerald-800 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 tabular-nums">
                     64+ Lowongan Aktif
                   </span>
                 </div>
@@ -364,7 +364,7 @@ export function StageshowBentoGrid({ isEn = false }: StageshowBentoGridProps) {
                 <strong className="text-amber-700">{isEn ? '48 Hours post-assessment' : 'Rata-rata 2 hari kerja setelah tes'}</strong>
               </span>
               <Link href="/jobs">
-                <Button size="sm" className="bg-slate-900 hover:bg-slate-800 text-white font-mono text-xs font-bold gap-1 shadow-sm rounded-xl">
+                <Button size="sm" className="bg-slate-900 hover:bg-slate-800 text-white font-mono text-xs font-bold gap-1 shadow-sm rounded-xl ignara-btn-press cursor-pointer">
                   {isEn ? 'Browse Factory Openings' : 'Lihat Lowongan Pabrik'}
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Button>

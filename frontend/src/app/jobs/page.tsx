@@ -92,10 +92,10 @@ export default function JobsPage() {
       <div className="max-w-7xl mx-auto space-y-8">
 
         {/* Modern Header Banner */}
-        <div className="p-6 sm:p-10 bg-white border border-slate-200/90 rounded-3xl shadow-xs space-y-3 relative overflow-hidden contain-paint">
+        <div className="p-6 sm:p-10 bg-white border border-slate-200/90 rounded-3xl [box-shadow:var(--shadow-ignara-sm),var(--ignara-top-light)] space-y-3 relative overflow-hidden contain-paint">
           <div className="absolute top-0 right-0 w-48 h-48 sm:w-80 sm:h-80 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
           <div className="relative z-10 space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-xs font-mono font-semibold">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-xs font-mono font-semibold [box-shadow:var(--ignara-top-light)]">
               <Briefcase className="w-3.5 h-3.5 text-amber-600" />
               <span>{isEn ? 'OFFICIAL INDUSTRIAL VACANCIES' : 'LOWONGAN KERJA PABRIK RESMI'}</span>
             </div>
@@ -110,8 +110,8 @@ export default function JobsPage() {
           </div>
         </div>
 
-        {/* Quick Category Tabs */}
-        <div className="flex flex-wrap gap-2">
+        {/* Quick Category Tabs with Ignara Horizontal Edge Mask */}
+        <div className="mask-fade-x overflow-x-auto pb-1 flex sm:flex-wrap items-center gap-2 no-scrollbar">
           {[
             { id: 'all', label: isEn ? 'All Positions' : 'Semua Posisi' },
             { id: 'operator', label: isEn ? 'Machine Operators' : 'Operator Produksi' },
@@ -122,10 +122,10 @@ export default function JobsPage() {
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`px-4 py-2 rounded-2xl text-xs font-mono font-semibold transition-all cursor-pointer ${
+              className={`shrink-0 px-4 py-2 rounded-2xl text-xs font-mono font-semibold transition-all duration-180 ignara-btn-press cursor-pointer ${
                 selectedCategory === cat.id
-                  ? 'bg-slate-900 text-white shadow-2xs'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+                  ? 'bg-slate-900 text-white shadow-2xs [box-shadow:var(--shadow-ignara-sm),inset_0_1px_0_0_rgba(255,255,255,0.2)]'
+                  : 'bg-white text-slate-600 border border-slate-200/90 hover:bg-slate-50 [box-shadow:var(--ignara-top-light)]'
               }`}
             >
               {cat.label}
@@ -134,7 +134,7 @@ export default function JobsPage() {
         </div>
 
         {/* Search & Location Filter Bar */}
-        <div className="p-4 sm:p-5 bg-white border border-slate-200/90 rounded-3xl shadow-xs space-y-3">
+        <div className="p-4 sm:p-5 bg-white border border-slate-200/90 rounded-3xl [box-shadow:var(--shadow-ignara-sm),var(--ignara-top-light)] space-y-3">
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
             {/* Search Input */}
             <div className="sm:col-span-6 relative">
@@ -226,14 +226,14 @@ export default function JobsPage() {
               filteredJobs.map((job) => (
                 <div
                   key={job.id}
-                  className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-transform duration-150 flex flex-col justify-between group content-visibility-auto contain-content"
+                  className="ignara-card ignara-card-hover bg-white border border-slate-200/90 rounded-3xl p-6 flex flex-col justify-between group content-visibility-auto contain-content"
                 >
                   <div className="space-y-3">
                     <div className="flex items-start justify-between gap-2">
                       <div className="space-y-1">
                         <div className="flex items-center gap-1.5 flex-wrap">
                           {job.is_featured && (
-                            <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 font-bold">
+                            <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 font-bold [box-shadow:var(--ignara-top-light)]">
                               ★ REKOMENDASI PABRIK
                             </span>
                           )}
@@ -257,11 +257,11 @@ export default function JobsPage() {
 
                     {/* Location & Wage Strip */}
                     <div className="grid grid-cols-2 gap-2 text-[11px] font-mono pt-1">
-                      <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-xl text-slate-600 truncate">
+                      <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-xl text-slate-600 truncate [box-shadow:var(--ignara-top-light)]">
                         <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                         <span className="truncate">{job.location || 'Kawasan Industri'}</span>
                       </div>
-                      <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-xl text-emerald-800 font-bold truncate">
+                      <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-xl text-emerald-800 font-bold truncate [box-shadow:var(--ignara-top-light)]">
                         <DollarSign className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                         <span className="truncate">{job.salary_range || 'Sesuai UMK + Tunjangan'}</span>
                       </div>
@@ -281,13 +281,13 @@ export default function JobsPage() {
 
                   <div className="flex items-center gap-2 pt-5 mt-4 border-t border-slate-100">
                     <Link href={`/jobs/${job.id}`} className="flex-1">
-                      <Button variant="outline" size="sm" className="w-full text-xs font-semibold rounded-2xl border-slate-200 h-9.5 hover:bg-slate-50">
+                      <Button variant="outline" size="sm" className="w-full text-xs font-semibold rounded-2xl border-slate-200 h-9.5 hover:bg-slate-50 ignara-btn-press cursor-pointer">
                         {isEn ? 'Position Details' : 'Detail Posisi'}
                       </Button>
                     </Link>
 
                     <Link href={`/apply/${job.id}`} className="flex-1">
-                      <Button size="sm" className="w-full text-xs font-bold rounded-2xl bg-slate-900 hover:bg-slate-800 text-white h-9.5 gap-1 shadow-2xs">
+                      <Button size="sm" className="w-full text-xs font-bold rounded-2xl bg-slate-900 hover:bg-slate-800 text-white h-9.5 gap-1 shadow-2xs ignara-btn-press cursor-pointer">
                         <span>{isEn ? 'Apply Now' : 'Lamar Sekarang'}</span>
                         <ArrowRight className="w-3.5 h-3.5 ml-1" />
                       </Button>

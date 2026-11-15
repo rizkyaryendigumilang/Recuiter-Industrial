@@ -243,16 +243,16 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
 
               {/* Telemetry Row */}
               <div className="grid grid-cols-3 gap-4 pt-6 border-t border-slate-200/80">
-                <div className="p-3 bg-white/70 border border-slate-200/80 rounded-2xl shadow-2xs">
-                  <span className="text-xl sm:text-2xl font-extrabold font-mono text-slate-900 block">14,200+</span>
+                <div className="p-3 bg-white/70 border border-slate-200/80 rounded-2xl shadow-2xs [box-shadow:var(--ignara-top-light)]">
+                  <span className="text-xl sm:text-2xl font-extrabold font-mono text-slate-900 block tabular-nums">14,200+</span>
                   <span className="text-[10px] font-mono text-slate-500 uppercase tracking-tight">Operator Teruji</span>
                 </div>
-                <div className="p-3 bg-white/70 border border-slate-200/80 rounded-2xl shadow-2xs">
-                  <span className="text-xl sm:text-2xl font-extrabold font-mono text-emerald-700 block">98.6%</span>
+                <div className="p-3 bg-white/70 border border-slate-200/80 rounded-2xl shadow-2xs [box-shadow:var(--ignara-top-light)]">
+                  <span className="text-xl sm:text-2xl font-extrabold font-mono text-emerald-700 block tabular-nums">98.6%</span>
                   <span className="text-[10px] font-mono text-slate-500 uppercase tracking-tight">Tingkat Ketelitian</span>
                 </div>
-                <div className="p-3 bg-white/70 border border-slate-200/80 rounded-2xl shadow-2xs">
-                  <span className="text-xl sm:text-2xl font-extrabold font-mono text-amber-700 block">48 Jam</span>
+                <div className="p-3 bg-white/70 border border-slate-200/80 rounded-2xl shadow-2xs [box-shadow:var(--ignara-top-light)]">
+                  <span className="text-xl sm:text-2xl font-extrabold font-mono text-amber-700 block tabular-nums">48 Jam</span>
                   <span className="text-[10px] font-mono text-slate-500 uppercase tracking-tight">Proses Cepat</span>
                 </div>
               </div>
@@ -300,8 +300,8 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="p-6 bg-slate-50/70 border border-slate-200/80 rounded-3xl hover:border-slate-300 hover:shadow-md transition-all space-y-3">
-              <div className="w-10 h-10 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-center font-bold">
+            <div className="p-6 bg-slate-50/70 border border-slate-200/80 rounded-3xl ignara-card ignara-card-hover space-y-3">
+              <div className="w-10 h-10 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-center font-bold [box-shadow:var(--ignara-top-light)]">
                 <Activity className="w-5 h-5 text-emerald-600" />
               </div>
               <h3 className="font-extrabold text-base text-slate-900">
@@ -314,8 +314,8 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
               </p>
             </div>
 
-            <div className="p-6 bg-slate-50/70 border border-slate-200/80 rounded-3xl hover:border-slate-300 hover:shadow-md transition-all space-y-3">
-              <div className="w-10 h-10 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 flex items-center justify-center font-bold">
+            <div className="p-6 bg-slate-50/70 border border-slate-200/80 rounded-3xl ignara-card ignara-card-hover space-y-3">
+              <div className="w-10 h-10 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 flex items-center justify-center font-bold [box-shadow:var(--ignara-top-light)]">
                 <ShieldCheck className="w-5 h-5 text-amber-600" />
               </div>
               <h3 className="font-extrabold text-base text-slate-900">
@@ -328,8 +328,8 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
               </p>
             </div>
 
-            <div className="p-6 bg-slate-50/70 border border-slate-200/80 rounded-3xl hover:border-slate-300 hover:shadow-md transition-all space-y-3">
-              <div className="w-10 h-10 rounded-2xl bg-blue-50 border border-blue-200 text-blue-800 flex items-center justify-center font-bold">
+            <div className="p-6 bg-slate-50/70 border border-slate-200/80 rounded-3xl ignara-card ignara-card-hover space-y-3">
+              <div className="w-10 h-10 rounded-2xl bg-blue-50 border border-blue-200 text-blue-800 flex items-center justify-center font-bold [box-shadow:var(--ignara-top-light)]">
                 <Cpu className="w-5 h-5 text-blue-600" />
               </div>
               <h3 className="font-extrabold text-base text-slate-900">
@@ -342,8 +342,8 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
               </p>
             </div>
 
-            <div className="p-6 bg-slate-50/70 border border-slate-200/80 rounded-3xl hover:border-slate-300 hover:shadow-md transition-all space-y-3">
-              <div className="w-10 h-10 rounded-2xl bg-purple-50 border border-purple-200 text-purple-800 flex items-center justify-center font-bold">
+            <div className="p-6 bg-slate-50/70 border border-slate-200/80 rounded-3xl ignara-card ignara-card-hover space-y-3">
+              <div className="w-10 h-10 rounded-2xl bg-purple-50 border border-purple-200 text-purple-800 flex items-center justify-center font-bold [box-shadow:var(--ignara-top-light)]">
                 <Clock className="w-5 h-5 text-purple-600" />
               </div>
               <h3 className="font-extrabold text-base text-slate-900">
@@ -404,7 +404,7 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                 return (
                   <div
                     key={job.id}
-                    className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-transform duration-150 flex flex-col justify-between group content-visibility-auto contain-content"
+                    className="ignara-card ignara-card-hover bg-white border border-slate-200/90 rounded-3xl p-6 flex flex-col justify-between group content-visibility-auto contain-content"
                   >
                     <div>
                       <div className="flex items-center justify-between gap-2 mb-3.5">
@@ -413,7 +413,7 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                           <span className="truncate max-w-[180px]">{job.expand?.employer_id?.company_name || 'Mitra Industri Pabrik'}</span>
                         </span>
                         {job.is_featured && (
-                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 font-bold">
+                          <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 font-bold [box-shadow:var(--ignara-top-light)]">
                             ★ REKOMENDASI PABRIK
                           </span>
                         )}
@@ -429,11 +429,11 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
 
                       {/* Location & Salary */}
                       <div className="grid grid-cols-2 gap-2 text-[11px] font-mono mb-4">
-                        <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-xl text-slate-600 truncate">
+                        <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-xl text-slate-600 truncate [box-shadow:var(--ignara-top-light)]">
                           <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                           <span className="truncate">{job.location || 'Kawasan Industri'}</span>
                         </div>
-                        <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-xl text-emerald-800 font-bold truncate">
+                        <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-xl text-emerald-800 font-bold truncate [box-shadow:var(--ignara-top-light)]">
                           <span className="truncate">{job.salary || 'Sesuai UMK'}</span>
                         </div>
                       </div>
@@ -460,7 +460,7 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                       <Link href={`/jobs/${job.id}`}>
                         <Button
                           size="sm"
-                          className="rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold h-8 px-3.5 transition-all cursor-pointer shadow-2xs"
+                          className="rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold h-8 px-3.5 ignara-btn-press cursor-pointer shadow-2xs"
                         >
                           Lamar Sekarang
                           <ArrowRight className="w-3 h-3 ml-1" />
@@ -562,11 +562,11 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
               filteredServices.map((svc) => (
                 <div
                   key={svc.id}
-                  className="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-transform duration-150 flex flex-col justify-between group content-visibility-auto contain-content"
+                  className="ignara-card ignara-card-hover bg-white border border-slate-200/90 rounded-3xl p-6 flex flex-col justify-between group content-visibility-auto contain-content"
                 >
                   <div>
                     <div className="mb-3">
-                      <span className="text-[10px] font-mono px-2.5 py-1 rounded-full bg-slate-100 text-slate-800 border border-slate-200 font-semibold">
+                      <span className="text-[10px] font-mono px-2.5 py-1 rounded-full bg-slate-100 text-slate-800 border border-slate-200 font-semibold [box-shadow:var(--ignara-top-light)]">
                         {svc.category}
                       </span>
                     </div>
@@ -585,7 +585,7 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                       <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider block font-medium">
                         Biaya Layanan:
                       </span>
-                      <span className="text-base font-extrabold font-mono text-slate-950">
+                      <span className="text-base font-extrabold font-mono text-slate-950 tabular-nums">
                         Rp {Number(svc.price).toLocaleString('id-ID')}
                       </span>
                     </div>
@@ -593,7 +593,7 @@ export function HomeView({ initialServices = FALLBACK_SERVICES, initialJobs = FA
                     <Link href={`/booking/${svc.id}`}>
                       <Button
                         size="sm"
-                        className="rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold px-4 h-8 transition-colors duration-150 touch-manipulation cursor-pointer shadow-2xs"
+                        className="rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold px-4 h-8 ignara-btn-press touch-manipulation cursor-pointer shadow-2xs"
                       >
                         Pesan Layanan
                       </Button>

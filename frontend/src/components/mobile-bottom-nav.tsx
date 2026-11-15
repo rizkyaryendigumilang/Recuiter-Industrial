@@ -40,7 +40,7 @@ export function MobileBottomNav() {
   };
 
   return (
-    <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 pb-[env(safe-area-inset-bottom,0px)] shadow-[0_-4px_16px_rgba(15,23,42,0.04)]">
+    <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 pb-[env(safe-area-inset-bottom,0px)] [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.9),0_-4px_16px_rgba(15,23,42,0.04)]">
       <nav className="flex items-center justify-around h-15 px-2">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -50,11 +50,11 @@ export function MobileBottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl transition-all active:scale-90 touch-manipulation cursor-pointer ${
+              className={`flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl transition-transform duration-140 [transition-timing-function:var(--ease-ignara)] ignara-btn-press touch-manipulation cursor-pointer ${
                 active ? 'text-slate-950 font-bold' : 'text-slate-500 hover:text-slate-900 font-medium'
               }`}
             >
-              <div className={`p-1 rounded-xl transition-colors ${active ? 'bg-amber-100/70 text-amber-900' : ''}`}>
+              <div className={`p-1 rounded-xl transition-colors duration-180 ${active ? 'bg-amber-100/80 text-amber-900 [box-shadow:var(--ignara-top-light)]' : ''}`}>
                 <Icon className={`w-4.5 h-4.5 ${active ? 'stroke-[2.4px]' : 'stroke-[1.8px]'}`} />
               </div>
               <span className="text-[10px] tracking-tight mt-0.5 leading-none">

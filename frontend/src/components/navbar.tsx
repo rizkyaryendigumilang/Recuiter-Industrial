@@ -60,12 +60,12 @@ function NavContent() {
       {/* Language Switcher & Auth Actions (Desktop) */}
       <div className="hidden lg:flex items-center gap-2">
         {/* Live Active Openings Badge */}
-        <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-[10px] font-medium text-emerald-800 font-mono">
+        <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200/90 text-[10px] font-medium text-emerald-800 font-mono ignara-glow-emerald">
           <span className="relative flex h-1.5 w-1.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
           </span>
-          <span>84 Lowongan</span>
+          <span className="tabular-nums font-semibold">84 Lowongan</span>
         </div>
 
         {/* Helpdesk SSO JIT Handoff Button */}
@@ -228,9 +228,9 @@ function NavContent() {
 export function Navbar() {
   return (
     <header className="sticky top-2 sm:top-3 z-50 px-3 sm:px-6 max-w-7xl mx-auto w-full pt-[env(safe-area-inset-top,0px)]">
-      <div className="bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-xs transition-shadow rounded-2xl px-3.5 sm:px-5 h-13 sm:h-14 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 text-white flex items-center justify-center font-bold text-xs tracking-wider shadow-sm group-hover:scale-105 transition-transform border border-slate-700/50">
+      <div className="bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-2xl px-3.5 sm:px-5 h-13 sm:h-14 flex items-center justify-between transition-all duration-200 [box-shadow:var(--shadow-ignara),var(--ignara-top-light)]">
+        <Link href="/" className="flex items-center gap-2.5 group cursor-pointer">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 text-white flex items-center justify-center font-bold text-xs tracking-wider shadow-sm group-hover:scale-105 active:scale-95 transition-transform duration-200 border border-slate-700/50 [box-shadow:inset_0_1px_0_0_rgba(255,255,255,0.2)]">
             <span className="text-amber-400 font-black">R</span>
             <span className="text-white font-black">I</span>
           </div>
