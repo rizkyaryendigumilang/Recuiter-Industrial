@@ -74,6 +74,14 @@ export function PauliTest({
   const [finalResult, setFinalResult] = useState<PauliResult | null>(null);
   const [columnShiftAlert, setColumnShiftAlert] = useState<string | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const shiftTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const currentAnswersRef = useRef<number[]>([]);
+  currentAnswersRef.current = currentAnswers;
+  const columnNumbersRef = useRef<number[][]>([]);
+  columnNumbersRef.current = columnNumbers;
+  const currentColumnRef = useRef<number>(0);
+  currentColumnRef.current = currentColumn;
+  const columnStartTimeRef = useRef<number>(Date.now());
 
   // Anti-Cheat Engine Integration & Layar Penuh (Fullscreen Lock)
   const {
@@ -140,12 +148,14 @@ export function PauliTest({
         setTimeLeft(columnDurationSeconds);
         setCurrentAnswers([]);
         triggerHaptic.alarm();
+        if (shiftTimeoutRef.current) clearTimeout(shiftTimeoutRef.current);
         setColumnShiftAlert(isEn ? `SHIFT! Column ${nextCol + 1}` : `PINDAH! Kolom ${nextCol + 1}`);
-        setTimeout(() => setColumnShiftAlert(null), 1200);
+        shiftTimeoutRef.current = setTimeout(() => setColumnShiftAlert(null), 1200);
       } else {
         // Finished all columns! Calculate overall metrics
         setGameState('finished');
         setColumnShiftAlert(null);
+        if (shiftTimeoutRef.current) clearTimeout(shiftTimeoutRef.current);
         if (timerRef.current) clearInterval(timerRef.current);
         triggerHaptic.success();
 
@@ -217,32 +227,47 @@ export function PauliTest({
     [columnResults, currentColumn, totalColumns, columnDurationSeconds, warnings, onComplete]
   );
 
-  // Timer effect
+  // Accurate, Low-CPU, Hardware-Friendly Timer (No timer recreation on keypress)
   useEffect(() => {
-    if (gameState !== 'running') return;
+    if (gameState !== 'running') {
+      if (timerRef.current) clearInterval(timerRef.current);
+      return;
+    }
+
+    columnStartTimeRef.current = Date.now();
+    setTimeLeft(columnDurationSeconds);
 
     timerRef.current = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          // Time expired for this column!
-          const solved = currentAnswers.length;
-          const currentCols = columnNumbers[currentColumn] || [];
-          let correct = 0;
-          currentAnswers.forEach((ans, idx) => {
-            const sum = currentCols[idx] + currentCols[idx + 1];
-            if (sum % 10 === ans) correct++;
-          });
-          moveToNextColumn(solved, correct);
-          return columnDurationSeconds;
-        }
-        return prev - 1;
-      });
+      const elapsedSeconds = Math.floor((Date.now() - columnStartTimeRef.current) / 1000);
+      const remaining = Math.max(0, columnDurationSeconds - elapsedSeconds);
+      setTimeLeft(remaining);
+
+      if (remaining <= 0) {
+        // Time expired for this column!
+        const answers = currentAnswersRef.current;
+        const colIdx = currentColumnRef.current;
+        const currentCols = columnNumbersRef.current[colIdx] || [];
+        let correct = 0;
+        answers.forEach((ans, idx) => {
+          const sum = currentCols[idx] + currentCols[idx + 1];
+          if (sum % 10 === ans) correct++;
+        });
+        moveToNextColumn(answers.length, correct);
+      }
     }, 1000);
 
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [gameState, currentColumn, currentAnswers, columnNumbers, columnDurationSeconds, moveToNextColumn]);
+  }, [gameState, currentColumn, columnDurationSeconds, moveToNextColumn]);
+
+  // Cleanup all timers on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (shiftTimeoutRef.current) clearTimeout(shiftTimeoutRef.current);
+    };
+  }, []);
 
   // Handle number input (0 - 9) with Anti-Cheat Bot & Macro Detection
   const handleDigitInput = useCallback(

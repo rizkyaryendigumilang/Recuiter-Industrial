@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { triggerHaptic } from '@/lib/haptics';
@@ -33,9 +33,18 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
   const [tiankerAccuracy, setTiankerAccuracy] = useState(98.6);
   const [curveHistory, setCurveHistory] = useState<number[]>([38, 44, 49, 53, 55, 54, 56, 53]);
   const [streak, setStreak] = useState(4);
+  const feedbackTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clear timeout on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
+    };
+  }, []);
 
   const handleDigitInput = (digit: number) => {
     triggerHaptic.light();
+    if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
     const expected = (numA + numB) % 10;
 
     if (digit === expected) {
@@ -47,7 +56,7 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
       setPankerSpeed(newPanker);
       setCurveHistory((prev) => [...prev.slice(1), Math.round(newPanker)]);
 
-      setTimeout(() => {
+      feedbackTimerRef.current = setTimeout(() => {
         setNumA(Math.floor(Math.random() * 9) + 1);
         setNumB(Math.floor(Math.random() * 9) + 1);
         setFeedback('idle');
@@ -57,7 +66,7 @@ export function StageshowHeroConsole({ isEn = false }: StageshowHeroConsoleProps
       triggerHaptic.warning();
       setStreak(0);
       setTiankerAccuracy((prev) => Math.max(88, +(prev - 0.7).toFixed(1)));
-      setTimeout(() => setFeedback('idle'), 400);
+      feedbackTimerRef.current = setTimeout(() => setFeedback('idle'), 400);
     }
   };
 

@@ -5,6 +5,8 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '/recruiter';
 
 const nextConfig: NextConfig = {
   basePath: basePath === '' ? undefined : basePath,
+  compress: true,
+  poweredByHeader: false,
   experimental: {
     optimizePackageImports: ['lucide-react'],
     agentUpgrade: "security",

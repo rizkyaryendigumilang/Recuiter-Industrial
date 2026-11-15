@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { useLanguage } from '@/lib/language-context';
@@ -367,18 +367,22 @@ export default function SettingsPage() {
     }, 500);
   };
 
-  // Filter categories
-  const filteredCategories: SettingsCategory[] = filterSettingsCategories(
-    SETTINGS_CATEGORIES,
-    searchQuery,
-    userRole
-  );
+  // Filter categories (Memoized to prevent wasteful loop on every form keystroke)
+  const filteredCategories: SettingsCategory[] = useMemo(() => {
+    return filterSettingsCategories(
+      SETTINGS_CATEGORIES,
+      searchQuery,
+      userRole
+    );
+  }, [searchQuery, userRole]);
 
   // Group filtered categories
-  const groupedCategories = SETTINGS_GROUPS.map((group: SettingsGroup) => ({
-    ...group,
-    categories: filteredCategories.filter((c: SettingsCategory) => c.groupId === group.id),
-  })).filter((group) => group.categories.length > 0);
+  const groupedCategories = useMemo(() => {
+    return SETTINGS_GROUPS.map((group: SettingsGroup) => ({
+      ...group,
+      categories: filteredCategories.filter((c: SettingsCategory) => c.groupId === group.id),
+    })).filter((group) => group.categories.length > 0);
+  }, [filteredCategories]);
 
   // Handler: Save Profile
   const handleSaveProfile = async (e: React.FormEvent) => {
