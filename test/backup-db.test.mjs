@@ -54,4 +54,14 @@ describe('Disaster Recovery & Encrypted Remote Backup Test Suite', () => {
     assert.equal(manifest.sha256_checksum.length, 64);
     assert.equal(manifest.size_bytes, sampleBuffer.length);
   });
+
+  it('backup script targets list includes SQLite WAL and SHM journal files', async () => {
+    const fs = await import('node:fs');
+    const content = fs.readFileSync('backend/backup-db.mjs', 'utf8');
+
+    assert.ok(content.includes("'data.db-wal'"), 'Must include data.db-wal in backup targets');
+    assert.ok(content.includes("'data.db-shm'"), 'Must include data.db-shm in backup targets');
+    assert.ok(content.includes("'auxiliary.db-wal'"), 'Must include auxiliary.db-wal in backup targets');
+    assert.ok(content.includes("'auxiliary.db-shm'"), 'Must include auxiliary.db-shm in backup targets');
+  });
 });

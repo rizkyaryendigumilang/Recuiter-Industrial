@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     // Status ditentukan oleh aturan bisnis server, bukan oleh request client
     const determinedStatus = calculatedScore >= 70 ? 'interview' : 'testing';
 
-    const pbUrl = process.env.PB_INTERNAL_URL || process.env.NEXT_PUBLIC_PB_URL || 'http://127.0.0.1:8093';
+    const pbUrl = process.env.PB_INTERNAL_URL || process.env.NEXT_PUBLIC_PB_URL || 'http://127.0.0.1:8090';
     const authHeader = req.headers.get('authorization');
 
     // Jika ada token auth PocketBase, lakukan update terotentikasi di PocketBase

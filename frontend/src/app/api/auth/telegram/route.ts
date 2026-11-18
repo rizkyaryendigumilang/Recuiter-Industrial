@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'TELEGRAM_BOT_TOKEN belum dikonfigurasi di server' }, { status: 500 });
     }
 
-    const pbUrl = process.env.PB_INTERNAL_URL || process.env.NEXT_PUBLIC_PB_URL || 'http://127.0.0.1:8093';
+    const pbUrl = process.env.PB_INTERNAL_URL || process.env.NEXT_PUBLIC_PB_URL || 'http://127.0.0.1:8090';
     const email = `tg_${id}@telegram.user`;
 
     // Derivasi kredensial aman dengan HMAC-SHA256 (tahan brute-force / non-predictable)

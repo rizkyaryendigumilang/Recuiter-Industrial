@@ -76,8 +76,16 @@ function performBackup() {
   fs.mkdirSync(targetDir, { recursive: true });
   console.log(`[INFO] Created backup target: ${targetDir}`);
 
-  // List of critical targets to copy
-  const targets = ['data.db', 'auxiliary.db', 'storage'];
+  // List of critical targets to copy (including SQLite WAL & SHM files to preserve active transactions)
+  const targets = [
+    'data.db',
+    'data.db-wal',
+    'data.db-shm',
+    'auxiliary.db',
+    'auxiliary.db-wal',
+    'auxiliary.db-shm',
+    'storage',
+  ];
   let filesCopiedCount = 0;
 
   for (const item of targets) {

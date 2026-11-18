@@ -799,12 +799,14 @@ export default function AdminDashboard() {
               <div className="flex flex-wrap items-center gap-2 shrink-0">
                 {/* Link Unduh / Subscribe File .ICS */}
                 {(() => {
-                  const calToken = process.env.NEXT_PUBLIC_CALENDAR_TOKEN || 'hrtech_calendar_sec_2026';
-                  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '/recruiter';
+                  const calToken = process.env.NEXT_PUBLIC_CALENDAR_TOKEN || 'dev_calendar_secret_local';
+                  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+                  const cleanBasePath = basePath === '' ? '' : (basePath.startsWith('/') ? basePath : `/${basePath}`);
+                  const downloadUrl = `${cleanBasePath}/api/calendar/interviews.ics?token=${calToken}`.replace(/\/+/g, '/');
                   return (
                     <>
                       <a
-                        href={`${basePath}/api/calendar/interviews.ics?token=${calToken}`}
+                        href={downloadUrl}
                         download="interviews.ics"
                         className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#1D1D1F] hover:bg-[#000000] text-white text-xs font-medium shadow-xs transition-colors duration-150"
                       >
