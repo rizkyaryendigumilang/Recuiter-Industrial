@@ -573,7 +573,12 @@ jobs:
           TITLE: ${{ steps.prep.outputs.title }}
         run: |
           cd release-dist
+          shopt -s nullglob
           FILES=(*.apk *.ipa)
+          if [ ${#FILES[@]} -eq 0 ]; then
+            echo "⚠️ Tidak ada file binary APK/IPA yang ditemukan di release-dist."
+            exit 0
+          fi
 
           echo "🚀 Memeriksa status release untuk tag $TAG..."
           if gh release view "$TAG" >/dev/null 2>&1; then
